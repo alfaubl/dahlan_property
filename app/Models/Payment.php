@@ -2,58 +2,33 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Payment extends Model
 {
-    use HasFactory;
-
+    use SoftDeletes;
+    
     protected $fillable = [
-        'order_id',
-        'payment_id',
-        'payment_type',
-        'bank_name',
-        'va_number',
-        'qr_code',
-        'amount',
-        'status',
-        'transaction_time',
-        'settlement_time',
-        'raw_response'
+        'lease_id', 'tenant_id', 'amount', 'payment_date', 
+        'due_date', 'payment_method', 'status', 'midtrans_order_id',
+        'midtrans_transaction_id', 'midtrans_response', 'proof_url', 'notes'
     ];
-
+    
     protected $casts = [
         'amount' => 'decimal:2',
-        'transaction_time' => 'datetime',
-        'settlement_time' => 'datetime',
-        'raw_response' => 'array'
+        'payment_date' => 'date',
+        'due_date' => 'date',
+        'midtrans_response' => 'array'
     ];
-
-    // Relationships
-    public function order()
+    
+    public function lease()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Lease::class);
     }
-
-    // Accessors
-    public function getFormattedAmountAttribute()
+    
+    public function tenant()
     {
-        return 'Rp ' . number_format($this->amount, 0, ',', '.');
-    }
-
-    public function getStatusBadgeAttribute()
-    {
-        $badges = [
-            'pending' => 'bg-warning',
-            'settlement' => 'bg-success',
-            'capture' => 'bg-info',
-            'deny' => 'bg-danger',
-            'cancel' => 'bg-secondary',
-            'expire' => 'bg-dark',
-            'failure' => 'bg-danger'
-        ];
-
-        return $badges[$this->status] ?? 'bg-secondary';
+        return $this->belongsTo(Tenant::class);
     }
 }
