@@ -1,321 +1,510 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'Daftar - Dahlan Property')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Dahlan Property</title>
 
-@section('content')
-<section class="auth-section">
-    <div class="auth-bg"></div>
-    <div class="container">
-        <div class="auth-content">
-            <!-- Logo & Branding -->
-            <div class="auth-branding">
-                <a href="/" class="logo">
-                    <div class="logo-image">
-                        <img src="{{ asset('assets/logo dahlan_property 2.png') }}" alt="Dahlan Property">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* Import styles from main page */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(13, 110, 253, 0.1), rgba(102, 16, 242, 0.1));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Register Card */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .auth-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            padding: 40px 30px 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: float 20s linear infinite;
+        }
+
+        .auth-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .auth-body {
+            padding: 40px;
+        }
+
+        /* Form Styles */
+        .form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 20px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+            background: white;
+        }
+
+        .input-group-text {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            padding: 15px 20px;
+        }
+
+        .form-control.with-icon {
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Custom Button */
+        .btn-glow {
+            position: relative;
+            overflow: hidden;
+            border: none;
+            background: linear-gradient(90deg, #0d6efd, #6610f2);
+            transition: all 0.3s ease;
+            padding: 15px 30px;
+            font-weight: 600;
+            border-radius: 12px;
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+        }
+
+        .btn-glow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-glow:hover::after {
+            left: 100%;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #0d6efd, #6610f2);
+            transition: width 0.5s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #6c757d;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-label {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .step.active .step-label {
+            color: #0d6efd;
+            font-weight: 600;
+        }
+
+        /* User Type Selection */
+        .user-type-selection {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .user-type-card {
+            padding: 25px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .user-type-card:hover {
+            transform: translateY(-5px);
+            border-color: #0d6efd;
+            box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1);
+        }
+
+        .user-type-card.selected {
+            border-color: #0d6efd;
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.05), rgba(102, 16, 242, 0.05));
+            transform: translateY(-5px);
+        }
+
+        .user-type-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0d6efd, #6610f2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Password Strength */
+        .password-strength {
+            height: 5px;
+            border-radius: 2px;
+            margin-top: 5px;
+            background: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak {
+            background: #dc3545;
+        }
+
+        .strength-medium {
+            background: #ffc107;
+        }
+
+        .strength-strong {
+            background: #28a745;
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-scrolled {
+            padding: 10px 0;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* Checkbox styles */
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .form-check-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+        }
+
+        /* Link styles */
+        .auth-link {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-link:hover {
+            color: #6610f2;
+            padding-left: 5px;
+        }
+
+        .auth-link::before {
+            content: '→';
+            position: absolute;
+            left: -15px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .auth-link:hover::before {
+            left: -5px;
+            opacity: 1;
+        }
+
+        /* Form steps */
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 80px 0;
+                background-attachment: scroll;
+            }
+
+            .auth-body {
+                padding: 30px 20px;
+            }
+
+            .user-type-selection {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary rounded-circle p-2 me-3 shadow-sm floating">
+                        <i class="fas fa-building text-white fs-4"></i>
                     </div>
-                    <div class="logo-text">DahlanProperty</div>
-                </a>
-                <div class="auth-badge">
-                    <i class="fas fa-rocket"></i>
-                    <span>Mulai Gratis 30 Hari</span>
+                    <div>
+                        <span class="fw-bold text-dark fs-3">Dahlan</span>
+                        <span class="fw-bold text-primary fs-3">Property</span>
+                        <small class="d-block text-muted" style="font-size: 0.7rem; margin-top: -5px;">Marketplace Properti Terbaik</small>
+                    </div>
                 </div>
-            </div>
+            </a>
 
-            <!-- Auth Card -->
-            <div class="auth-card">
-                <div class="auth-header">
-                    <h2 class="auth-title">Bergabung dengan Kami</h2>
-                    <p class="auth-subtitle">Mulai kelola properti Anda dalam hitungan menit</p>
-                </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <form method="POST" action="{{ route('register') }}" class="auth-form">
-                    @csrf
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name" class="form-label">
-                                <i class="fas fa-user"></i> Nama Lengkap
-                            </label>
-                            <div class="input-group">
-                                <input type="text" id="name" name="name" required 
-                                       class="form-input" placeholder="John Doe">
-                                <div class="input-icon">
-                                    <i class="fas fa-user-tie"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="company" class="form-label">
-                                <i class="fas fa-building"></i> Nama Perusahaan
-                            </label>
-                            <div class="input-group">
-                                <input type="text" id="company" name="company" 
-                                       class="form-input" placeholder="PT. Contoh Property">
-                                <div class="input-icon">
-                                    <i class="fas fa-briefcase"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email" class="form-label">
-                            <i class="fas fa-envelope"></i> Email Professional
-                        </label>
-                        <div class="input-group">
-                            <input type="email" id="email" name="email" required 
-                                   class="form-input" placeholder="ceo@perusahaan.com">
-                            <div class="input-icon">
-                                <i class="fas fa-at"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="password" class="form-label">
-                                <i class="fas fa-lock"></i> Kata Sandi
-                            </label>
-                            <div class="input-group">
-                                <input type="password" id="password" name="password" required 
-                                       class="form-input" placeholder="••••••••">
-                                <div class="input-icon">
-                                    <i class="fas fa-key"></i>
-                                </div>
-                            </div>
-                            <div class="password-hint">
-                                <i class="fas fa-info-circle"></i>
-                                Minimal 8 karakter dengan angka & simbol
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password_confirmation" class="form-label">
-                                <i class="fas fa-lock"></i> Konfirmasi Kata Sandi
-                            </label>
-                            <div class="input-group">
-                                <input type="password" id="password_confirmation" name="password_confirmation" required 
-                                       class="form-input" placeholder="••••••••">
-                                <div class="input-icon">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone" class="form-label">
-                            <i class="fas fa-phone"></i> Nomor Telepon
-                        </label>
-                        <div class="input-group">
-                            <input type="tel" id="phone" name="phone" 
-                                   class="form-input" placeholder="+62 812-3456-7890">
-                            <div class="input-icon">
-                                <i class="fas fa-mobile-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="terms" required>
-                            <span class="checkmark"></span>
-                            Saya setuju dengan <a href="#" class="terms-link">Syarat & Ketentuan</a> dan 
-                            <a href="#" class="terms-link">Kebijakan Privasi</a>
-                        </label>
-                        
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="newsletter">
-                            <span class="checkmark"></span>
-                            Kirimi saya tips manajemen properti & pembaruan produk
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn-auth btn-auth-primary">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Buat Akun Gratis</span>
-                    </button>
-
-                    <div class="auth-divider">
-                        <span>Sudah punya akun?</span>
-                    </div>
-
-                    <div class="auth-footer">
-                        <a href="{{ route('login') }}" class="btn-auth btn-auth-secondary">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Masuk ke Akun yang Ada</span>
-                        </a>
-                        
-                        <p class="auth-note">
-                            <i class="fas fa-shield-alt"></i>
-                            Data Anda diamankan dengan enkripsi tingkat bank
-                        </p>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Features -->
-            <div class="register-features">
-                <h3 class="features-title">Apa yang Anda Dapatkan</h3>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h4>Analitik Real-time</h4>
-                        <p>Pantau performa properti dengan dashboard interaktif</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h4>Akses Mobile</h4>
-                        <p>Kelola dari mana saja dengan aplikasi mobile-friendly</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-headset"></i>
-                        </div>
-                        <h4>Dukungan 24/7</h4>
-                        <p>Tim ahli siap membantu kapan pun Anda butuhkan</p>
-                    </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto align-items-center">
+                    <a class="nav-link fw-medium mx-2" href="/">Beranda</a>
+                    <a class="nav-link fw-medium mx-2" href="/properties">Jelajahi Properti</a>
+                    <a class="nav-link fw-medium mx-2" href="/about">Tentang Kami</a>
+                    <a class="nav-link fw-medium mx-2" href="/contact">Kontak</a>
+                    <div class="vr mx-3 d-none d-lg-block" style="height: 25px;"></div>
+                    <a class="nav-link fw-medium mx-2" href="/login">Masuk</a>
+                    <a class="btn btn-primary btn-glow px-4 mx-2 active" href="/register">
+                        Daftar
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </nav>
 
-<style>
-/* Register Specific Styles */
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 25px;
-}
+    <!-- Register Section -->
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="auth-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="auth-header">
+                            <div class="auth-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h2 class="fw-bold">Buat Akun Baru</h2>
+                            <p class="mb-0 opacity-75">Bergabunglah dengan komunitas properti terbesar di Indonesia</p>
+                        </div>
 
-.password-hint {
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--gray);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
+                        <div class="auth-body">
+                            <!-- Progress Bar -->
+                            <div class="progress-container">
+                                <div class="progress">
+                                    <div class="progress-bar" id="progressBar" style="width: 33%"></div>
+                                </div>
+                                <div class="progress-steps">
+                                    <div class="step active" data-step="1">
+                                        1
+                                        <div class="step-label">Data Diri</div>
+                                    </div>
+                                    <div class="step" data-step="2">
+                                        2
+                                        <div class="step-label">Akun</div>
+                                    </div>
+                                    <div class="step" data-step="3">
+                                        3
+                                        <div class="step-label">Verifikasi</div>
+                                    </div>
+                                </div>
+                            </div>
 
-.terms-link {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-}
+                            <form id="registerForm" action="/auth/register" method="POST">
+                                <!-- Step 1: Personal Information -->
+                                <div class="form-step active" id="step1">
+                                    <h4 class="fw-bold mb-4">Informasi Pribadi</h4>
 
-.terms-link:hover {
-    text-decoration: underline;
-}
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold">Saya ingin mendaftar sebagai:</label>
+                                        <div class="user-type-selection">
+                                            <div class="user-type-card" data-user-type="buyer">
+                                                <div class="user-type-icon">
+                                                    <i class="fas fa-search"></i>
+                                                </div>
+                                                <h5 class="fw-bold">Pembeli/Penyewa</h5>
+                                                <p class="text-muted small mb-0">Mencari properti untuk ditinggali atau investasi</p>
+                                            </div>
+                                            <div class="user-type-card" data-user-type="seller">
+                                                <div class="user-type-icon">
+                                                    <i class="fas fa-home"></i>
+                                                </div>
+                                                <h5 class="fw-bold">Penjual/Pemilik</h5>
+                                                <p class="text-muted small mb-0">Memasang iklan properti untuk dijual/disewa</p>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="userType" name="userType" required>
+                                    </div>
 
-/* Auth Secondary Button */
-.btn-auth-secondary {
-    width: 100%;
-    padding: 18px;
-    background: var(--white);
-    color: var(--primary);
-    border: 2px solid var(--primary);
-    border-radius: var(--radius-md);
-    font-size: 16px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 15px;
-    text-decoration: none;
-}
-
-.btn-auth-secondary:hover {
-    background: var(--primary-soft);
-    transform: translateY(-2px);
-}
-
-/* Register Features */
-.register-features {
-    margin-top: 60px;
-    text-align: center;
-}
-
-.features-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 40px;
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.feature-item {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    padding: 30px;
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.feature-item:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.feature-icon {
-    width: 60px;
-    height: 60px;
-    background: var(--gradient-primary);
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 24px;
-    color: var(--white);
-}
-
-.feature-item h4 {
-    color: var(--white);
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.feature-item p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .features-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .feature-item {
-        padding: 25px 20px;
-    }
-}
-</style>
-@endsection
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="firstName" class="form-label fw-semibold">Nama Depan</label>
+                                            <input type="text" class="form-control" id="firstName" name="firstName" required
