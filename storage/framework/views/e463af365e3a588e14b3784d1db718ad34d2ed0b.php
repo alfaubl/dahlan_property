@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Daftar Properti - Dahlan Property')
 
-@section('styles')
+<?php $__env->startSection('title', 'Daftar Properti - Dahlan Property'); ?>
+
+<?php $__env->startSection('styles'); ?>
 <style>
     /* ========== PROPERTIES PAGE SPECIFIC STYLES ========== */
     .properties-hero {
@@ -56,9 +56,9 @@
         opacity: 0.3;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- ========== HERO SECTION ========== -->
 <section class="properties-hero">
     <div class="container">
@@ -68,7 +68,7 @@
                 <p class="lead">Temukan properti impian Anda dari koleksi terbaik kami</p>
             </div>
             <div class="col-lg-4 text-lg-end">
-                <a href="{{ route('properties.create') }}" class="btn btn-light btn-glow px-4">
+                <a href="<?php echo e(route('properties.create')); ?>" class="btn btn-light btn-glow px-4">
                     <i class="fas fa-plus-circle me-2"></i>Pasang Iklan
                 </a>
             </div>
@@ -85,11 +85,11 @@
                 <div class="filter-sidebar card shadow-sm border-0 p-4">
                     <h5 class="fw-bold mb-4"><i class="fas fa-filter me-2"></i>Filter Pencarian</h5>
                     
-                    <form action="{{ url()->current() }}" method="GET">
+                    <form action="<?php echo e(url()->current()); ?>" method="GET">
                         <!-- Search -->
                         <div class="mb-3">
                             <label class="form-label fw-medium">Kata Kunci</label>
-                            <input type="text" class="form-control" name="search" value="{{ request('search') }}" 
+                            <input type="text" class="form-control" name="search" value="<?php echo e(request('search')); ?>" 
                                    placeholder="Cari properti...">
                         </div>
                         
@@ -98,10 +98,10 @@
                             <label class="form-label fw-medium">Tipe Properti</label>
                             <select class="form-select" name="type">
                                 <option value="">Semua Tipe</option>
-                                <option value="house" {{ request('type') == 'house' ? 'selected' : '' }}>Rumah</option>
-                                <option value="apartment" {{ request('type') == 'apartment' ? 'selected' : '' }}>Apartemen</option>
-                                <option value="land" {{ request('type') == 'land' ? 'selected' : '' }}>Tanah</option>
-                                <option value="commercial" {{ request('type') == 'commercial' ? 'selected' : '' }}>Komersial</option>
+                                <option value="house" <?php echo e(request('type') == 'house' ? 'selected' : ''); ?>>Rumah</option>
+                                <option value="apartment" <?php echo e(request('type') == 'apartment' ? 'selected' : ''); ?>>Apartemen</option>
+                                <option value="land" <?php echo e(request('type') == 'land' ? 'selected' : ''); ?>>Tanah</option>
+                                <option value="commercial" <?php echo e(request('type') == 'commercial' ? 'selected' : ''); ?>>Komersial</option>
                             </select>
                         </div>
                         
@@ -110,13 +110,13 @@
                             <label class="form-label fw-medium">Kisaran Harga</label>
                             <select class="form-select" name="price_range">
                                 <option value="">Semua Harga</option>
-                                <option value="0-500000000" {{ request('price_range') == '0-500000000' ? 'selected' : '' }}>
+                                <option value="0-500000000" <?php echo e(request('price_range') == '0-500000000' ? 'selected' : ''); ?>>
                                     < Rp 500 JT</option>
-                                <option value="500000000-1000000000" {{ request('price_range') == '500000000-1000000000' ? 'selected' : '' }}>
+                                <option value="500000000-1000000000" <?php echo e(request('price_range') == '500000000-1000000000' ? 'selected' : ''); ?>>
                                     Rp 500 JT - 1 M</option>
-                                <option value="1000000000-5000000000" {{ request('price_range') == '1000000000-5000000000' ? 'selected' : '' }}>
+                                <option value="1000000000-5000000000" <?php echo e(request('price_range') == '1000000000-5000000000' ? 'selected' : ''); ?>>
                                     Rp 1 M - 5 M</option>
-                                <option value="5000000000-10000000000" {{ request('price_range') == '5000000000-10000000000' ? 'selected' : '' }}>
+                                <option value="5000000000-10000000000" <?php echo e(request('price_range') == '5000000000-10000000000' ? 'selected' : ''); ?>>
                                     > Rp 5 M</option>
                             </select>
                         </div>
@@ -124,7 +124,7 @@
                         <!-- City -->
                         <div class="mb-3">
                             <label class="form-label fw-medium">Kota</label>
-                            <input type="text" class="form-control" name="city" value="{{ request('city') }}" 
+                            <input type="text" class="form-control" name="city" value="<?php echo e(request('city')); ?>" 
                                    placeholder="Nama kota...">
                         </div>
                         
@@ -133,10 +133,10 @@
                             <label class="form-label fw-medium">Jumlah Kamar</label>
                             <select class="form-select" name="bedrooms">
                                 <option value="">Semua</option>
-                                <option value="1" {{ request('bedrooms') == '1' ? 'selected' : '' }}>1 Kamar</option>
-                                <option value="2" {{ request('bedrooms') == '2' ? 'selected' : '' }}>2 Kamar</option>
-                                <option value="3" {{ request('bedrooms') == '3' ? 'selected' : '' }}>3 Kamar</option>
-                                <option value="4" {{ request('bedrooms') == '4' ? 'selected' : '' }}>4+ Kamar</option>
+                                <option value="1" <?php echo e(request('bedrooms') == '1' ? 'selected' : ''); ?>>1 Kamar</option>
+                                <option value="2" <?php echo e(request('bedrooms') == '2' ? 'selected' : ''); ?>>2 Kamar</option>
+                                <option value="3" <?php echo e(request('bedrooms') == '3' ? 'selected' : ''); ?>>3 Kamar</option>
+                                <option value="4" <?php echo e(request('bedrooms') == '4' ? 'selected' : ''); ?>>4+ Kamar</option>
                             </select>
                         </div>
                         
@@ -145,7 +145,7 @@
                             <button type="submit" class="btn btn-primary btn-glow">
                                 <i class="fas fa-search me-2"></i>Terapkan Filter
                             </button>
-                            <a href="{{ url()->current() }}" class="btn btn-outline-secondary">
+                            <a href="<?php echo e(url()->current()); ?>" class="btn btn-outline-secondary">
                                 <i class="fas fa-redo me-2"></i>Reset Filter
                             </a>
                         </div>
@@ -156,11 +156,11 @@
                         <h6 class="fw-bold mb-3">Statistik</h6>
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Total Properti:</span>
-                            <span class="fw-medium">{{ $properties->total() }}</span>
+                            <span class="fw-medium"><?php echo e($properties->total()); ?></span>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span class="text-muted">Halaman:</span>
-                            <span class="fw-medium">{{ $properties->currentPage() }}/{{ $properties->lastPage() }}</span>
+                            <span class="fw-medium"><?php echo e($properties->currentPage()); ?>/<?php echo e($properties->lastPage()); ?></span>
                         </div>
                     </div>
                 </div>
@@ -169,141 +169,149 @@
             <!-- ========== PROPERTIES LISTING ========== -->
             <div class="col-lg-9">
                 <!-- Alert Messages -->
-                @if(session('success'))
+                <?php if(session('success')): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+                        <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>
+
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                @endif
+                <?php endif; ?>
                 
-                @if(session('error'))
+                <?php if(session('error')): ?>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+                        <i class="fas fa-exclamation-circle me-2"></i><?php echo e(session('error')); ?>
+
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                @endif
+                <?php endif; ?>
                 
                 <!-- Properties Grid -->
-                @if($properties->count() > 0)
+                <?php if($properties->count() > 0): ?>
                     <div class="row g-4">
-                        @foreach($properties as $property)
+                        <?php $__currentLoopData = $properties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $property): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="col-md-6 col-lg-4" data-aos="fade-up">
                                 <div class="property-card card shadow-sm border-0 h-100">
                                     <div class="position-relative">
-                                        <img src="{{ $property->images && count(json_decode($property->images)) > 0 ? json_decode($property->images)[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80' }}" 
-                                             class="property-card-img card-img-top" alt="{{ $property->title }}">
-                                        <span class="property-badge badge bg-{{ $property->type == 'house' ? 'success' : ($property->type == 'apartment' ? 'info' : ($property->type == 'land' ? 'warning' : 'secondary')) }}">
-                                            {{ ucfirst($property->type) }}
+                                        <img src="<?php echo e($property->images && count(json_decode($property->images)) > 0 ? json_decode($property->images)[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'); ?>" 
+                                             class="property-card-img card-img-top" alt="<?php echo e($property->title); ?>">
+                                        <span class="property-badge badge bg-<?php echo e($property->type == 'house' ? 'success' : ($property->type == 'apartment' ? 'info' : ($property->type == 'land' ? 'warning' : 'secondary'))); ?>">
+                                            <?php echo e(ucfirst($property->type)); ?>
+
                                         </span>
-                                        @if($property->featured)
+                                        <?php if($property->featured): ?>
                                             <span class="property-badge badge bg-danger" style="top: 45px;">
                                                 <i class="fas fa-star me-1"></i>Featured
                                             </span>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title fw-bold mb-2">{{ Str::limit($property->title, 40) }}</h5>
+                                        <h5 class="card-title fw-bold mb-2"><?php echo e(Str::limit($property->title, 40)); ?></h5>
                                         <p class="card-text text-muted small mb-3">
                                             <i class="fas fa-map-marker-alt text-primary me-1"></i>
-                                            {{ $property->city }}, {{ $property->province }}
+                                            <?php echo e($property->city); ?>, <?php echo e($property->province); ?>
+
                                         </p>
                                         
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <div class="price-tag">
-                                                Rp {{ number_format($property->price, 0, ',', '.') }}
+                                                Rp <?php echo e(number_format($property->price, 0, ',', '.')); ?>
+
                                             </div>
                                             <div class="property-features">
                                                 <span class="badge bg-light text-dark me-1">
-                                                    <i class="fas fa-bed text-primary me-1"></i>{{ $property->bedrooms }}
+                                                    <i class="fas fa-bed text-primary me-1"></i><?php echo e($property->bedrooms); ?>
+
                                                 </span>
                                                 <span class="badge bg-light text-dark">
-                                                    <i class="fas fa-bath text-primary me-1"></i>{{ $property->bathrooms }}
+                                                    <i class="fas fa-bath text-primary me-1"></i><?php echo e($property->bathrooms); ?>
+
                                                 </span>
                                             </div>
                                         </div>
                                         
                                         <div class="d-flex justify-content-between">
-                                            <a href="{{ route('properties.show', $property) }}" class="btn btn-outline-primary btn-sm">
+                                            <a href="<?php echo e(route('properties.show', $property)); ?>" class="btn btn-outline-primary btn-sm">
                                                 <i class="fas fa-eye me-1"></i>Detail
                                             </a>
-                                            @auth
-                                                @if(auth()->id() == $property->user_id)
+                                            <?php if(auth()->guard()->check()): ?>
+                                                <?php if(auth()->id() == $property->user_id): ?>
                                                     <div class="btn-group">
-                                                        <a href="{{ route('properties.edit', $property) }}" class="btn btn-outline-warning btn-sm">
+                                                        <a href="<?php echo e(route('properties.edit', $property)); ?>" class="btn btn-outline-warning btn-sm">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('properties.destroy', $property) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
+                                                        <form action="<?php echo e(route('properties.destroy', $property)); ?>" method="POST" class="d-inline">
+                                                            <?php echo csrf_field(); ?>
+                                                            <?php echo method_field('DELETE'); ?>
                                                             <button type="submit" class="btn btn-outline-danger btn-sm" 
                                                                     onclick="return confirm('Hapus properti ini?')">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
                                                     </div>
-                                                @endif
-                                            @endauth
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <div class="card-footer bg-white border-0 pt-0">
                                         <small class="text-muted">
                                             <i class="far fa-clock me-1"></i>
-                                            {{ $property->created_at->diffForHumans() }}
+                                            <?php echo e($property->created_at->diffForHumans()); ?>
+
                                         </small>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                     
                     <!-- Pagination -->
-                    @if($properties->hasPages())
+                    <?php if($properties->hasPages()): ?>
                         <div class="mt-5">
                             <nav aria-label="Properties pagination">
                                 <ul class="pagination justify-content-center">
-                                    {{-- Previous Page Link --}}
-                                    @if($properties->onFirstPage())
+                                    
+                                    <?php if($properties->onFirstPage()): ?>
                                         <li class="page-item disabled">
                                             <span class="page-link"><i class="fas fa-chevron-left"></i></span>
                                         </li>
-                                    @else
+                                    <?php else: ?>
                                         <li class="page-item">
-                                            <a class="page-link" href="{{ $properties->previousPageUrl() }}" rel="prev">
+                                            <a class="page-link" href="<?php echo e($properties->previousPageUrl()); ?>" rel="prev">
                                                 <i class="fas fa-chevron-left"></i>
                                             </a>
                                         </li>
-                                    @endif
+                                    <?php endif; ?>
                                     
-                                    {{-- Pagination Elements --}}
-                                    @foreach(range(1, $properties->lastPage()) as $page)
-                                        @if($page == $properties->currentPage())
+                                    
+                                    <?php $__currentLoopData = range(1, $properties->lastPage()); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php if($page == $properties->currentPage()): ?>
                                             <li class="page-item active">
-                                                <span class="page-link">{{ $page }}</span>
+                                                <span class="page-link"><?php echo e($page); ?></span>
                                             </li>
-                                        @else
+                                        <?php else: ?>
                                             <li class="page-item">
-                                                <a class="page-link" href="{{ $properties->url($page) }}">{{ $page }}</a>
+                                                <a class="page-link" href="<?php echo e($properties->url($page)); ?>"><?php echo e($page); ?></a>
                                             </li>
-                                        @endif
-                                    @endforeach
+                                        <?php endif; ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     
-                                    {{-- Next Page Link --}}
-                                    @if($properties->hasMorePages())
+                                    
+                                    <?php if($properties->hasMorePages()): ?>
                                         <li class="page-item">
-                                            <a class="page-link" href="{{ $properties->nextPageUrl() }}" rel="next">
+                                            <a class="page-link" href="<?php echo e($properties->nextPageUrl()); ?>" rel="next">
                                                 <i class="fas fa-chevron-right"></i>
                                             </a>
                                         </li>
-                                    @else
+                                    <?php else: ?>
                                         <li class="page-item disabled">
                                             <span class="page-link"><i class="fas fa-chevron-right"></i></span>
                                         </li>
-                                    @endif
+                                    <?php endif; ?>
                                 </ul>
                             </nav>
                         </div>
-                    @endif
-                @else
+                    <?php endif; ?>
+                <?php else: ?>
                     <!-- Empty State -->
                     <div class="empty-state">
                         <div class="empty-state-icon">
@@ -311,23 +319,23 @@
                         </div>
                         <h4 class="fw-bold mb-3">Tidak Ada Properti Ditemukan</h4>
                         <p class="text-muted mb-4">
-                            @if(request()->hasAny(['search', 'type', 'price_range', 'city', 'bedrooms']))
+                            <?php if(request()->hasAny(['search', 'type', 'price_range', 'city', 'bedrooms'])): ?>
                                 Coba ubah filter pencarian Anda atau
-                            @endif
+                            <?php endif; ?>
                             Jadilah yang pertama memasang properti!
                         </p>
-                        <a href="{{ route('properties.create') }}" class="btn btn-primary btn-glow px-4">
+                        <a href="<?php echo e(route('properties.create')); ?>" class="btn btn-primary btn-glow px-4">
                             <i class="fas fa-plus-circle me-2"></i>Pasang Iklan Properti
                         </a>
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
     // Properties page specific scripts
     document.addEventListener('DOMContentLoaded', function() {
@@ -378,4 +386,5 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/properties/index.blade.php ENDPATH**/ ?>

@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Marketplace Properti Terbaik Indonesia')
 
-@section('styles')
+<?php $__env->startSection('title', 'Marketplace Properti Terbaik Indonesia'); ?>
+
+<?php $__env->startSection('styles'); ?>
 <style>
     /* ========== WELCOME PAGE SPECIFIC STYLES ========== */
     .hero-section {
@@ -145,9 +145,9 @@
         }
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- ========== HERO SECTION ========== -->
 <section class="hero-section">
     <div class="container hero-content">
@@ -361,9 +361,9 @@
         </div>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
     // Welcome page specific scripts
     document.addEventListener('DOMContentLoaded', function() {
@@ -397,4 +397,5 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/welcome.blade.php ENDPATH**/ ?>

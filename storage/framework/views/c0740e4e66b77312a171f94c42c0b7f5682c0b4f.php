@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Login - Dahlan Property'); ?>
 
-@section('title', 'Login - Dahlan Property')
-
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
     /* ========== LOGIN PAGE SPECIFIC STYLES ========== */
     .hero-section {
@@ -282,9 +280,9 @@
         }
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- ========== LOGIN SECTION ========== -->
 <section class="hero-section">
     <div class="container hero-content">
@@ -301,33 +299,33 @@
                     
                     <div class="auth-body">
                         <!-- Error Messages -->
-                        @if($errors->any())
+                        <?php if($errors->any()): ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     <div>
-                                        @foreach($errors->all() as $error)
-                                            <div>{{ $error }}</div>
-                                        @endforeach
+                                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div><?php echo e($error); ?></div>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
-                        @endif
+                        <?php endif; ?>
                         
-                        @if(session('status'))
+                        <?php if(session('status')): ?>
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-check-circle me-2"></i>
-                                    <div>{{ session('status') }}</div>
+                                    <div><?php echo e(session('status')); ?></div>
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
-                        @endif
+                        <?php endif; ?>
                         
                         <!-- Login Form -->
-                        <form method="POST" action="{{ route('login') }}" id="loginForm">
-                            @csrf
+                        <form method="POST" action="<?php echo e(route('login')); ?>" id="loginForm">
+                            <?php echo csrf_field(); ?>
                             
                             <!-- Email Input -->
                             <div class="mb-4">
@@ -336,12 +334,26 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-envelope"></i>
                                     </span>
-                                    <input type="email" class="form-control with-icon @error('email') is-invalid @enderror" 
-                                           id="email" name="email" value="{{ old('email') }}" 
+                                    <input type="email" class="form-control with-icon <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           id="email" name="email" value="<?php echo e(old('email')); ?>" 
                                            placeholder="nama@email.com" required autofocus>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -352,14 +364,28 @@
                                     <span class="input-group-text">
                                         <i class="fas fa-lock"></i>
                                     </span>
-                                    <input type="password" class="form-control with-icon @error('password') is-invalid @enderror" 
+                                    <input type="password" class="form-control with-icon <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                            id="password" name="password" placeholder="••••••••" required>
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                             
@@ -371,7 +397,7 @@
                                         Ingat saya
                                     </label>
                                 </div>
-                                <a href="{{ route('password.request') }}" class="auth-link">Lupa password?</a>
+                                <a href="<?php echo e(route('password.request')); ?>" class="auth-link">Lupa password?</a>
                             </div>
                             
                             <!-- Submit Button -->
@@ -382,7 +408,7 @@
                             <!-- Register Link -->
                             <div class="text-center mb-3">
                                 <span class="text-muted">Belum punya akun?</span>
-                                <a href="{{ route('register') }}" class="auth-link ms-2">Daftar sekarang</a>
+                                <a href="<?php echo e(route('register')); ?>" class="auth-link ms-2">Daftar sekarang</a>
                             </div>
                             
                             <!-- Divider -->
@@ -421,9 +447,9 @@
         </div>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
     // Initialize AOS Animation
     document.addEventListener('DOMContentLoaded', function() {
@@ -555,4 +581,5 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/auth/login.blade.php ENDPATH**/ ?>

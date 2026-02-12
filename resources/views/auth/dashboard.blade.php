@@ -2,747 +2,394 @@
 
 @section('title', 'Dashboard - Dahlan Property')
 
+@section('styles')
+<style>
+    .dashboard-hero {
+        background: linear-gradient(135deg, #0d6efd, #6610f2);
+        color: white;
+        padding: 60px 0 40px;
+        margin-top: 76px;
+        border-radius: 0 0 30px 30px;
+    }
+    
+    .stats-card {
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        height: 100%;
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        border-color: #0d6efd;
+    }
+    
+    .stats-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+    
+    .quick-actions .btn {
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 500;
+    }
+    
+    .recent-properties .property-item {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        padding: 15px;
+    }
+    
+    .recent-properties .property-item:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    .badge-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-hero {
+            padding: 40px 0 30px;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .stats-number {
+            font-size: 2rem;
+        }
+    }
+</style>
+@endsection
+
 @section('content')
-<div class="dashboard-container">
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-        <div class="header-content">
-            <h1 class="dashboard-title">
-                <i class="fas fa-tachometer-alt"></i>
-                Dashboard
-            </h1>
-            <p class="dashboard-subtitle">Selamat datang, <strong>Admin</strong>! Terakhir login: 2 jam yang lalu</p>
-        </div>
-        <div class="header-actions">
-            <button class="btn-dashboard btn-primary">
-                <i class="fas fa-plus"></i> Properti Baru
-            </button>
-            <button class="btn-dashboard btn-secondary">
-                <i class="fas fa-download"></i> Ekspor Laporan
-            </button>
-        </div>
-    </div>
-
-    <!-- Stats Overview -->
-    <div class="stats-overview">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(45deg, #4a6fa5, #166088);">
-                <i class="fas fa-building"></i>
+<!-- ========== HERO SECTION ========== -->
+<section class="dashboard-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-3">Selamat Datang, {{ Auth::user()->name }}! 👋</h1>
+                <p class="lead mb-0">Kelola properti Anda dan temukan peluang baru di platform kami.</p>
             </div>
-            <div class="stat-info">
-                <h3 class="stat-value">24</h3>
-                <p class="stat-label">Properti Aktif</p>
-                <span class="stat-trend positive">
-                    <i class="fas fa-arrow-up"></i> 12% dari bulan lalu
-                </span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(45deg, #10b981, #059669);">
-                <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-value">Rp 850<small>Jt</small></h3>
-                <p class="stat-label">Pendapatan Bulanan</p>
-                <span class="stat-trend positive">
-                    <i class="fas fa-arrow-up"></i> 8% dari bulan lalu
-                </span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(45deg, #8b5cf6, #7c3aed);">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-value">156</h3>
-                <p class="stat-label">Penyewa Aktif</p>
-                <span class="stat-trend positive">
-                    <i class="fas fa-arrow-up"></i> 5% dari bulan lalu
-                </span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon" style="background: linear-gradient(45deg, #f59e0b, #d97706);">
-                <i class="fas fa-couch"></i>
-            </div>
-            <div class="stat-info">
-                <h3 class="stat-value">892</h3>
-                <p class="stat-label">Item Perabotan</p>
-                <span class="stat-trend negative">
-                    <i class="fas fa-arrow-down"></i> 3% dari bulan lalu
-                </span>
+            <div class="col-md-4 text-md-end">
+                <a href="{{ route('properties.create') }}" class="btn btn-light btn-glow">
+                    <i class="fas fa-plus-circle me-2"></i>Tambah Properti Baru
+                </a>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Quick Actions & Recent Activity -->
-    <div class="dashboard-grid">
-        <!-- Quick Actions -->
-        <div class="grid-card quick-actions-card">
-            <div class="card-header">
-                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
-                <a href="#" class="card-link">Lihat Semua</a>
-            </div>
-            <div class="card-body">
-                <div class="actions-grid">
-                    <a href="#" class="action-item">
-                        <div class="action-icon" style="background: #4a6fa5;">
-                            <i class="fas fa-plus-circle"></i>
-                        </div>
-                        <div class="action-info">
-                            <h4>Tambah Properti</h4>
-                            <p>Tambah properti baru ke sistem</p>
-                        </div>
-                    </a>
-                    <a href="#" class="action-item">
-                        <div class="action-icon" style="background: #10b981;">
-                            <i class="fas fa-file-invoice"></i>
-                        </div>
-                        <div class="action-info">
-                            <h4>Buat Invoice</h4>
-                            <p>Generate invoice untuk penyewa</p>
-                        </div>
-                    </a>
-                    <a href="#" class="action-item">
-                        <div class="action-icon" style="background: #8b5cf6;">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        <div class="action-info">
-                            <h4>Maintenance</h4>
-                            <p>Ajukan request perbaikan</p>
-                        </div>
-                    </a>
-                    <a href="#" class="action-item">
-                        <div class="action-icon" style="background: #f59e0b;">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <div class="action-info">
-                            <h4>Laporan</h4>
-                            <p>Generate laporan bulanan</p>
-                        </div>
-                    </a>
+<!-- ========== MAIN DASHBOARD CONTENT ========== -->
+<section class="py-5">
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="stats-card p-4 border text-center">
+                    <div class="stats-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="stats-number mb-2">{{ $properties->total() }}</div>
+                    <h5 class="text-muted mb-0">Total Properti</h5>
                 </div>
             </div>
-        </div>
-
-        <!-- Recent Activity -->
-        <div class="grid-card activity-card">
-            <div class="card-header">
-                <h3><i class="fas fa-history"></i> Aktivitas Terbaru</h3>
-                <a href="#" class="card-link">Lihat Semua</a>
-            </div>
-            <div class="card-body">
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon success">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h4>Pembayaran Diterima</h4>
-                            <p>Rp 15,000,000 dari Apartemen Menteng</p>
-                            <span class="activity-time">10 menit yang lalu</span>
-                        </div>
+            
+            <div class="col-md-3">
+                <div class="stats-card p-4 border text-center">
+                    <div class="stats-icon bg-success bg-opacity-10 text-success">
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <div class="activity-item">
-                        <div class="activity-icon warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h4>Maintenance Request</h4>
-                            <p>AC rusak di Villa Puncak</p>
-                            <span class="activity-time">1 jam yang lalu</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon info">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h4>Penyewa Baru</h4>
-                            <p>PT. Maju Jaya menyewa Ruko BSD</p>
-                            <span class="activity-time">3 jam yang lalu</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon primary">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <div class="activity-content">
-                            <h4>Properti Ditambahkan</h4>
-                            <p>Apartemen Sudirman Tower ditambahkan</p>
-                            <span class="activity-time">1 hari yang lalu</span>
-                        </div>
-                    </div>
+                    <div class="stats-number mb-2">{{ $properties->where('status', 'available')->count() }}</div>
+                    <h5 class="text-muted mb-0">Tersedia</h5>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Properties Overview -->
-    <div class="dashboard-section">
-        <div class="section-header">
-            <h2><i class="fas fa-building"></i> Properti Anda</h2>
-            <a href="#" class="section-link">Lihat Semua Properti</a>
+            
+            <div class="col-md-3">
+                <div class="stats-card p-4 border text-center">
+                    <div class="stats-icon bg-warning bg-opacity-10 text-warning">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stats-number mb-2">{{ $properties->where('status', 'pending')->count() }}</div>
+                    <h5 class="text-muted mb-0">Menunggu</h5>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="stats-card p-4 border text-center">
+                    <div class="stats-icon bg-info bg-opacity-10 text-info">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stats-number mb-2">{{ $properties->sum('views') ?? 0 }}</div>
+                    <h5 class="text-muted mb-0">Total Views</h5>
+                </div>
+            </div>
         </div>
         
-        <div class="properties-grid">
-            <div class="property-card">
-                <div class="property-image" style="background: linear-gradient(45deg, #4a6fa5, #166088);">
-                    <span class="property-badge occupied">Terisi</span>
-                    <i class="fas fa-home"></i>
+        <!-- Quick Actions -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="fw-bold mb-4">Aksi Cepat</h3>
+                <div class="quick-actions d-flex flex-wrap gap-3">
+                    <a href="{{ route('properties.create') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Tambah Properti
+                    </a>
+                    <a href="{{ route('properties.index') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-search me-2"></i>Jelajahi Properti
+                    </a>
+                    <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-user-edit me-2"></i>Edit Profil
+                    </a>
+                    <a href="/contact" class="btn btn-outline-success">
+                        <i class="fas fa-headset me-2"></i>Bantuan
+                    </a>
                 </div>
-                <div class="property-content">
-                    <h3>Apartemen Menteng</h3>
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i> Menteng, Jakarta
-                    </p>
-                    <div class="property-stats">
-                        <div class="stat">
-                            <i class="fas fa-bed"></i>
-                            <span>3 Kamar</span>
-                        </div>
-                        <div class="stat">
-                            <i class="fas fa-ruler-combined"></i>
-                            <span>120 m²</span>
-                        </div>
+            </div>
+        </div>
+        
+        <!-- Recent Properties -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h4 class="fw-bold mb-0">Properti Terbaru Anda</h4>
                     </div>
-                    <div class="property-rent">
-                        <strong>Rp 15,000,000</strong>
-                        <span>/ bulan</span>
+                    <div class="card-body p-0">
+                        @if($properties->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Properti</th>
+                                            <th>Tipe</th>
+                                            <th>Lokasi</th>
+                                            <th>Harga</th>
+                                            <th>Status</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($properties as $property)
+                                            <tr class="property-item">
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-3">
+                                                            @if($property->images && count(json_decode($property->images)) > 0)
+                                                                <img src="{{ json_decode($property->images)[0] }}" 
+                                                                     alt="{{ $property->title }}" 
+                                                                     class="rounded" 
+                                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                                            @else
+                                                                <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                                                     style="width: 60px; height: 60px;">
+                                                                    <i class="fas fa-home text-muted"></i>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="fw-bold mb-1">{{ Str::limit($property->title, 30) }}</h6>
+                                                            <small class="text-muted">ID: {{ $property->property_code }}</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @switch($property->type)
+                                                        @case('house')
+                                                            <span class="badge bg-success">Rumah</span>
+                                                            @break
+                                                        @case('apartment')
+                                                            <span class="badge bg-info">Apartemen</span>
+                                                            @break
+                                                        @case('land')
+                                                            <span class="badge bg-warning">Tanah</span>
+                                                            @break
+                                                        @default
+                                                            <span class="badge bg-secondary">{{ $property->type }}</span>
+                                                    @endswitch
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">
+                                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                                        {{ $property->city }}
+                                                    </small>
+                                                </td>
+                                                <td class="fw-bold">
+                                                    Rp {{ number_format($property->price, 0, ',', '.') }}
+                                                </td>
+                                                <td>
+                                                    @if($property->status == 'available')
+                                                        <span class="badge-status bg-success text-white">Tersedia</span>
+                                                    @elseif($property->status == 'sold')
+                                                        <span class="badge-status bg-danger text-white">Terjual</span>
+                                                    @elseif($property->status == 'rented')
+                                                        <span class="badge-status bg-primary text-white">Disewa</span>
+                                                    @else
+                                                        <span class="badge-status bg-secondary text-white">{{ $property->status }}</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{{ route('properties.show', $property) }}" 
+                                                           class="btn btn-outline-info" title="Lihat">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a href="{{ route('properties.edit', $property) }}" 
+                                                           class="btn btn-outline-warning" title="Edit">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <form action="{{ route('properties.destroy', $property) }}" 
+                                                              method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" 
+                                                                    class="btn btn-outline-danger" 
+                                                                    title="Hapus"
+                                                                    onclick="return confirm('Hapus properti ini?')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <!-- Empty State -->
+                            <div class="text-center py-5">
+                                <div class="mb-4">
+                                    <i class="fas fa-home fa-4x text-muted opacity-25"></i>
+                                </div>
+                                <h5 class="fw-bold mb-3">Belum Ada Properti</h5>
+                                <p class="text-muted mb-4">
+                                    Anda belum menambahkan properti apapun. Mulai dengan menambahkan properti pertama Anda.
+                                </p>
+                                <a href="{{ route('properties.create') }}" class="btn btn-primary btn-glow px-4">
+                                    <i class="fas fa-plus-circle me-2"></i>Tambah Properti Pertama
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                    @if($properties->count() > 0)
+                        <div class="card-footer bg-white border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        Menampilkan {{ $properties->count() }} dari {{ $properties->total() }} properti
+                                    </small>
+                                </div>
+                                <div>
+                                    <a href="{{ route('properties.index') }}" class="btn btn-outline-primary btn-sm">
+                                        Lihat Semua Properti <i class="fas fa-arrow-right ms-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Summary -->
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Ringkasan Aktivitas</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-muted">Properti Ditambahkan</span>
+                                <span class="fw-bold">{{ $properties->count() }}</span>
+                            </li>
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-muted">Login Terakhir</span>
+                                <span class="fw-bold">{{ Auth::user()->last_login_at ? Auth::user()->last_login_at->diffForHumans() : 'Baru saja' }}</span>
+                            </li>
+                            <li class="mb-3 d-flex justify-content-between">
+                                <span class="text-muted">Member Sejak</span>
+                                <span class="fw-bold">{{ Auth::user()->created_at->format('d M Y') }}</span>
+                            </li>
+                            <li class="d-flex justify-content-between">
+                                <span class="text-muted">Email Terverifikasi</span>
+                                <span class="fw-bold">
+                                    @if(Auth::user()->email_verified_at)
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    @else
+                                        <a href="#" class="text-primary">Verifikasi Sekarang</a>
+                                    @endif
+                                </span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-
-            <div class="property-card">
-                <div class="property-image" style="background: linear-gradient(45deg, #10b981, #059669);">
-                    <span class="property-badge available">Tersedia</span>
-                    <i class="fas fa-warehouse"></i>
-                </div>
-                <div class="property-content">
-                    <h3>Gudang Cibitung</h3>
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i> Cibitung, Bekasi
-                    </p>
-                    <div class="property-stats">
-                        <div class="stat">
-                            <i class="fas fa-pallet"></i>
-                            <span>500 m²</span>
-                        </div>
-                        <div class="stat">
-                            <i class="fas fa-truck-loading"></i>
-                            <span>Dock 2</span>
-                        </div>
+            
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-bullhorn me-2 text-warning"></i>Tips & Update</h5>
                     </div>
-                    <div class="property-rent">
-                        <strong>Rp 85,000,000</strong>
-                        <span>/ bulan</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="property-card">
-                <div class="property-image" style="background: linear-gradient(45deg, #8b5cf6, #7c3aed);">
-                    <span class="property-badge maintenance">Perbaikan</span>
-                    <i class="fas fa-store"></i>
-                </div>
-                <div class="property-content">
-                    <h3>Ruko BSD</h3>
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i> BSD City, Tangerang
-                    </p>
-                    <div class="property-stats">
-                        <div class="stat">
-                            <i class="fas fa-door-open"></i>
-                            <span>2 Lantai</span>
+                    <div class="card-body">
+                        <div class="alert alert-info bg-light border-0">
+                            <h6 class="fw-bold"><i class="fas fa-lightbulb me-2"></i>Tips Menjual Cepat</h6>
+                            <p class="mb-2 small">Tambahkan foto berkualitas tinggi untuk meningkatkan minat pembeli hingga 40%.</p>
                         </div>
-                        <div class="stat">
-                            <i class="fas fa-ruler-combined"></i>
-                            <span>200 m²</span>
+                        <div class="alert alert-success bg-light border-0">
+                            <h6 class="fw-bold"><i class="fas fa-chart-bar me-2"></i>Statistik Market</h6>
+                            <p class="mb-0 small">Harga properti di {{ Auth::user()->city ?? 'Jakarta' }} naik 15% dalam 3 bulan terakhir.</p>
                         </div>
-                    </div>
-                    <div class="property-rent">
-                        <strong>Rp 25,000,000</strong>
-                        <span>/ bulan</span>
+                        <div class="text-center mt-3">
+                            <a href="/blog" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-newspaper me-1"></i>Baca Artikel Lainnya
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<style>
-/* Dashboard Styles */
-.dashboard-container {
-    padding: 30px 0;
-}
-
-/* Dashboard Header */
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.header-content .dashboard-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--dark);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-}
-
-.header-content .dashboard-subtitle {
-    color: var(--gray);
-    font-size: 16px;
-}
-
-.header-actions {
-    display: flex;
-    gap: 15px;
-}
-
-.btn-dashboard {
-    padding: 12px 24px;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background: var(--gradient-primary);
-    color: white;
-}
-
-.btn-secondary {
-    background: white;
-    color: var(--primary);
-    border: 2px solid var(--primary);
-}
-
-.btn-dashboard:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-/* Stats Overview */
-.stats-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-}
-
-.stat-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 25px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    box-shadow: var(--shadow-md);
-    transition: all 0.3s ease;
-    border: 1px solid var(--light-gray);
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.stat-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    color: white;
-    flex-shrink: 0;
-}
-
-.stat-info {
-    flex: 1;
-}
-
-.stat-value {
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--dark);
-    margin-bottom: 5px;
-}
-
-.stat-value small {
-    font-size: 20px;
-}
-
-.stat-label {
-    color: var(--gray);
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.stat-trend {
-    font-size: 12px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.stat-trend.positive {
-    color: #10b981;
-}
-
-.stat-trend.negative {
-    color: #ef4444;
-}
-
-/* Dashboard Grid */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-.grid-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-    border: 1px solid var(--light-gray);
-}
-
-.card-header {
-    padding: 20px 25px;
-    border-bottom: 1px solid var(--light-gray);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.card-header h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--dark);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.card-link {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.card-link:hover {
-    text-decoration: underline;
-}
-
-.card-body {
-    padding: 25px;
-}
-
-/* Quick Actions */
-.actions-grid {
-    display: grid;
-    gap: 15px;
-}
-
-.action-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    border-radius: var(--radius-md);
-    text-decoration: none;
-    color: var(--dark);
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-
-.action-item:hover {
-    background: var(--primary-soft);
-    border-color: var(--primary);
-    transform: translateX(5px);
-}
-
-.action-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 20px;
-    flex-shrink: 0;
-}
-
-.action-info h4 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.action-info p {
-    color: var(--gray);
-    font-size: 13px;
-}
-
-/* Activity List */
-.activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.activity-item {
-    display: flex;
-    gap: 15px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--light-gray);
-}
-
-.activity-item:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.activity-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-}
-
-.activity-icon.success {
-    background: #dcfce7;
-    color: #10b981;
-}
-
-.activity-icon.warning {
-    background: #fef3c7;
-    color: #f59e0b;
-}
-
-.activity-icon.info {
-    background: #e0e7ff;
-    color: #4a6fa5;
-}
-
-.activity-icon.primary {
-    background: var(--primary-soft);
-    color: var(--primary);
-}
-
-.activity-content {
-    flex: 1;
-}
-
-.activity-content h4 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    color: var(--dark);
-}
-
-.activity-content p {
-    color: var(--gray);
-    font-size: 14px;
-    margin-bottom: 4px;
-}
-
-.activity-time {
-    font-size: 12px;
-    color: var(--gray);
-}
-
-/* Properties Section */
-.dashboard-section {
-    margin-top: 40px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.section-header h2 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--dark);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.section-link {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.section-link:hover {
-    text-decoration: underline;
-}
-
-.properties-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-}
-
-.property-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-    transition: all 0.3s ease;
-    border: 1px solid var(--light-gray);
-}
-
-.property-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
-.property-image {
-    height: 150px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 48px;
-}
-
-.property-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    color: white;
-}
-
-.property-badge.occupied {
-    background: #10b981;
-}
-
-.property-badge.available {
-    background: #3b82f6;
-}
-
-.property-badge.maintenance {
-    background: #f59e0b;
-}
-
-.property-content {
-    padding: 20px;
-}
-
-.property-content h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 10px;
-}
-
-.property-location {
-    color: var(--gray);
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-.property-stats {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 15px;
-}
-
-.property-stats .stat {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--gray);
-    font-size: 14px;
-}
-
-.property-rent {
-    display: flex;
-    align-items: baseline;
-    gap: 5px;
-    font-size: 18px;
-}
-
-.property-rent strong {
-    color: var(--primary);
-    font-weight: 700;
-}
-
-.property-rent span {
-    color: var(--gray);
-    font-size: 14px;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .header-actions {
-        width: 100%;
-    }
-    
-    .btn-dashboard {
-        flex: 1;
-        justify-content: center;
-    }
-    
-    .stats-overview {
-        grid-template-columns: 1fr;
-    }
-    
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .properties-grid {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
+</section>
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Update last active time
+        function updateLastActive() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit' };
+            document.getElementById('lastActive').textContent = now.toLocaleTimeString('id-ID', options);
+        }
+        
+        // Update every minute
+        setInterval(updateLastActive, 60000);
+        updateLastActive(); // Initial call
+    });
+</script>
 @endsection

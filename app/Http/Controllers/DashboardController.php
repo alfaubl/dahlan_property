@@ -1,28 +1,59 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Models;
 
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class DashboardController extends Controller
+class User extends Authenticatable
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    use HasApiTokens, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'role',
+        'avatar',
+        'is_active',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
     {
-        $this->middleware('auth');
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'is_active' => 'boolean',
+        ];
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
-    public function index()
+    // ✅ RELASI KE PROPERTIES
+    public function properties()
     {
-        return view('dashboard');
+        return $this->hasMany(Property::class);
+    }
+
+    // ✅ RELASI KE CARTS (YANG INI HARUS DITAMBAH!)
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    // ✅ METHOD LAINNYA
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active === true;
     }
 }

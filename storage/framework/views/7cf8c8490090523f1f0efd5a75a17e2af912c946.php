@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,10 +15,10 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}">
+    <link rel="icon" type="image/x-icon" href="<?php echo e(asset('images/favicon.ico')); ?>">
     
     <!-- Page Title -->
-    <title>@yield('title', 'Dahlan Property - Marketplace Properti Terbaik')</title>
+    <title><?php echo $__env->yieldContent('title', 'Dahlan Property - Marketplace Properti Terbaik'); ?></title>
     
     <!-- Global Styles -->
     <style>
@@ -122,7 +122,7 @@
     </style>
     
     <!-- Page Specific Styles -->
-    @yield('styles')
+    <?php echo $__env->yieldContent('styles'); ?>
 </head>
 
 <body>
@@ -150,25 +150,26 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav ms-auto align-items-center">
-                    <a class="nav-link fw-medium mx-2 {{ request()->is('/') ? 'active' : '' }}" href="/">
+                    <a class="nav-link fw-medium mx-2 <?php echo e(request()->is('/') ? 'active' : ''); ?>" href="/">
                         <i class="fas fa-home me-1"></i> Beranda
                     </a>
-                    <a class="nav-link fw-medium mx-2 {{ request()->is('properties') ? 'active' : '' }}" href="/properties">
+                    <a class="nav-link fw-medium mx-2 <?php echo e(request()->is('properties') ? 'active' : ''); ?>" href="/properties">
                         <i class="fas fa-search me-1"></i> Jelajahi Properti
                     </a>
-                    <a class="nav-link fw-medium mx-2 {{ request()->is('about') ? 'active' : '' }}" href="/about">
+                    <a class="nav-link fw-medium mx-2 <?php echo e(request()->is('about') ? 'active' : ''); ?>" href="/about">
                         <i class="fas fa-info-circle me-1"></i> Tentang Kami
                     </a>
-                    <a class="nav-link fw-medium mx-2 {{ request()->is('contact') ? 'active' : '' }}" href="/contact">
+                    <a class="nav-link fw-medium mx-2 <?php echo e(request()->is('contact') ? 'active' : ''); ?>" href="/contact">
                         <i class="fas fa-envelope me-1"></i> Kontak
                     </a>
                     
                     <div class="vr mx-3 d-none d-lg-block" style="height: 25px;"></div>
                     
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                         <div class="dropdown">
                             <a class="nav-link fw-medium mx-2 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user-circle me-1"></i> {{ Auth::user()->name }}
+                                <i class="fas fa-user-circle me-1"></i> <?php echo e(Auth::user()->name); ?>
+
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="/dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
@@ -176,16 +177,16 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="/logout">
-                                        @csrf
+                                        <?php echo csrf_field(); ?>
                                         <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i>Keluar</button>
                                     </form>
                                 </li>
                             </ul>
                         </div>
-                    @else
+                    <?php else: ?>
                         <a class="nav-link fw-medium mx-2" href="/login"><i class="fas fa-sign-in-alt me-1"></i> Masuk</a>
                         <a class="btn btn-primary btn-glow px-4 mx-2" href="/register"><i class="fas fa-plus-circle me-2"></i> Pasang Iklan</a>
-                    @endauth
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -193,7 +194,7 @@
 
     <!-- ========== MAIN CONTENT ========== -->
     <main>
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
 
     <!-- ========== FOOTER ========== -->
@@ -246,7 +247,7 @@
             
             <div class="row">
                 <div class="col-md-6">
-                    <p class="text-white-50 mb-0">&copy; {{ date('Y') }} Dahlan Property. All rights reserved.</p>
+                    <p class="text-white-50 mb-0">&copy; <?php echo e(date('Y')); ?> Dahlan Property. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <a href="#" class="text-white-50 text-decoration-none me-3">Kebijakan Privasi</a>
@@ -268,6 +269,6 @@
         });
     </script>
     
-    @yield('scripts')
+    <?php echo $__env->yieldContent('scripts'); ?>
 </body>
-</html>
+</html><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/layouts/app.blade.php ENDPATH**/ ?>
