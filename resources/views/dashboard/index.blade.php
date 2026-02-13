@@ -12,27 +12,25 @@
         --info: #17a2b8;
         --purple: #6f42c1;
         --orange: #fd7e14;
-        --pink: #e83e8c;
-        --teal: #20c997;
     }
 
     .stat-card {
         transition: all 0.3s ease;
         border: none;
-        border-radius: 20px;
+        border-radius: 15px;
         background: white;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
     
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 30px rgba(74,111,165,0.1) !important;
+        box-shadow: 0 15px 30px rgba(74,111,165,0.1);
     }
 
     .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 15px;
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -40,153 +38,152 @@
 
     .chart-container {
         position: relative;
-        height: 350px;
+        height: 300px;
         width: 100%;
-        padding: 20px;
     }
 
     .greeting-card {
-        background: linear-gradient(135deg, #4a6fa5 0%, #6b8cae 100%);
-        border-radius: 25px;
-        padding: 30px;
+        background: linear-gradient(105deg, #2c3e50 0%, #3498db 100%);
+        border-radius: 20px;
+        padding: 25px;
         color: white;
+        box-shadow: 0 10px 25px rgba(52,152,219,0.2);
     }
 
     .badge-premium {
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        padding: 8px 16px;
-        border-radius: 30px;
-        font-size: 0.85rem;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(5px);
+        padding: 5px 15px;
+        border-radius: 25px;
+        font-size: 0.8rem;
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
     .property-type-card {
-        border-radius: 15px;
-        border: 1px solid rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-        padding: 20px 10px;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+        padding: 18px 10px;
         text-align: center;
         background: white;
     }
     
     .property-type-card:hover {
-        background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
         border-color: var(--primary);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(74,111,165,0.1);
+        background: #f8f9fa;
+        transform: translateY(-3px);
     }
 
-    .property-type-card i {
-        transition: all 0.3s ease;
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
 
-    .property-type-card:hover i {
-        transform: scale(1.1);
+    .card-header {
+        background: white;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 15px 20px;
     }
 </style>
 @endsection
 
 @section('content')
-<div class="container-fluid py-4">
-    <!-- Greeting Card Premium -->
-    <div class="greeting-card mb-5 shadow-lg">
+<div class="container-fluid py-3">
+    <!-- Greeting Card -->
+    <div class="greeting-card mb-4">
         <div class="row align-items-center">
-            <div class="col-lg-8">
+            <div class="col-lg-7">
                 <div class="d-flex align-items-center">
-                    <div class="bg-white bg-opacity-20 p-3 rounded-3 me-3">
-                        <i class="fas fa-chart-pie fa-3x text-white"></i>
+                    <div class="bg-white bg-opacity-15 p-2 rounded-3 me-3">
+                        <i class="fas fa-chart-line fa-2x text-white"></i>
                     </div>
                     <div>
-                        <h1 class="display-5 fw-bold mb-2">Dashboard Properti</h1>
-                        <div class="d-flex gap-3 align-items-center flex-wrap">
+                        <h2 class="fw-bold mb-1">Dashboard Properti</h2>
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
                             <span class="badge-premium">
-                                <i class="fas fa-calendar-alt me-2"></i>{{ now()->format('l, d F Y') }}
+                                <i class="fas fa-calendar-alt me-1"></i>{{ now()->format('l, d F Y') }}
                             </span>
                             <span class="badge-premium">
-                                <i class="fas fa-building me-2"></i>Total {{ $totalProperties ?? 0 }} Properti
+                                <i class="fas fa-building me-1"></i>{{ $totalProperties ?? 0 }} Properti
                             </span>
                             <span class="badge-premium">
-                                <i class="fas fa-user me-2"></i>{{ $user->name }}
+                                <i class="fas fa-user me-1"></i>{{ $user->name }}
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <div class="bg-white bg-opacity-15 d-inline-block rounded-3 p-3">
-                    <i class="fas fa-home fa-3x"></i>
-                    <p class="mb-0 mt-2 fw-semibold">Dahlan Property</p>
-                    <small>Real Estate Management</small>
-                </div>
+            <div class="col-lg-5 text-lg-end mt-2 mt-lg-0">
+                <span class="bg-white bg-opacity-15 px-4 py-2 rounded-pill">
+                    <i class="fas fa-home me-1"></i> Dahlan Property
+                </span>
             </div>
         </div>
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row g-4 mb-5">
+    <div class="row g-3 mb-4">
         <div class="col-xl-3 col-md-6">
             <div class="stat-card card h-100">
-                <div class="card-body p-4">
+                <div class="card-body p-3">
                     <div class="d-flex align-items-center">
                         <div class="stat-icon bg-primary bg-opacity-10 me-3">
                             <i class="fas fa-building text-primary fa-2x"></i>
                         </div>
                         <div>
-                            <span class="text-muted text-uppercase small fw-bold">Total Properti</span>
-                            <h2 class="display-6 fw-bold mb-0">{{ $totalProperties ?? 0 }}</h2>
+                            <span class="text-muted text-uppercase small fw-semibold">Total Properti</span>
+                            <h2 class="fw-bold mb-0">{{ $totalProperties ?? 0 }}</h2>
                             <small class="text-success">
-                                <i class="fas fa-arrow-up"></i> +{{ $totalProperties ?? 0 }} terdaftar
+                                <i class="fas fa-arrow-up"></i> Terdaftar
                             </small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6">
             <div class="stat-card card h-100">
-                <div class="card-body p-4">
+                <div class="card-body p-3">
                     <div class="d-flex align-items-center">
                         <div class="stat-icon bg-success bg-opacity-10 me-3">
                             <i class="fas fa-check-circle text-success fa-2x"></i>
                         </div>
                         <div>
-                            <span class="text-muted text-uppercase small fw-bold">Tersedia</span>
-                            <h2 class="display-6 fw-bold mb-0">0</h2>
+                            <span class="text-muted text-uppercase small fw-semibold">Tersedia</span>
+                            <h2 class="fw-bold mb-0">0</h2>
                             <small class="text-muted">Siap disewa/dijual</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6">
             <div class="stat-card card h-100">
-                <div class="card-body p-4">
+                <div class="card-body p-3">
                     <div class="d-flex align-items-center">
                         <div class="stat-icon bg-warning bg-opacity-10 me-3">
                             <i class="fas fa-clock text-warning fa-2x"></i>
                         </div>
                         <div>
-                            <span class="text-muted text-uppercase small fw-bold">Disewa</span>
-                            <h2 class="display-6 fw-bold mb-0">0</h2>
+                            <span class="text-muted text-uppercase small fw-semibold">Disewa</span>
+                            <h2 class="fw-bold mb-0">0</h2>
                             <small class="text-muted">Dalam masa sewa</small>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-xl-3 col-md-6">
             <div class="stat-card card h-100">
-                <div class="card-body p-4">
+                <div class="card-body p-3">
                     <div class="d-flex align-items-center">
                         <div class="stat-icon bg-info bg-opacity-10 me-3">
                             <i class="fas fa-dollar-sign text-info fa-2x"></i>
                         </div>
                         <div>
-                            <span class="text-muted text-uppercase small fw-bold">Pendapatan</span>
-                            <h2 class="display-6 fw-bold mb-0">Rp 0</h2>
+                            <span class="text-muted text-uppercase small fw-semibold">Pendapatan</span>
+                            <h2 class="fw-bold mb-0">Rp 0</h2>
                             <small class="text-muted">Bulan ini</small>
                         </div>
                     </div>
@@ -196,20 +193,18 @@
     </div>
 
     <!-- Charts Row -->
-    <div class="row g-4 mb-5">
-        <!-- Chart Distribusi Properti -->
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-lg rounded-4 h-100">
-                <div class="card-header bg-white border-0 pt-4 px-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">
-                            <i class="fas fa-chart-bar me-2" style="color: var(--primary);"></i>
-                            Distribusi Properti
-                        </h5>
-                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
-                            <i class="fas fa-building me-1"></i> 5 Tipe Bangunan
-                        </span>
-                    </div>
+    <div class="row g-3 mb-4">
+        <!-- Bar Chart - Distribusi -->
+        <div class="col-lg-7">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        Distribusi Properti
+                    </h5>
+                    <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                        <i class="fas fa-building me-1"></i> 5 Tipe
+                    </span>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -218,13 +213,12 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Chart Status Properti -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-lg rounded-4 h-100">
-                <div class="card-header bg-white border-0 pt-4 px-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="fas fa-chart-pie me-2" style="color: var(--success);"></i>
+        <!-- Doughnut Chart - Status -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-chart-pie text-success me-2"></i>
                         Status Properti
                     </h5>
                 </div>
@@ -232,18 +226,27 @@
                     <div class="chart-container" style="height: 250px;">
                         <canvas id="statusChart"></canvas>
                     </div>
-                    <div class="mt-4">
-                        <div class="d-flex justify-content-between mb-2 p-2 bg-light rounded">
-                            <span><i class="fas fa-circle text-success me-2"></i> Tersedia</span>
-                            <span class="fw-bold">0 unit</span>
+                    <div class="row mt-3 text-center">
+                        <div class="col-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="badge bg-success rounded-circle p-2 me-1" style="width: 12px; height: 12px;"></span>
+                                <small>Tersedia</small>
+                            </div>
+                            <span class="fw-bold">0</span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2 p-2 bg-light rounded">
-                            <span><i class="fas fa-circle text-warning me-2"></i> Disewa</span>
-                            <span class="fw-bold">0 unit</span>
+                        <div class="col-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="badge bg-warning rounded-circle p-2 me-1" style="width: 12px; height: 12px;"></span>
+                                <small>Disewa</small>
+                            </div>
+                            <span class="fw-bold">0</span>
                         </div>
-                        <div class="d-flex justify-content-between p-2 bg-light rounded">
-                            <span><i class="fas fa-circle text-secondary me-2"></i> Terjual</span>
-                            <span class="fw-bold">0 unit</span>
+                        <div class="col-4">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <span class="badge bg-secondary rounded-circle p-2 me-1" style="width: 12px; height: 12px;"></span>
+                                <small>Terjual</small>
+                            </div>
+                            <span class="fw-bold">0</span>
                         </div>
                     </div>
                 </div>
@@ -251,73 +254,56 @@
         </div>
     </div>
 
-    <!-- Property Types Distribution - 5 TIPE BANGUNAN (TANPA GUDANG & TANPA TANAH) -->
-    <div class="row g-4 mb-5">
+    <!-- Property Types - 5 Bangunan Premium -->
+    <div class="row g-3 mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-lg rounded-4">
-                <div class="card-header bg-white border-0 pt-4 px-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">
-                            <i class="fas fa-tags me-2" style="color: var(--warning);"></i>
-                            Portfolio Properti
-                        </h5>
-                        <span class="badge bg-primary text-white rounded-pill px-3 py-2">
-                            <i class="fas fa-star me-1"></i> Bangunan Premium
-                        </span>
-                    </div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-tags text-warning me-2"></i>
+                        Portfolio Bangunan Premium
+                    </h5>
+                    <span class="badge bg-primary text-white px-3 py-2 rounded-pill">
+                        <i class="fas fa-star me-1"></i> 5 Tipe
+                    </span>
                 </div>
-                <div class="card-body p-4">
-                    <div class="row g-4 justify-content-center">
-                        <!-- Rumah -->
-                        <div class="col-lg-2 col-md-4 col-6">
+                <div class="card-body">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-md-2 col-6">
                             <div class="property-type-card">
-                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
-                                    <i class="fas fa-home fa-2x text-primary"></i>
-                                </div>
+                                <i class="fas fa-home fa-2x text-primary mb-2"></i>
                                 <h6 class="fw-bold mb-1">Rumah</h6>
-                                <h4 class="fw-bold mb-0 text-primary">0</h4>
+                                <h4 class="fw-bold text-primary mb-0">0</h4>
                                 <small class="text-muted">unit</small>
                             </div>
                         </div>
-                        <!-- Apartemen -->
-                        <div class="col-lg-2 col-md-4 col-6">
+                        <div class="col-md-2 col-6">
                             <div class="property-type-card">
-                                <div class="bg-info bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
-                                    <i class="fas fa-building fa-2x text-info"></i>
-                                </div>
+                                <i class="fas fa-building fa-2x text-info mb-2"></i>
                                 <h6 class="fw-bold mb-1">Apartemen</h6>
-                                <h4 class="fw-bold mb-0 text-info">0</h4>
+                                <h4 class="fw-bold text-info mb-0">0</h4>
                                 <small class="text-muted">unit</small>
                             </div>
                         </div>
-                        <!-- Ruko -->
-                        <div class="col-lg-2 col-md-4 col-6">
+                        <div class="col-md-2 col-6">
                             <div class="property-type-card">
-                                <div class="bg-success bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
-                                    <i class="fas fa-store fa-2x text-success"></i>
-                                </div>
+                                <i class="fas fa-store fa-2x text-success mb-2"></i>
                                 <h6 class="fw-bold mb-1">Ruko</h6>
-                                <h4 class="fw-bold mb-0 text-success">0</h4>
+                                <h4 class="fw-bold text-success mb-0">0</h4>
                                 <small class="text-muted">unit</small>
                             </div>
                         </div>
-                        <!-- Kantor -->
-                        <div class="col-lg-2 col-md-4 col-6">
+                        <div class="col-md-2 col-6">
                             <div class="property-type-card">
-                                <div class="bg-warning bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
-                                    <i class="fas fa-briefcase fa-2x text-warning"></i>
-                                </div>
+                                <i class="fas fa-briefcase fa-2x text-warning mb-2"></i>
                                 <h6 class="fw-bold mb-1">Kantor</h6>
-                                <h4 class="fw-bold mb-0 text-warning">0</h4>
+                                <h4 class="fw-bold text-warning mb-0">0</h4>
                                 <small class="text-muted">unit</small>
                             </div>
                         </div>
-                        <!-- Villa -->
-                        <div class="col-lg-2 col-md-4 col-6">
+                        <div class="col-md-2 col-6">
                             <div class="property-type-card">
-                                <div class="bg-orange bg-opacity-10 rounded-circle d-inline-block p-3 mb-2" style="background: rgba(253, 126, 20, 0.1);">
-                                    <i class="fas fa-umbrella-beach fa-2x" style="color: #fd7e14;"></i>
-                                </div>
+                                <i class="fas fa-umbrella-beach fa-2x" style="color: #fd7e14; mb-2"></i>
                                 <h6 class="fw-bold mb-1">Villa</h6>
                                 <h4 class="fw-bold mb-0" style="color: #fd7e14;">0</h4>
                                 <small class="text-muted">unit</small>
@@ -329,27 +315,27 @@
         </div>
     </div>
 
-    <!-- Quick Actions Premium -->
+    <!-- Quick Actions -->
     <div class="row">
         <div class="col-12">
-            <div class="card border-0 shadow-lg rounded-4">
-                <div class="card-body p-4">
+            <div class="card bg-light border-0">
+                <div class="card-body p-3">
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <div class="d-flex align-items-center">
-                            <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3">
-                                <i class="fas fa-bolt fa-2x text-warning"></i>
+                            <div class="bg-white p-2 rounded-3 me-2 shadow-sm">
+                                <i class="fas fa-bolt text-warning"></i>
                             </div>
                             <div>
-                                <h5 class="fw-bold mb-1">Akses Cepat</h5>
-                                <p class="text-muted mb-0">Kelola portofolio properti Anda</p>
+                                <span class="fw-bold">Akses Cepat</span>
+                                <small class="text-muted d-block">Kelola properti Anda</small>
                             </div>
                         </div>
-                        <div class="mt-3 mt-md-0">
-                            <a href="{{ route('properties.index') }}" class="btn btn-primary me-2 px-4 py-2 rounded-pill">
-                                <i class="fas fa-list me-2"></i> Semua Properti
+                        <div class="mt-2 mt-sm-0">
+                            <a href="{{ route('properties.index') }}" class="btn btn-primary btn-sm rounded-pill px-3 me-1">
+                                <i class="fas fa-list me-1"></i> Semua Properti
                             </a>
-                            <a href="{{ route('properties.create') }}" class="btn btn-success px-4 py-2 rounded-pill">
-                                <i class="fas fa-plus-circle me-2"></i> Tambah Properti
+                            <a href="{{ route('properties.create') }}" class="btn btn-success btn-sm rounded-pill px-3">
+                                <i class="fas fa-plus-circle me-1"></i> Tambah
                             </a>
                         </div>
                     </div>
@@ -364,32 +350,25 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Chart Distribusi Properti - 5 TIPE BANGUNAN (TANPA GUDANG, TANPA TANAH)
-    const ctxDist = document.getElementById('distributionChart').getContext('2d');
-    new Chart(ctxDist, {
+    // Bar Chart - Distribusi 5 Tipe Bangunan
+    const ctxBar = document.getElementById('distributionChart').getContext('2d');
+    new Chart(ctxBar, {
         type: 'bar',
         data: {
             labels: ['Rumah', 'Apartemen', 'Ruko', 'Kantor', 'Villa'],
             datasets: [{
-                label: 'Jumlah Properti',
+                label: 'Jumlah Unit',
                 data: [0, 0, 0, 0, 0],
                 backgroundColor: [
-                    'rgba(74, 111, 165, 0.8)',
-                    'rgba(23, 162, 184, 0.8)',
-                    'rgba(40, 167, 69, 0.8)',
-                    'rgba(255, 193, 7, 0.8)',
-                    'rgba(253, 126, 20, 0.8)'
-                ],
-                borderColor: [
                     '#4a6fa5',
                     '#17a2b8',
                     '#28a745',
                     '#ffc107',
                     '#fd7e14'
                 ],
-                borderWidth: 1,
-                borderRadius: 8,
-                maxBarThickness: 50
+                borderRadius: 6,
+                barPercentage: 0.6,
+                categoryPercentage: 0.8
             }]
         },
         options: {
@@ -400,29 +379,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     display: false
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    backgroundColor: '#2c3e50',
                     titleColor: '#fff',
                     bodyColor: '#fff',
-                    padding: 12,
-                    cornerRadius: 8,
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.dataset.label}: ${context.raw} unit`;
-                        }
-                    }
+                    padding: 10,
+                    cornerRadius: 8
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        drawBorder: false,
-                        color: 'rgba(0,0,0,0.02)'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Jumlah Unit',
-                        color: '#6c757d'
+                        color: '#f1f5f9',
+                        drawBorder: false
                     }
                 },
                 x: {
@@ -434,9 +403,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Chart Status Properti (Doughnut Chart)
-    const ctxStatus = document.getElementById('statusChart').getContext('2d');
-    new Chart(ctxStatus, {
+    // Doughnut Chart - Status Properti
+    const ctxDoughnut = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctxDoughnut, {
         type: 'doughnut',
         data: {
             labels: ['Tersedia', 'Disewa', 'Terjual'],
@@ -448,25 +417,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     '#6c757d'
                 ],
                 borderWidth: 0,
-                borderRadius: 5,
-                spacing: 5
+                borderRadius: 5
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '70%',
+            cutout: '65%',
             plugins: {
                 legend: {
                     display: false
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(0,0,0,0.8)',
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.label}: ${context.raw} unit`;
-                        }
-                    }
+                    backgroundColor: '#2c3e50'
                 }
             }
         }
