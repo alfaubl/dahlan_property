@@ -10,108 +10,44 @@
         --warning: #ffc107;
         --danger: #dc3545;
         --info: #17a2b8;
+        --purple: #6f42c1;
+        --orange: #fd7e14;
+        --pink: #e83e8c;
+        --teal: #20c997;
     }
 
     .stat-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.3s ease;
         border: none;
         border-radius: 20px;
-        background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary), var(--info));
+        background: white;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
     
     .stat-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;
+        transform: translateY(-5px);
+        box-shadow: 0 20px 30px rgba(74,111,165,0.1) !important;
     }
 
-    .stat-icon-wrapper {
-        width: 70px;
-        height: 70px;
-        border-radius: 18px;
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, rgba(74,111,165,0.1) 0%, rgba(23,162,184,0.1) 100%);
     }
 
     .chart-container {
         position: relative;
-        height: 300px;
+        height: 350px;
         width: 100%;
-        border-radius: 20px;
-        background: white;
         padding: 20px;
     }
 
-    .activity-timeline {
-        position: relative;
-        padding-left: 30px;
-    }
-
-    .activity-timeline::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: linear-gradient(to bottom, var(--primary), var(--info));
-    }
-
-    .activity-item {
-        position: relative;
-        padding-bottom: 25px;
-    }
-
-    .activity-item::before {
-        content: '';
-        position: absolute;
-        left: -34px;
-        top: 0;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--primary);
-        border: 2px solid white;
-        box-shadow: 0 0 0 2px rgba(74,111,165,0.2);
-    }
-
-    .quick-action-btn {
-        transition: all 0.3s ease;
-        border-radius: 16px;
-        padding: 20px 15px;
-        background: white;
-        border: 1px solid rgba(0,0,0,0.05);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-    }
-
-    .quick-action-btn:hover {
-        background: var(--primary);
-        border-color: var(--primary);
-        transform: scale(1.02);
-    }
-
-    .quick-action-btn:hover i,
-    .quick-action-btn:hover p,
-    .quick-action-btn:hover small {
-        color: white !important;
-    }
-
     .greeting-card {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--info) 100%);
-        border-radius: 30px;
+        background: linear-gradient(135deg, #4a6fa5 0%, #6b8cae 100%);
+        border-radius: 25px;
         padding: 30px;
         color: white;
     }
@@ -123,217 +59,269 @@
         border-radius: 30px;
         font-size: 0.85rem;
     }
+
+    .property-type-card {
+        border-radius: 15px;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        padding: 20px 10px;
+        text-align: center;
+        background: white;
+    }
+    
+    .property-type-card:hover {
+        background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+        border-color: var(--primary);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(74,111,165,0.1);
+    }
+
+    .property-type-card i {
+        transition: all 0.3s ease;
+    }
+
+    .property-type-card:hover i {
+        transform: scale(1.1);
+    }
 </style>
 @endsection
 
 @section('content')
 <div class="container-fluid py-4">
-    <!-- Greeting Section Premium -->
+    <!-- Greeting Card Premium -->
     <div class="greeting-card mb-5 shadow-lg">
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="d-flex align-items-center">
                     <div class="bg-white bg-opacity-20 p-3 rounded-3 me-3">
-                        <i class="fas fa-crown fa-3x text-warning"></i>
+                        <i class="fas fa-chart-pie fa-3x text-white"></i>
                     </div>
                     <div>
-                        <h1 class="display-5 fw-bold mb-2">Selamat Datang, {{ $user->name }}! 👋</h1>
-                        <div class="d-flex gap-3 align-items-center">
+                        <h1 class="display-5 fw-bold mb-2">Dashboard Properti</h1>
+                        <div class="d-flex gap-3 align-items-center flex-wrap">
                             <span class="badge-premium">
                                 <i class="fas fa-calendar-alt me-2"></i>{{ now()->format('l, d F Y') }}
                             </span>
                             <span class="badge-premium">
-                                <i class="fas fa-clock me-2"></i>{{ now()->format('H:i') }} WIB
+                                <i class="fas fa-building me-2"></i>Total {{ $totalProperties ?? 0 }} Properti
                             </span>
-                            @if($user->isActive())
-                                <span class="badge-premium">
-                                    <i class="fas fa-shield-alt me-2"></i>Akun Premium
-                                </span>
-                            @endif
+                            <span class="badge-premium">
+                                <i class="fas fa-user me-2"></i>{{ $user->name }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <div class="bg-white bg-opacity-20 d-inline-block rounded-3 p-3">
-                    <i class="fas fa-building fa-3x"></i>
+                <div class="bg-white bg-opacity-15 d-inline-block rounded-3 p-3">
+                    <i class="fas fa-home fa-3x"></i>
                     <p class="mb-0 mt-2 fw-semibold">Dahlan Property</p>
-                    <small>Property Management System</small>
+                    <small>Real Estate Management</small>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Cards Premium -->
+    <!-- Statistics Cards -->
     <div class="row g-4 mb-5">
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card card h-100 border-0 shadow-sm">
+            <div class="stat-card card h-100">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center">
-                        <div class="stat-icon-wrapper me-3">
-                            <i class="fas fa-building fa-2x" style="color: var(--primary);"></i>
+                        <div class="stat-icon bg-primary bg-opacity-10 me-3">
+                            <i class="fas fa-building text-primary fa-2x"></i>
                         </div>
                         <div>
                             <span class="text-muted text-uppercase small fw-bold">Total Properti</span>
-                            <h2 class="display-5 fw-bold mb-0">{{ $totalProperties }}</h2>
+                            <h2 class="display-6 fw-bold mb-0">{{ $totalProperties ?? 0 }}</h2>
                             <small class="text-success">
-                                <i class="fas fa-arrow-up"></i> +12% bulan ini
+                                <i class="fas fa-arrow-up"></i> +{{ $totalProperties ?? 0 }} terdaftar
                             </small>
                         </div>
                     </div>
-                    <div class="mt-3 pt-2 border-top">
-                        <a href="{{ route('properties.index') }}" class="text-decoration-none small fw-bold">
-                            Kelola Properti <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card card h-100">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-success bg-opacity-10 me-3">
+                            <i class="fas fa-check-circle text-success fa-2x"></i>
+                        </div>
+                        <div>
+                            <span class="text-muted text-uppercase small fw-bold">Tersedia</span>
+                            <h2 class="display-6 fw-bold mb-0">0</h2>
+                            <small class="text-muted">Siap disewa/dijual</small>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card card h-100 border-0 shadow-sm">
+            <div class="stat-card card h-100">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center">
-                        <div class="stat-icon-wrapper me-3">
-                            <i class="fas fa-shopping-cart fa-2x" style="color: var(--success);"></i>
+                        <div class="stat-icon bg-warning bg-opacity-10 me-3">
+                            <i class="fas fa-clock text-warning fa-2x"></i>
                         </div>
                         <div>
-                            <span class="text-muted text-uppercase small fw-bold">Keranjang</span>
-                            <h2 class="display-5 fw-bold mb-0">{{ $totalCartItems }}</h2>
-                            <small class="text-warning">
-                                <i class="fas fa-clock"></i> {{ $totalCartItems }} item pending
-                            </small>
+                            <span class="text-muted text-uppercase small fw-bold">Disewa</span>
+                            <h2 class="display-6 fw-bold mb-0">0</h2>
+                            <small class="text-muted">Dalam masa sewa</small>
                         </div>
-                    </div>
-                    <div class="mt-3 pt-2 border-top">
-                        <a href="{{ route('cart.index') }}" class="text-decoration-none small fw-bold">
-                            Lihat Keranjang <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="col-xl-3 col-md-6">
-            <div class="stat-card card h-100 border-0 shadow-sm">
+            <div class="stat-card card h-100">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center">
-                        <div class="stat-icon-wrapper me-3">
-                            <i class="fas fa-wallet fa-2x" style="color: var(--warning);"></i>
+                        <div class="stat-icon bg-info bg-opacity-10 me-3">
+                            <i class="fas fa-dollar-sign text-info fa-2x"></i>
                         </div>
                         <div>
-                            <span class="text-muted text-uppercase small fw-bold">Total Nilai</span>
-                            <h6 class="display-6 fw-bold mb-0">Rp 0</h6>
-                            <small class="text-muted">Belum ada transaksi</small>
+                            <span class="text-muted text-uppercase small fw-bold">Pendapatan</span>
+                            <h2 class="display-6 fw-bold mb-0">Rp 0</h2>
+                            <small class="text-muted">Bulan ini</small>
                         </div>
-                    </div>
-                    <div class="mt-3 pt-2 border-top">
-                        <a href="#" class="text-decoration-none small fw-bold text-muted">
-                            Lihat Laporan <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card card h-100 border-0 shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stat-icon-wrapper me-3">
-                            <i class="fas fa-trophy fa-2x" style="color: var(--danger);"></i>
-                        </div>
-                        <div>
-                            <span class="text-muted text-uppercase small fw-bold">Status Akun</span>
-                            <div class="mt-2">
-                                @if($user->isActive())
-                                    <span class="badge bg-success px-3 py-2 rounded-pill">
-                                        <i class="fas fa-check-circle me-1"></i>AKTIF
-                                    </span>
-                                @else
-                                    <span class="badge bg-danger px-3 py-2 rounded-pill">
-                                        <i class="fas fa-times-circle me-1"></i>NONAKTIF
-                                    </span>
-                                @endif
-                            </div>
-                            <small class="text-muted">Member since {{ $user->created_at->format('M Y') }}</small>
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-2 border-top">
-                        <a href="{{ route('profile.edit') }}" class="text-decoration-none small fw-bold">
-                            Edit Profil <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Charts & Analytics Section -->
+    <!-- Charts Row -->
     <div class="row g-4 mb-5">
+        <!-- Chart Distribusi Properti -->
         <div class="col-lg-8">
-            <div class="card border-0 shadow-lg rounded-4">
+            <div class="card border-0 shadow-lg rounded-4 h-100">
                 <div class="card-header bg-white border-0 pt-4 px-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="fw-bold mb-0">
-                            <i class="fas fa-chart-line me-2" style="color: var(--primary);"></i>
-                            Analytics Overview
+                            <i class="fas fa-chart-bar me-2" style="color: var(--primary);"></i>
+                            Distribusi Properti
                         </h5>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-light rounded-pill px-3" type="button" data-bs-toggle="dropdown">
-                                Minggu Ini <i class="fas fa-chevron-down ms-2"></i>
-                            </button>
-                        </div>
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                            <i class="fas fa-building me-1"></i> 5 Tipe Bangunan
+                        </span>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
-                        <canvas id="propertyChart"></canvas>
+                        <canvas id="distributionChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Chart Status Properti -->
         <div class="col-lg-4">
             <div class="card border-0 shadow-lg rounded-4 h-100">
                 <div class="card-header bg-white border-0 pt-4 px-4">
                     <h5 class="fw-bold mb-0">
-                        <i class="fas fa-clock me-2" style="color: var(--info);"></i>
-                        Aktivitas Terkini
+                        <i class="fas fa-chart-pie me-2" style="color: var(--success);"></i>
+                        Status Properti
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="activity-timeline">
-                        <div class="activity-item">
-                            <p class="mb-1 fw-bold">Login Berhasil</p>
-                            <small class="text-muted">
-                                <i class="fas fa-circle me-2" style="font-size: 6px; color: var(--success);"></i>
-                                {{ now()->format('H:i') }} WIB
-                            </small>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                            <span><i class="fas fa-circle text-success me-2"></i> Tersedia</span>
+                            <span class="fw-bold">0 unit</span>
                         </div>
-                        @if($totalCartItems > 0)
-                        <div class="activity-item">
-                            <p class="mb-1 fw-bold">{{ $totalCartItems }} Item di Keranjang</p>
-                            <small class="text-muted">
-                                <i class="fas fa-circle me-2" style="font-size: 6px; color: var(--warning);"></i>
-                                Menunggu checkout
-                            </small>
+                        <div class="d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                            <span><i class="fas fa-circle text-warning me-2"></i> Disewa</span>
+                            <span class="fw-bold">0 unit</span>
                         </div>
-                        @endif
-                        @if($totalProperties > 0)
-                        <div class="activity-item">
-                            <p class="mb-1 fw-bold">{{ $totalProperties }} Properti Terdaftar</p>
-                            <small class="text-muted">
-                                <i class="fas fa-circle me-2" style="font-size: 6px; color: var(--primary);"></i>
-                                Siap dipasarkan
-                            </small>
+                        <div class="d-flex justify-content-between p-2 bg-light rounded">
+                            <span><i class="fas fa-circle text-secondary me-2"></i> Terjual</span>
+                            <span class="fw-bold">0 unit</span>
                         </div>
-                        @endif
-                        <div class="activity-item">
-                            <p class="mb-1 fw-bold">Akun Dibuat</p>
-                            <small class="text-muted">
-                                <i class="fas fa-circle me-2" style="font-size: 6px; color: var(--info);"></i>
-                                {{ $user->created_at->diffForHumans() }}
-                            </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Types Distribution - 5 TIPE BANGUNAN (TANPA GUDANG & TANPA TANAH) -->
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fas fa-tags me-2" style="color: var(--warning);"></i>
+                            Portfolio Properti
+                        </h5>
+                        <span class="badge bg-primary text-white rounded-pill px-3 py-2">
+                            <i class="fas fa-star me-1"></i> Bangunan Premium
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4 justify-content-center">
+                        <!-- Rumah -->
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <div class="property-type-card">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
+                                    <i class="fas fa-home fa-2x text-primary"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1">Rumah</h6>
+                                <h4 class="fw-bold mb-0 text-primary">0</h4>
+                                <small class="text-muted">unit</small>
+                            </div>
+                        </div>
+                        <!-- Apartemen -->
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <div class="property-type-card">
+                                <div class="bg-info bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
+                                    <i class="fas fa-building fa-2x text-info"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1">Apartemen</h6>
+                                <h4 class="fw-bold mb-0 text-info">0</h4>
+                                <small class="text-muted">unit</small>
+                            </div>
+                        </div>
+                        <!-- Ruko -->
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <div class="property-type-card">
+                                <div class="bg-success bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
+                                    <i class="fas fa-store fa-2x text-success"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1">Ruko</h6>
+                                <h4 class="fw-bold mb-0 text-success">0</h4>
+                                <small class="text-muted">unit</small>
+                            </div>
+                        </div>
+                        <!-- Kantor -->
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <div class="property-type-card">
+                                <div class="bg-warning bg-opacity-10 rounded-circle d-inline-block p-3 mb-2">
+                                    <i class="fas fa-briefcase fa-2x text-warning"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1">Kantor</h6>
+                                <h4 class="fw-bold mb-0 text-warning">0</h4>
+                                <small class="text-muted">unit</small>
+                            </div>
+                        </div>
+                        <!-- Villa -->
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <div class="property-type-card">
+                                <div class="bg-orange bg-opacity-10 rounded-circle d-inline-block p-3 mb-2" style="background: rgba(253, 126, 20, 0.1);">
+                                    <i class="fas fa-umbrella-beach fa-2x" style="color: #fd7e14;"></i>
+                                </div>
+                                <h6 class="fw-bold mb-1">Villa</h6>
+                                <h4 class="fw-bold mb-0" style="color: #fd7e14;">0</h4>
+                                <small class="text-muted">unit</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -342,56 +330,26 @@
     </div>
 
     <!-- Quick Actions Premium -->
-    <div class="row g-4">
+    <div class="row">
         <div class="col-12">
             <div class="card border-0 shadow-lg rounded-4">
-                <div class="card-header bg-white border-0 pt-4 px-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0">
-                            <i class="fas fa-bolt me-2" style="color: var(--warning);"></i>
-                            Quick Actions
-                        </h5>
-                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
-                            <i class="fas fa-keyboard me-1"></i> Shortcuts
-                        </span>
-                    </div>
-                </div>
                 <div class="card-body p-4">
-                    <div class="row g-3">
-                        <div class="col-lg-3 col-md-6">
-                            <a href="{{ route('properties.index') }}" class="text-decoration-none">
-                                <div class="quick-action-btn">
-                                    <i class="fas fa-list-ul fa-2x text-primary mb-3"></i>
-                                    <p class="fw-bold mb-1">Lihat Properti</p>
-                                    <small class="text-muted">Jelajahi semua listing</small>
-                                </div>
-                            </a>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning bg-opacity-10 p-3 rounded-3 me-3">
+                                <i class="fas fa-bolt fa-2x text-warning"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-1">Akses Cepat</h5>
+                                <p class="text-muted mb-0">Kelola portofolio properti Anda</p>
+                            </div>
                         </div>
-                        <div class="col-lg-3 col-md-6">
-                            <a href="{{ route('cart.index') }}" class="text-decoration-none">
-                                <div class="quick-action-btn">
-                                    <i class="fas fa-shopping-cart fa-2x text-success mb-3"></i>
-                                    <p class="fw-bold mb-1">Keranjang</p>
-                                    <small class="text-muted">{{ $totalCartItems }} item</small>
-                                </div>
+                        <div class="mt-3 mt-md-0">
+                            <a href="{{ route('properties.index') }}" class="btn btn-primary me-2 px-4 py-2 rounded-pill">
+                                <i class="fas fa-list me-2"></i> Semua Properti
                             </a>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <a href="{{ route('properties.create') }}" class="text-decoration-none">
-                                <div class="quick-action-btn">
-                                    <i class="fas fa-plus-circle fa-2x text-info mb-3"></i>
-                                    <p class="fw-bold mb-1">Tambah Properti</p>
-                                    <small class="text-muted">Listing baru</small>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                            <a href="{{ route('profile.edit') }}" class="text-decoration-none">
-                                <div class="quick-action-btn">
-                                    <i class="fas fa-user-edit fa-2x text-secondary mb-3"></i>
-                                    <p class="fw-bold mb-1">Edit Profil</p>
-                                    <small class="text-muted">Update data diri</small>
-                                </div>
+                            <a href="{{ route('properties.create') }}" class="btn btn-success px-4 py-2 rounded-pill">
+                                <i class="fas fa-plus-circle me-2"></i> Tambah Properti
                             </a>
                         </div>
                     </div>
@@ -406,63 +364,52 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('propertyChart').getContext('2d');
-    
-    // Data dummy - nanti bisa diganti dengan data real dari database
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-    const currentMonth = new Date().getMonth();
-    const last6Months = months.slice(Math.max(0, currentMonth - 5), currentMonth + 1);
-    
-    new Chart(ctx, {
-        type: 'line',
+    // Chart Distribusi Properti - 5 TIPE BANGUNAN (TANPA GUDANG, TANPA TANAH)
+    const ctxDist = document.getElementById('distributionChart').getContext('2d');
+    new Chart(ctxDist, {
+        type: 'bar',
         data: {
-            labels: last6Months,
-            datasets: [
-                {
-                    label: 'Properti Terjual',
-                    data: [12, 19, 15, 17, 14, 13],
-                    borderColor: '#4a6fa5',
-                    backgroundColor: 'rgba(74, 111, 165, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#4a6fa5',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                },
-                {
-                    label: 'Properti Disewa',
-                    data: [8, 12, 9, 15, 11, 10],
-                    borderColor: '#28a745',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#28a745',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }
-            ]
+            labels: ['Rumah', 'Apartemen', 'Ruko', 'Kantor', 'Villa'],
+            datasets: [{
+                label: 'Jumlah Properti',
+                data: [0, 0, 0, 0, 0],
+                backgroundColor: [
+                    'rgba(74, 111, 165, 0.8)',
+                    'rgba(23, 162, 184, 0.8)',
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(253, 126, 20, 0.8)'
+                ],
+                borderColor: [
+                    '#4a6fa5',
+                    '#17a2b8',
+                    '#28a745',
+                    '#ffc107',
+                    '#fd7e14'
+                ],
+                borderWidth: 1,
+                borderRadius: 8,
+                maxBarThickness: 50
+            }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        usePointStyle: true,
-                        boxWidth: 6
-                    }
+                    display: false
                 },
                 tooltip: {
                     backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
                     padding: 12,
-                    titleColor: '#850000',
-                    bodyColor: '#fff'
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw} unit`;
+                        }
+                    }
                 }
             },
             scales: {
@@ -471,11 +418,54 @@ document.addEventListener('DOMContentLoaded', function() {
                     grid: {
                         drawBorder: false,
                         color: 'rgba(0,0,0,0.02)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Jumlah Unit',
+                        color: '#6c757d'
                     }
                 },
                 x: {
                     grid: {
                         display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Chart Status Properti (Doughnut Chart)
+    const ctxStatus = document.getElementById('statusChart').getContext('2d');
+    new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+            labels: ['Tersedia', 'Disewa', 'Terjual'],
+            datasets: [{
+                data: [0, 0, 0],
+                backgroundColor: [
+                    '#28a745',
+                    '#ffc107',
+                    '#6c757d'
+                ],
+                borderWidth: 0,
+                borderRadius: 5,
+                spacing: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} unit`;
+                        }
                     }
                 }
             }
