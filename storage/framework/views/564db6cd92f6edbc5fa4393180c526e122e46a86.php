@@ -46,7 +46,7 @@
 
     .contact-item:hover {
         border-color: #4a6fa5;
-        box-shadow: 0 5px 20px rgba(74,111,165,0.05);
+        box-shadow: 0 5px 20px rgba(74, 111, 165, 0.05);
     }
 
     .contact-icon {
@@ -148,7 +148,7 @@
         outline: none;
         border-color: #4a6fa5;
         background: white;
-        box-shadow: 0 0 0 3px rgba(74,111,165,0.1);
+        box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
     }
 
     textarea.form-control {
@@ -226,6 +226,7 @@
         .contact-grid {
             grid-template-columns: repeat(2, 1fr);
         }
+
         .contact-bottom {
             grid-template-columns: 1fr;
         }
@@ -235,6 +236,7 @@
         .contact-grid {
             grid-template-columns: 1fr;
         }
+
         .contact-header h1 {
             font-size: 2rem;
         }
@@ -321,53 +323,67 @@
 
             <!-- Map & Jam Operasional -->
             <div class="contact-map">
-                <div class="map-placeholder">
-                    <i class="fas fa-map"></i>
-                    <span>Google Maps</span>
-                    <small style="margin-top: 8px;">Jl. Sudirman No. 123, Jakarta</small>
-                </div>
-                
-                <div class="office-hours">
-                    <h3 style="font-size: 1.1rem; font-weight: 600; color: #2c3e50; margin-bottom: 15px;">
-                        <i class="fas fa-clock" style="color: #4a6fa5; margin-right: 8px;"></i>
-                        Jam Operasional
-                    </h3>
-                    <div class="hours-item">
-                        <span class="hours-day">Senin - Kamis</span>
-                        <span class="hours-time">09.00 - 17.00</span>
-                    </div>
-                    <div class="hours-item">
-                        <span class="hours-day">Jumat</span>
-                        <span class="hours-time">09.00 - 16.00</span>
-                    </div>
-                    <div class="hours-item">
-                        <span class="hours-day">Sabtu</span>
-                        <span class="hours-time">09.00 - 14.00</span>
-                    </div>
-                    <div class="hours-item">
-                        <span class="hours-day">Minggu & Libur</span>
-                        <span class="hours-time" style="color: #e74c3c;">Tutup</span>
-                    </div>
+                <!-- Google Maps Embed - LANGSUNG TAMPIL -->
+                <div style="border-radius: 12px; overflow: hidden; height: 250px;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.432534264517!2d106.8226236749903!3d-6.214749293777437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e8f1e4e4e5%3A0x4e5e5e5e5e5e5e5e!2sJl.%20Sudirman%20No.%20123%2C%20RT.1%2FRW.3%2C%20Karet%20Tengsin%2C%20Kecamatan%20Tanah%20Abang%2C%20Kota%20Jakarta%20Pusat%2C%20Daerah%20Khusus%20Ibukota%20Jakarta%2010220!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
 
-                <!-- Social Media - Simple -->
-                <div style="margin-top: 25px; display: flex; gap: 15px;">
-                    <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
+                <div class="office-hours">
+                    <!-- ... sisanya tetap sama ... -->
                 </div>
+            </div>
+
+
+
+            <div class="office-hours">
+                <h3 style="font-size: 1.1rem; font-weight: 600; color: #2c3e50; margin-bottom: 15px;">
+                    <i class="fas fa-clock" style="color: #4a6fa5; margin-right: 8px;"></i>
+                    Jam Operasional
+                </h3>
+                <div class="hours-item">
+                    <span class="hours-day">Senin - Kamis</span>
+                    <span class="hours-time">09.00 - 17.00</span>
+                </div>
+                <div class="hours-item">
+                    <span class="hours-day">Jumat</span>
+                    <span class="hours-time">09.00 - 16.00</span>
+                </div>
+                <div class="hours-item">
+                    <span class="hours-day">Sabtu</span>
+                    <span class="hours-time">09.00 - 14.00</span>
+                </div>
+                <div class="hours-item">
+                    <span class="hours-day">Minggu & Libur</span>
+                    <span class="hours-time" style="color: #e74c3c;">Tutup</span>
+                </div>
+            </div>
+
+            <!-- Social Media - Simple -->
+            <div style="margin-top: 25px; display: flex; gap: 15px;">
+                <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" style="color: #6c7a8a; font-size: 1.2rem; transition: color 0.2s;">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
             </div>
         </div>
     </div>
+</div>
 </div>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/contact.blade.php ENDPATH**/ ?>
