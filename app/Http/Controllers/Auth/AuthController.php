@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Password; // TAMBAHKAN INI
+use Illuminate\Support\Str; // TAMBAHKAN INI
+use Illuminate\Auth\Events\PasswordReset; // TAMBAHKAN INI
 
 class AuthController extends Controller
 {
@@ -122,6 +125,8 @@ class AuthController extends Controller
             ->with('success', 'Registrasi berhasil! Selamat datang di Dahlan Property.');
     }
     
+    // ========== FORGOT PASSWORD METHODS ==========
+    
     /**
      * Show forgot password form
      */
@@ -137,17 +142,57 @@ class AuthController extends Controller
     {
         // Validation
         $request->validate([
-            'email' => 'required|email|exists:users,email',
-        ], [
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.exists' => 'Email tidak terdaftar',
+            'email' => 'required|email',
         ]);
         
-        // In production, you would send the reset link here
-        // For now, just show success message
+        // Send reset link using Laravel's built-in Password broker
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
         
-        return back()->with('status', 'Link reset password telah dikirim ke email Anda!');
+        // Return response based on status
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with(['status' => __($status)])
+            : back()->withErrors(['email' => __($status)]);
+    }
+    
+    // ========== RESET PASSWORD METHODS (TAMBAHKAN INI!) ==========
+    
+    /**
+     * Show reset password form
+     */
+    public function showResetForm($token)
+    {
+        return view('auth.reset-password', ['token' => $token]);
+    }
+    
+    /**
+     * Reset password
+     */
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+        
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+                
+                $user->save();
+                
+                event(new PasswordReset($user));
+            }
+        );
+        
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('login')->with('status', __($status))
+            : back()->withErrors(['email' => [__($status)]]);
     }
     
     /**

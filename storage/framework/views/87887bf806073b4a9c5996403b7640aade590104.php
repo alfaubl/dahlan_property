@@ -1,13 +1,11 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Lupa Password - Dahlan Property'); ?>
 
-@section('title', 'Lupa Password - Dahlan Property')
-
-@section('styles')
-    @include('partials.css.forgot-password-css')
-@endsection
+<?php $__env->startSection('styles'); ?>
+    <?php echo $__env->make('partials.css.forgot-password-css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <section class="auth-section">
     <div class="auth-bg"></div>
     <div class="container">
@@ -33,16 +31,16 @@
                     <p class="auth-subtitle">Masukkan email Anda untuk mendapatkan link reset</p>
                 </div>
 
-                @if(session('status'))
-                    <div class="alert alert-success">{{ session('status') }}</div>
-                @endif
+                <?php if(session('status')): ?>
+                    <div class="alert alert-success"><?php echo e(session('status')); ?></div>
+                <?php endif; ?>
 
-                @if($errors->any())
-                    <div class="alert alert-danger">{{ $errors->first() }}</div>
-                @endif
+                <?php if($errors->any()): ?>
+                    <div class="alert alert-danger"><?php echo e($errors->first()); ?></div>
+                <?php endif; ?>
 
-                <form method="POST" action="{{ route('password.email') }}" class="auth-form">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('password.email')); ?>" class="auth-form">
+                    <?php echo csrf_field(); ?>
                     
                     <div class="form-group">
                         <label for="email" class="form-label">
@@ -50,7 +48,7 @@
                         </label>
                         <div class="input-group">
                             <input type="email" id="email" name="email" required 
-                                   class="form-input" placeholder="you@example.com" value="{{ old('email') }}">
+                                   class="form-input" placeholder="you@example.com" value="<?php echo e(old('email')); ?>">
                             <div class="input-icon">
                                 <i class="fas fa-user-circle"></i>
                             </div>
@@ -71,7 +69,7 @@
                     </div>
 
                     <div class="auth-footer">
-                        <a href="{{ route('login') }}" class="btn-auth btn-auth-secondary">
+                        <a href="<?php echo e(route('login')); ?>" class="btn-auth btn-auth-secondary">
                             <i class="fas fa-arrow-left"></i>
                             <span>Kembali ke Login</span>
                         </a>
@@ -120,4 +118,5 @@
         </div>
     </div>
 </section>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/auth/forgot-password.blade.php ENDPATH**/ ?>
