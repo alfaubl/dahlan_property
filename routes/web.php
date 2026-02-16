@@ -38,7 +38,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
 
-    // Reset Password - TAMBAHKAN 2 ROUTES INI!
+    // Reset Password
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'reset'])->name('password.update');
 });
@@ -51,10 +51,18 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('dashboard');
     });
 
+    // Cart Routes
     Route::prefix('cart')->group(function () {
         Route::get('/', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
         Route::post('/add/{property}', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
         Route::delete('/remove/{cart}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+    });
+
+    // ========== TAMBAHKAN WISHLIST ROUTES DI SINI ==========
+    Route::prefix('wishlist')->name('wishlist.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\WishlistController::class, 'index'])->name('index');
+        Route::post('/{property}', [\App\Http\Controllers\WishlistController::class, 'store'])->name('store');
+        Route::delete('/{wishlist}', [\App\Http\Controllers\WishlistController::class, 'destroy'])->name('destroy');
     });
 
     // Profile
@@ -62,8 +70,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-
 
     // Properties CRUD (except index & show which are public)
     Route::resource('properties', PropertyController::class)->except(['index', 'show']);

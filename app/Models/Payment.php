@@ -3,32 +3,34 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
-    use SoftDeletes;
-    
     protected $fillable = [
-        'lease_id', 'tenant_id', 'amount', 'payment_date', 
-        'due_date', 'payment_method', 'status', 'midtrans_order_id',
-        'midtrans_transaction_id', 'midtrans_response', 'proof_url', 'notes'
+        'user_id',
+        'booking_id',
+        'order_id',
+        'transaction_id',
+        'amount',
+        'payment_type',
+        'status',
+        'payment_method',
+        'midtrans_response'
     ];
-    
+
     protected $casts = [
-        'amount' => 'decimal:2',
-        'payment_date' => 'date',
-        'due_date' => 'date',
-        'midtrans_response' => 'array'
+        'midtrans_response' => 'array',
+        'amount' => 'decimal:2'
     ];
-    
-    public function lease()
+
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Lease::class);
+        return $this->belongsTo(User::class);
     }
-    
-    public function tenant()
+
+    public function booking(): BelongsTo
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(Booking::class);
     }
 }

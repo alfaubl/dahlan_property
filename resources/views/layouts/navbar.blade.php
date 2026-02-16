@@ -44,11 +44,33 @@
                             <i class="fas fa-user-circle"></i> {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i>Profil</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            {{-- Dashboard --}}
                             <li>
-                                <form method="POST" action="/logout">
+                                <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            
+                            {{-- WISHLIST - TAMBAHKAN INI --}}
+                            <li>
+                                <a class="dropdown-item" href="{{ route('wishlist.index') }}">
+                                    <i class="fas fa-heart me-2"></i>Wishlist
+                                </a>
+                            </li>
+                            
+                            {{-- Profile --}}
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <i class="fas fa-user me-2"></i>Profil
+                                </a>
+                            </li>
+                            
+                            {{-- Divider --}}
+                            <li><hr class="dropdown-divider"></li>
+                            
+                            {{-- Logout --}}
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="dropdown-item text-danger">
                                         <i class="fas fa-sign-out-alt me-2"></i>Keluar
@@ -58,11 +80,11 @@
                         </ul>
                     </div>
                 @else
-                    <a class="nav-link" href="/login">
+                    <a class="nav-link" href="{{ route('login') }}">
                         <i class="fas fa-sign-in-alt"></i> Masuk
                     </a>
                     
-                    <a class="btn btn-primary btn-glow btn-premium" href="/register">
+                    <a class="btn btn-primary btn-glow btn-premium" href="{{ route('register') }}">
                         <i class="fas fa-plus-circle me-1"></i> Pasang Iklan
                     </a>
                 @endauth

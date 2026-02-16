@@ -45,11 +45,33 @@
 
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                            <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i>Profil</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            
                             <li>
-                                <form method="POST" action="/logout">
+                                <a class="dropdown-item" href="<?php echo e(route('dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a class="dropdown-item" href="<?php echo e(route('wishlist.index')); ?>">
+                                    <i class="fas fa-heart me-2"></i>Wishlist
+                                </a>
+                            </li>
+                            
+                            
+                            <li>
+                                <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">
+                                    <i class="fas fa-user me-2"></i>Profil
+                                </a>
+                            </li>
+                            
+                            
+                            <li><hr class="dropdown-divider"></li>
+                            
+                            
+                            <li>
+                                <form method="POST" action="<?php echo e(route('logout')); ?>">
                                     <?php echo csrf_field(); ?>
                                     <button type="submit" class="dropdown-item text-danger">
                                         <i class="fas fa-sign-out-alt me-2"></i>Keluar
@@ -59,11 +81,11 @@
                         </ul>
                     </div>
                 <?php else: ?>
-                    <a class="nav-link" href="/login">
+                    <a class="nav-link" href="<?php echo e(route('login')); ?>">
                         <i class="fas fa-sign-in-alt"></i> Masuk
                     </a>
                     
-                    <a class="btn btn-primary btn-glow btn-premium" href="/register">
+                    <a class="btn btn-primary btn-glow btn-premium" href="<?php echo e(route('register')); ?>">
                         <i class="fas fa-plus-circle me-1"></i> Pasang Iklan
                     </a>
                 <?php endif; ?>

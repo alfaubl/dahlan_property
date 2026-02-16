@@ -44,11 +44,26 @@ class User extends Authenticatable
 
     /**
      * Get the cart items for the user.
-     * TAMBAHKAN INI!
      */
     public function carts()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    /**
+     * Get the wishlist items for the user.
+     */
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    /**
+     * Get favorite properties via wishlist.
+     */
+    public function favoriteProperties()
+    {
+        return $this->belongsToMany(Property::class, 'wishlists');
     }
 
     /**

@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Password; // TAMBAHKAN INI
-use Illuminate\Support\Str; // TAMBAHKAN INI
-use Illuminate\Auth\Events\PasswordReset; // TAMBAHKAN INI
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
 {
@@ -156,14 +156,20 @@ class AuthController extends Controller
             : back()->withErrors(['email' => __($status)]);
     }
     
-    // ========== RESET PASSWORD METHODS (TAMBAHKAN INI!) ==========
+    // ========== RESET PASSWORD METHODS ==========
     
     /**
      * Show reset password form
      */
     public function showResetForm($token)
     {
-        return view('auth.reset-password', ['token' => $token]);
+        // Ambil email dari query string (URL) - INI YANG DIPERBAIKI!
+        $email = request()->email;
+        
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $email
+        ]);
     }
     
     /**
