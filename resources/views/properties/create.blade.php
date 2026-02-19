@@ -12,13 +12,13 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="create-card card">
-                    <!-- Header -->
+                    <!-- Header Premium -->
                     <div class="create-header">
                         <h1>Tambah Properti Baru</h1>
                         <p>Lengkapi data properti Anda dengan lengkap dan akurat</p>
                     </div>
 
-                    <!-- Body -->
+                    <!-- Body Premium -->
                     <div class="create-body">
                         <!-- Charts Section -->
                         <div class="row mb-4">
@@ -46,7 +46,7 @@
                             </div>
                         </div>
 
-                        <!-- Form -->
+                        <!-- Form Premium -->
                         <form id="propertyForm" action="{{ route('properties.store') }}" method="POST">
                             @csrf
                             
@@ -66,7 +66,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Slug (URL)</label>
                                         <input type="text" class="form-control" id="slug" name="slug" readonly>
-                                        <small class="text-muted">Akan terisi otomatis dari judul</small>
+                                        <small class="text-muted d-block">Otomatis dari judul</small>
                                     </div>
                                     
                                     <div class="col-md-4">

@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // ========== PROPERTIES CRUD ==========
-    // Semua kecuali index & show (karena sudah public)
+    // ✅ CUKUP INI SAJA, TIDAK PERLU TAMBAHAN!
     Route::resource('properties', PropertyController::class)->except(['index', 'show']);
 
     // ========== BOOKING ROUTES ==========
