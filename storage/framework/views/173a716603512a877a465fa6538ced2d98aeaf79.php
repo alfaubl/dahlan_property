@@ -142,4 +142,4 @@
     .create-body { padding: 25px 20px; }
     .btn-save, .btn-cancel { width: 100%; text-align: center; }
 }
-</style>
+</style><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/partials/css/property-create-css.blade.php ENDPATH**/ ?>

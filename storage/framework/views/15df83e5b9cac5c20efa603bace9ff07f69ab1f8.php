@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Tambah Properti - Dahlan Property')
 
-@section('styles')
-    @include('partials.css.property-create-css')
-@endsection
+<?php $__env->startSection('title', 'Tambah Properti - Dahlan Property'); ?>
 
-@section('content')
+<?php $__env->startSection('styles'); ?>
+    <?php echo $__env->make('partials.css.property-create-css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="create-container">
     <div class="container">
         <div class="row justify-content-center">
@@ -20,8 +20,8 @@
 
                     <!-- Body -->
                     <div class="create-body">
-                        <form id="propertyForm" action="{{ route('properties.store') }}" method="POST">
-                            @csrf
+                        <form id="propertyForm" action="<?php echo e(route('properties.store')); ?>" method="POST">
+                            <?php echo csrf_field(); ?>
                             
                             <!-- Informasi Dasar -->
                             <div class="form-section">
@@ -138,7 +138,7 @@
 
                             <!-- Tombol Aksi -->
                             <div class="d-flex gap-3 justify-content-end mt-4">
-                                <a href="{{ route('properties.index') }}" class="btn-cancel">Batal</a>
+                                <a href="<?php echo e(route('properties.index')); ?>" class="btn-cancel">Batal</a>
                                 <button type="submit" class="btn-save" id="saveBtn">
                                     <i class="fas fa-save"></i> Simpan Properti
                                 </button>
@@ -150,8 +150,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
-    @include('partials.js.property-create-js')
-@endsection
+<?php $__env->startSection('scripts'); ?>
+    <?php echo $__env->make('partials.js.property-create-js', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/properties/create.blade.php ENDPATH**/ ?>

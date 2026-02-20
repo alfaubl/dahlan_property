@@ -141,8 +141,7 @@
                     <?php endif; ?>
                 </div>
                 
-                <!-- Property Cards (Commented out - will be shown when data exists) -->
-                <!-- 
+               
                 <div class="row g-4">
                     <?php $__empty_1 = true; $__currentLoopData = $properties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $property): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="col-md-6 col-xl-4">

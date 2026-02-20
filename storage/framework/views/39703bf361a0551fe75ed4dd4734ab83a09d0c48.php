@@ -49,4 +49,4 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-</script>
+</script><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/partials/js/property-create-js.blade.php ENDPATH**/ ?>

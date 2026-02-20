@@ -25,9 +25,14 @@ Route::get('/', function () {
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
 
-// PUBLIC PROPERTY (lihat saja tanpa login)
-Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
-Route::get('/properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+// PUBLIC PROPERTY (lihat tanpa login)
+Route::get('/properties', [PropertyController::class, 'index'])
+    ->name('properties.index');
+
+// 🔥 INI YANG DIPERBAIKI
+Route::get('/properties/{property}', [PropertyController::class, 'show'])
+    ->whereNumber('property')   // ← WAJIB ADA
+    ->name('properties.show');
 
 
 /*
@@ -38,19 +43,15 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])->name(
 
 Route::middleware('guest')->group(function () {
 
-    // Login
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
-    // Register
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 
-    // Forgot Password
     Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
     Route::post('/forgot-password', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
 
-    // Reset Password
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'reset'])->name('password.update');
 });
@@ -65,7 +66,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     Route::get('/home', function () {
         return redirect()->route('dashboard');
@@ -73,18 +75,24 @@ Route::middleware('auth')->group(function () {
 
     /*
     =======================
-    PROPERTIES CRUD (MANUAL)
+    PROPERTIES CRUD
     =======================
     */
-    // ✅ ROUTE MANUAL - INI YANG HARUS DIPAKAI!
-    Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
-    Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
-    Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])->name('properties.edit');
-    Route::put('/properties/{property}', [PropertyController::class, 'update'])->name('properties.update');
-    Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
 
-    // HAPUS atau KOMENTARI baris ini (jangan dipakai bersama route manual)
-    // Route::resource('properties', PropertyController::class)->except(['index', 'show']);
+    Route::get('/properties/create', [PropertyController::class, 'create'])
+        ->name('properties.create');
+
+    Route::post('/properties', [PropertyController::class, 'store'])
+        ->name('properties.store');
+
+    Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])
+        ->name('properties.edit');
+
+    Route::put('/properties/{property}', [PropertyController::class, 'update'])
+        ->name('properties.update');
+
+    Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])
+        ->name('properties.destroy');
 
 
     /*
@@ -92,6 +100,7 @@ Route::middleware('auth')->group(function () {
     CART
     =======================
     */
+
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/add/{property}', [CartController::class, 'add'])->name('add');
@@ -104,6 +113,7 @@ Route::middleware('auth')->group(function () {
     WISHLIST
     =======================
     */
+
     Route::prefix('wishlist')->name('wishlist.')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('index');
         Route::post('/{property}', [WishlistController::class, 'store'])->name('store');
@@ -116,6 +126,7 @@ Route::middleware('auth')->group(function () {
     PROFILE
     =======================
     */
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
@@ -127,6 +138,7 @@ Route::middleware('auth')->group(function () {
     BOOKING
     =======================
     */
+
     Route::prefix('bookings')->name('booking.')->group(function () {
         Route::post('/', [BookingController::class, 'store'])->name('store');
         Route::get('/{booking}', [BookingController::class, 'show'])->name('show');
@@ -139,6 +151,7 @@ Route::middleware('auth')->group(function () {
     PAYMENT
     =======================
     */
+
     Route::prefix('payment')->name('payment.')->group(function () {
         Route::get('/process', [PaymentController::class, 'process'])->name('process');
         Route::post('/notification', [PaymentController::class, 'notification'])->name('notification');
@@ -148,10 +161,6 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    /*
-    =======================
-    LOGOUT
-    =======================
-    */
+    // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

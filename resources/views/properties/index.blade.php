@@ -141,8 +141,7 @@
                     @endauth
                 </div>
                 
-                <!-- Property Cards (Commented out - will be shown when data exists) -->
-                <!-- 
+               
                 <div class="row g-4">
                     @forelse($properties as $property)
                     <div class="col-md-6 col-xl-4">
