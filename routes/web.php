@@ -73,11 +73,18 @@ Route::middleware('auth')->group(function () {
 
     /*
     =======================
-    PROPERTIES CRUD
+    PROPERTIES CRUD (MANUAL)
     =======================
     */
-    Route::resource('properties', PropertyController::class)
-        ->except(['index', 'show']);
+    // ✅ ROUTE MANUAL - INI YANG HARUS DIPAKAI!
+    Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
+    Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
+    Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])->name('properties.edit');
+    Route::put('/properties/{property}', [PropertyController::class, 'update'])->name('properties.update');
+    Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
+
+    // HAPUS atau KOMENTARI baris ini (jangan dipakai bersama route manual)
+    // Route::resource('properties', PropertyController::class)->except(['index', 'show']);
 
 
     /*
@@ -127,7 +134,19 @@ Route::middleware('auth')->group(function () {
     });
 
 
- 
+    /*
+    =======================
+    PAYMENT
+    =======================
+    */
+    Route::prefix('payment')->name('payment.')->group(function () {
+        Route::get('/process', [PaymentController::class, 'process'])->name('process');
+        Route::post('/notification', [PaymentController::class, 'notification'])->name('notification');
+        Route::get('/finish', [PaymentController::class, 'finish'])->name('finish');
+        Route::get('/unfinish', [PaymentController::class, 'unfinish'])->name('unfinish');
+        Route::get('/error', [PaymentController::class, 'error'])->name('error');
+    });
+
 
     /*
     =======================

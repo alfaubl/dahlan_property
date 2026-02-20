@@ -5,17 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User; // TAMBAHKAN INI!
 
 class ProfileController extends Controller
 {
     public function edit()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         return view('profile.edit', compact('user'));
     }
 
     public function update(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         $request->validate([
@@ -23,9 +26,10 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
         ]);
 
+        // CARA MANUAL - PASTI TIDAK ERROR
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->save();
+        $user->save(); // MASIH PAKAI SAVE()
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
     }
@@ -37,6 +41,7 @@ class ProfileController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
@@ -55,6 +60,7 @@ class ProfileController extends Controller
             'password' => 'required',
         ]);
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!Hash::check($request->password, $user->password)) {
