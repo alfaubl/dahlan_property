@@ -1,151 +1,178 @@
+<!-- resources/views/auth/payment/process.blade.php -->
 @extends('layouts.app')
 
-@section('title', 'Proses Pembayaran - Dahlan Property')
-
-@section('styles')
-    @include('partials.css.payment-css')
-@endsection
-
 @section('content')
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                <!-- Header -->
-                <div class="card-header bg-gradient-primary text-white py-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h4 class="fw-bold mb-1">
-                                <i class="fas fa-credit-card me-2"></i>
-                                Proses Pembayaran
-                            </h4>
-                            <p class="mb-0 opacity-75">Selesaikan pembayaran booking properti Anda</p>
+<div class="payment-container">
+    <!-- Progress Step -->
+    <div class="progress-step">
+        <div class="step-item">
+            <span class="step-number completed">1</span>
+            <span class="step-label">Cart</span>
+        </div>
+        <div class="step-line completed"></div>
+        
+        <div class="step-item">
+            <span class="step-number completed">2</span>
+            <span class="step-label">Checkout</span>
+        </div>
+        <div class="step-line completed"></div>
+        
+        <div class="step-item">
+            <span class="step-number active">3</span>
+            <span class="step-label active">Payment</span>
+        </div>
+    </div>
+
+    <div class="payment-grid">
+        <!-- Kolom Kiri: Form Pembayaran -->
+        <div class="payment-form-col">
+            <div class="payment-card">
+                <h2 class="card-title">Metode Pembayaran</h2>
+                
+                <!-- Pilihan Bank Transfer -->
+                <div class="payment-method" onclick="selectPayment('bca')">
+                    <div class="method-radio">
+                        <input type="radio" name="payment_method" value="bca" id="bca">
+                        <label for="bca" class="method-label">
+                            <img src="/images/bca.png" alt="BCA" class="bank-logo">
+                            <div class="method-info">
+                                <p class="bank-name">Bank BCA</p>
+                                <p class="bank-desc">Virtual Account BCA</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-method" onclick="selectPayment('mandiri')">
+                    <div class="method-radio">
+                        <input type="radio" name="payment_method" value="mandiri" id="mandiri">
+                        <label for="mandiri" class="method-label">
+                            <img src="/images/mandiri.png" alt="Mandiri" class="bank-logo">
+                            <div class="method-info">
+                                <p class="bank-name">Bank Mandiri</p>
+                                <p class="bank-desc">Virtual Account Mandiri</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-method" onclick="selectPayment('bni')">
+                    <div class="method-radio">
+                        <input type="radio" name="payment_method" value="bni" id="bni">
+                        <label for="bni" class="method-label">
+                            <img src="/images/bni.png" alt="BNI" class="bank-logo">
+                            <div class="method-info">
+                                <p class="bank-name">Bank BNI</p>
+                                <p class="bank-desc">Virtual Account BNI</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-method" onclick="selectPayment('gopay')">
+                    <div class="method-radio">
+                        <input type="radio" name="payment_method" value="gopay" id="gopay">
+                        <label for="gopay" class="method-label">
+                            <img src="/images/gopay.png" alt="GoPay" class="bank-logo">
+                            <div class="method-info">
+                                <p class="bank-name">GoPay</p>
+                                <p class="bank-desc">Transfer GoPay</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Chart Pembayaran -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Statistik Pembayaran</h3>
+                    <canvas id="paymentChart"></canvas>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #3B82F6;"></span>
+                            <span>BCA (45%)</span>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-3 p-3">
-                            <i class="fas fa-building fa-2x"></i>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #10B981;"></span>
+                            <span>Mandiri (30%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #F59E0B;"></span>
+                            <span>BNI (15%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background: #EF4444;"></span>
+                            <span>GoPay (10%)</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-body p-4">
-                    <!-- ===== INPUT HIDDEN UNTUK JS ===== -->
-                    <input type="hidden" id="finish-url" value="{{ route('payment.finish') }}">
-                    <input type="hidden" id="unfinish-url" value="{{ route('payment.unfinish') }}">
-                    <input type="hidden" id="error-url" value="{{ route('payment.error') }}">
-                    <input type="hidden" id="snap-token" value="{{ $snapToken }}">
-                    
-                    <!-- Timer & Status -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="bg-warning bg-opacity-10 rounded-3 p-3 me-3">
-                                <i class="fas fa-clock text-warning fa-2x"></i>
-                            </div>
-                            <div>
-                                <h6 class="fw-bold mb-1">Selesaikan dalam:</h6>
-                                <span class="h3 fw-bold text-warning" id="payment-timer">10:00</span>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <small class="text-muted">Order ID</small>
-                            <p class="fw-bold mb-0" id="order-id">{{ $payment->order_id }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Booking Info -->
-                    <div class="alert alert-info bg-light border-0 rounded-4 p-4 mb-4">
-                        <div class="d-flex">
-                            <i class="fas fa-info-circle text-info fa-2x me-3"></i>
-                            <div>
-                                <h6 class="fw-bold">Informasi Booking</h6>
-                                <p class="mb-2">
-                                    <strong>Kode Booking:</strong> {{ $payment->booking->booking_code }}<br>
-                                    <strong>Tanggal:</strong> {{ $payment->booking->booking_date->format('d M Y') }}<br>
-                                    <strong>Waktu:</strong> {{ $payment->booking->booking_time->format('H:i') }} WIB
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Property Info -->
-                    @if($payment->booking && $payment->booking->property)
-                    <div class="d-flex align-items-center mb-4 p-3 bg-light rounded-4">
-                        <img src="{{ $payment->booking->property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" 
-                             alt="{{ $payment->booking->property->title }}"
-                             style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px;"
-                             class="me-3">
-                        <div>
-                            <h6 class="fw-bold mb-1">{{ $payment->booking->property->title }}</h6>
-                            <p class="text-muted mb-0">
-                                <i class="fas fa-map-marker-alt text-primary me-1"></i>
-                                {{ $payment->booking->property->city }}
-                            </p>
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- Payment Details -->
-                    <div class="card bg-light border-0 rounded-4 mb-4">
-                        <div class="card-body">
-                            <h6 class="fw-bold mb-3">Detail Pembayaran</h6>
-                            
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Booking Fee (10%)</span>
-                                <span class="fw-bold">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
-                            </div>
-                            
-                            <hr class="my-3">
-                            
-                            <div class="d-flex justify-content-between">
-                                <span class="h6 fw-bold">Total Pembayaran</span>
-                                <span class="h4 fw-bold text-primary">Rp {{ number_format($payment->amount, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Payment Methods Info -->
-                    <div class="mb-4">
-                        <small class="text-muted d-block mb-2">
-                            <i class="fas fa-shield-alt me-1 text-primary"></i>
-                            Pembayaran diproses oleh Midtrans (aman & terenkripsi)
-                        </small>
-                        <div class="d-flex gap-2">
-                            <img src="https://midtrans.com/assets/images/payment-method/visa.svg" height="30" alt="Visa">
-                            <img src="https://midtrans.com/assets/images/payment-method/mastercard.svg" height="30" alt="Mastercard">
-                            <img src="https://midtrans.com/assets/images/payment-method/bca.svg" height="30" alt="BCA">
-                            <img src="https://midtrans.com/assets/images/payment-method/mandiri.svg" height="30" alt="Mandiri">
-                            <img src="https://midtrans.com/assets/images/payment-method/bni.svg" height="30" alt="BNI">
-                            <img src="https://midtrans.com/assets/images/payment-method/bri.svg" height="30" alt="BRI">
-                        </div>
-                    </div>
-
-                    <!-- Pay Button -->
-                    <button id="pay-button" class="btn btn-primary btn-lg w-100 py-3 rounded-4 shadow-sm">
-                        <i class="fas fa-credit-card me-2"></i>
-                        Lanjutkan Pembayaran
-                    </button>
-
-                    <!-- Cancel Link -->
-                    <div class="text-center mt-4">
-                        <a href="{{ route('dashboard') }}" class="text-muted text-decoration-none">
-                            <i class="fas fa-arrow-left me-1"></i>
-                            Kembali ke Dashboard
-                        </a>
+                <!-- Timer Pembayaran -->
+                <div class="timer-container">
+                    <p class="timer-label">Selesaikan pembayaran dalam:</p>
+                    <div class="timer-display">
+                        <span id="minutes">15</span>:<span id="seconds">00</span>
                     </div>
                 </div>
+
+                <!-- Tombol Bayar -->
+                <button id="pay-button" class="pay-button">
+                    <span>Bayar Sekarang</span>
+                    <span class="total-amount">Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}</span>
+                </button>
             </div>
+        </div>
 
-            <!-- Security Badge -->
-            <div class="text-center mt-4">
-                <small class="text-muted">
-                    <i class="fas fa-lock me-1"></i>
-                    Transaksi aman dengan enkripsi SSL
-                </small>
+        <!-- Kolom Kanan: Ringkasan Order -->
+        <div class="order-summary-col">
+            <div class="summary-card">
+                <h2 class="summary-title">Ringkasan Pesanan</h2>
+                
+                @if(isset($order) && $order)
+                    <div class="order-items">
+                        @foreach($order->items as $item)
+                        <div class="order-item">
+                            <div class="item-info">
+                                <p class="item-name">{{ $item->property->title }}</p>
+                                <p class="item-qty">x{{ $item->quantity }}</p>
+                            </div>
+                            <span class="item-price">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                    
+                    <hr class="divider">
+                    
+                    <div class="total-section">
+                        <div class="total-row">
+                            <span>Subtotal</span>
+                            <span>Rp {{ number_format($order->subtotal ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Biaya Layanan</span>
+                            <span>Rp {{ number_format($order->fee ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span>Total</span>
+                            <span class="grand-total-amount">Rp {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Grafik Mini -->
+                    <div class="mini-chart">
+                        <canvas id="miniChart"></canvas>
+                    </div>
+                    
+                    <div class="security-badge">
+                        <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span>Pembayaran aman dan terenkripsi</span>
+                    </div>
+                @else
+                    <p class="empty-order">Tidak ada data order</p>
+                @endif
             </div>
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-    @include('partials.js.payment-js')
 @endsection

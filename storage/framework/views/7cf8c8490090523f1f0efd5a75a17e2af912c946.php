@@ -16,6 +16,12 @@
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- CSS Payment -->
+    <link rel="stylesheet" href="<?php echo e(asset('css/payment.css')); ?>">
+
     <!-- Custom CSS -->
     <?php echo $__env->make('layouts.app-css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
@@ -43,8 +49,13 @@
     <!-- Custom JS -->
     <?php echo $__env->make('layouts.app-js', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
+    <!-- Midtrans JS -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?php echo e(config('midtrans.client_key')); ?>"></script>
+    
+    <!-- Payment JS -->
+    <script src="<?php echo e(asset('js/payment.js')); ?>"></script>
+
     <?php echo $__env->yieldContent('scripts'); ?>
 
 </body>
-</html>
-<?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/layouts/app.blade.php ENDPATH**/ ?>
+</html><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/layouts/app.blade.php ENDPATH**/ ?>

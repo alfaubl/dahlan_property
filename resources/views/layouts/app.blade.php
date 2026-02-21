@@ -16,6 +16,12 @@
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <!-- CSS Payment -->
+    <link rel="stylesheet" href="{{ asset('css/payment.css') }}">
+
     <!-- Custom CSS -->
     @include('layouts.app-css')
 
@@ -42,6 +48,12 @@
 
     <!-- Custom JS -->
     @include('layouts.app-js')
+
+    <!-- Midtrans JS -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+    
+    <!-- Payment JS -->
+    <script src="{{ asset('js/payment.js') }}"></script>
 
     @yield('scripts')
 

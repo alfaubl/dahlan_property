@@ -1,68 +1,232 @@
-// File: public/js/payment.js
+// public/js/payment.js
+
+// Inisialisasi Chart.js
 document.addEventListener('DOMContentLoaded', function() {
-    // ========== PAYMENT BUTTON HANDLER ==========
-    const payButton = document.getElementById('pay-button');
-    const snapToken = document.getElementById('snap-token')?.value;
-    const finishUrl = document.getElementById('finish-url')?.value;
-    const unfinishUrl = document.getElementById('unfinish-url')?.value;
-    const errorUrl = document.getElementById('error-url')?.value;
-    
-    if (payButton && snapToken) {
-        payButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            payButton.disabled = true;
-            payButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
-            
-            window.snap.pay(snapToken, {
-                onSuccess: function(result) {
-                    if (finishUrl) {
-                        window.location.href = finishUrl + '?order_id=' + result.order_id;
-                    }
+    // Chart Utama
+    const ctx = document.getElementById('paymentChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['BCA', 'Mandiri', 'BNI', 'GoPay'],
+            datasets: [{
+                data: [45, 30, 15, 10],
+                backgroundColor: [
+                    '#3B82F6',
+                    '#10B981',
+                    '#F59E0B',
+                    '#EF4444'
+                ],
+                borderWidth: 0,
+                borderRadius: 10,
+                spacing: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
                 },
-                onPending: function(result) {
-                    if (unfinishUrl) {
-                        window.location.href = unfinishUrl + '?order_id=' + result.order_id;
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.raw}% pengguna memilih metode ini`;
+                        }
                     }
-                },
-                onError: function(result) {
-                    if (errorUrl) {
-                        window.location.href = errorUrl + '?order_id=' + result.order_id;
-                    }
-                },
-                onClose: function() {
-                    payButton.disabled = false;
-                    payButton.innerHTML = '<i class="fas fa-credit-card me-2"></i>Lanjutkan Pembayaran';
                 }
-            });
-        });
-    }
-    
-    // ========== AUTO-COPY ORDER ID ==========
-    const orderIdElement = document.getElementById('order-id');
-    if (orderIdElement) {
-        orderIdElement.addEventListener('click', function() {
-            navigator.clipboard.writeText(this.textContent).then(function() {
-                alert('Order ID disalin!');
-            });
-        });
-    }
-    
-    // ========== COUNTDOWN TIMER ==========
-    const timerElement = document.getElementById('payment-timer');
-    if (timerElement) {
-        let timeLeft = 600;
-        const timerInterval = setInterval(function() {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerElement.textContent = 'Waktu habis!';
-                if (payButton) payButton.disabled = true;
-            } else {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }
-        }, 1000);
+        }
+    });
+
+    // Mini Chart (Area Chart)
+    const miniCtx = document.getElementById('miniChart').getContext('2d');
+    new Chart(miniCtx, {
+        type: 'line',
+        data: {
+            labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+            datasets: [{
+                data: [12, 19, 15, 17, 14, 23, 18],
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 2,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    display: false
+                },
+                y: {
+                    display: false,
+                    beginAtZero: true
+                }
+            },
+            elements: {
+                line: {
+                    borderWidth: 2
+                }
+            }
+        }
+    });
+
+    // Timer Countdown
+    startTimer(15, 0); // 15 menit
+
+    // Animasi hover untuk payment method
+    const methods = document.querySelectorAll('.payment-method');
+    methods.forEach(method => {
+        method.addEventListener('click', function() {
+            methods.forEach(m => m.classList.remove('selected'));
+            this.classList.add('selected');
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+});
+
+// Fungsi Timer
+function startTimer(minutes, seconds) {
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+    
+    let totalSeconds = (minutes * 60) + seconds;
+    
+    const timer = setInterval(function() {
+        totalSeconds--;
+        
+        if (totalSeconds < 0) {
+            clearInterval(timer);
+            alert('Waktu pembayaran habis! Silakan ulangi pemesanan.');
+            window.location.href = '/cart';
+            return;
+        }
+        
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        
+        minutesEl.textContent = mins.toString().padStart(2, '0');
+        secondsEl.textContent = secs.toString().padStart(2, '0');
+        
+        // Warning jika waktu tinggal 5 menit
+        if (totalSeconds === 300) {
+            showWarning('Waktu tinggal 5 menit!');
+        }
+    }, 1000);
+    
+    return timer;
+}
+
+// Fungsi untuk select payment
+function selectPayment(method) {
+    const methods = document.querySelectorAll('.payment-method');
+    methods.forEach(m => m.classList.remove('selected'));
+    
+    const selected = event.currentTarget;
+    selected.classList.add('selected');
+    
+    const radio = selected.querySelector('input[type="radio"]');
+    if (radio) radio.checked = true;
+    
+    // Animasi pulse
+    selected.style.animation = 'pulse 0.5s';
+    setTimeout(() => {
+        selected.style.animation = '';
+    }, 500);
+}
+
+// Show warning dengan toast
+function showWarning(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-warning';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #F59E0B;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        z-index: 9999;
+        animation: slideIn 0.3s;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Animasi keyframes
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
+// Fungsi untuk bayar (integrasi Midtrans)
+document.getElementById('pay-button').addEventListener('click', function() {
+    const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+    
+    if (!selectedMethod) {
+        showWarning('Silakan pilih metode pembayaran terlebih dahulu!');
+        return;
+    }
+    
+    // Disable button selama proses
+    this.disabled = true;
+    this.innerHTML = '<span>Memproses...</span>';
+    
+    // Ambil snap token dari server (ini akan diisi dari PaymentController)
+    const snapToken = '{{ $snapToken ?? '' }}';
+    
+    if (snapToken) {
+        snap.pay(snapToken, {
+            onSuccess: function(result) {
+                window.location.href = '/payment/finish?order_id=' + result.order_id;
+            },
+            onPending: function(result) {
+                window.location.href = '/payment/unfinish?order_id=' + result.order_id;
+            },
+            onError: function(result) {
+                window.location.href = '/payment/error?order_id=' + result.order_id;
+            },
+            onClose: function() {
+                // Enable button kembali
+                document.getElementById('pay-button').disabled = false;
+                document.getElementById('pay-button').innerHTML = 'Bayar Sekarang';
+            }
+        });
+    } else {
+        alert('Token pembayaran tidak ditemukan!');
+        this.disabled = false;
+        this.innerHTML = 'Bayar Sekarang';
     }
 });
