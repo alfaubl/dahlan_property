@@ -21,18 +21,27 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Halaman statis
+// Static pages
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
 
-// PUBLIC PROPERTY (lihat tanpa login)
+// Public property (tanpa login)
 Route::get('/properties', [PropertyController::class, 'index'])
     ->name('properties.index');
 
-// 🔥 INI YANG DIPERBAIKI
 Route::get('/properties/{property}', [PropertyController::class, 'show'])
-    ->whereNumber('property')   // ← WAJIB ADA
+    ->whereNumber('property')
     ->name('properties.show');
+
+
+/*
+|--------------------------------------------------------------------------
+| MIDTRANS NOTIFICATION (WAJIB DI LUAR AUTH)
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/payment/notification', [PaymentController::class, 'notification'])
+    ->name('payment.notification');
 
 
 /*
@@ -94,7 +103,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])
         ->name('properties.destroy');
 
-
     /*
     =======================
     CART
@@ -106,7 +114,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/add/{property}', [CartController::class, 'add'])->name('add');
         Route::delete('/remove/{cart}', [CartController::class, 'remove'])->name('remove');
     });
-
 
     /*
     =======================
@@ -120,7 +127,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{wishlist}', [WishlistController::class, 'destroy'])->name('destroy');
     });
 
-
     /*
     =======================
     PROFILE
@@ -131,7 +137,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
 
     /*
     =======================
@@ -145,21 +150,24 @@ Route::middleware('auth')->group(function () {
         Route::post('/{booking}/cancel', [BookingController::class, 'cancel'])->name('cancel');
     });
 
-
     /*
     =======================
-    PAYMENT
+    PAYMENT (USER SIDE)
     =======================
     */
 
     Route::prefix('payment')->name('payment.')->group(function () {
+
+        // Tambahan: process menerima parameter {payment} supaya tidak 404
+        Route::get('/process/{payment}', [PaymentController::class, 'process'])
+            ->name('process.withParam');
+
+        // Yang lama tetap ada
         Route::get('/process', [PaymentController::class, 'process'])->name('process');
-        Route::post('/notification', [PaymentController::class, 'notification'])->name('notification');
         Route::get('/finish', [PaymentController::class, 'finish'])->name('finish');
         Route::get('/unfinish', [PaymentController::class, 'unfinish'])->name('unfinish');
         Route::get('/error', [PaymentController::class, 'error'])->name('error');
     });
-
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
