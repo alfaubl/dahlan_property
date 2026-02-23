@@ -39,7 +39,7 @@ class BookingController extends Controller
         // Buat booking code unik
         $bookingCode = 'BOOK-' . strtoupper(Str::random(8));
 
-        // Hitung booking fee (misal 10% dari harga)
+        // Hitung booking fee (10% dari harga)
         $bookingFee = $property->price * 0.1;
 
         // Simpan booking
@@ -95,7 +95,7 @@ class BookingController extends Controller
             // Update payment dengan snap token
             $payment->update(['midtrans_response' => ['snap_token' => $snapToken]]);
 
-            // Redirect ke halaman payment dengan token
+            // Redirect ke halaman payment process
             return redirect()->route('payment.process', ['payment' => $payment->id, 'token' => $snapToken]);
 
         } catch (\Exception $e) {
@@ -104,14 +104,17 @@ class BookingController extends Controller
     }
 
     /**
-     * Show the specified booking.
+     * Display the specified booking.
      */
     public function show(Booking $booking)
     {
-        // Pastikan booking milik user yang login
-        if ($booking->user_id !== Auth::id()) {
+        // Pastikan booking milik user yang login atau user adalah admin
+        if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
         }
+
+        // Load relasi
+        $booking->load(['property', 'payment', 'user']);
 
         return view('bookings.show', compact('booking'));
     }
@@ -122,16 +125,36 @@ class BookingController extends Controller
     public function cancel(Booking $booking)
     {
         // Pastikan booking milik user yang login
-        if ($booking->user_id !== Auth::id()) {
+        if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
         }
 
+        // Hanya booking dengan status pending yang bisa dibatalkan
         if ($booking->status !== 'pending') {
-            return back()->with('error', 'Booking tidak dapat dibatalkan.');
+            return back()->with('error', 'Booking tidak dapat dibatalkan karena sudah ' . $booking->status);
         }
 
         $booking->update(['status' => 'cancelled']);
 
-        return redirect()->route('dashboard')->with('success', 'Booking dibatalkan.');
+        // Update payment status juga
+        if ($booking->payment) {
+            $booking->payment->update(['status' => 'failed']);
+        }
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Booking berhasil dibatalkan.');
+    }
+
+    /**
+     * Get user's bookings (untuk dashboard)
+     */
+    public function index()
+    {
+        $bookings = Booking::where('user_id', Auth::id())
+            ->with('property')
+            ->latest()
+            ->paginate(10);
+
+        return view('bookings.index', compact('bookings'));
     }
 }

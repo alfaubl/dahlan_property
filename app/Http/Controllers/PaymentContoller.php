@@ -21,22 +21,52 @@ class PaymentController extends Controller
         Config::$is3ds = true;
     }
 
+    
+
     /**
-     * Process payment page.
+     * Process payment page (dipanggil dari BookingController)
      */
     public function process(Request $request)
     {
-        $payment = Payment::with('booking.property')->findOrFail($request->payment);
+        $payment = Payment::with('booking.property', 'user')
+            ->where('id', $request->payment)
+            ->firstOrFail();
         
         // Pastikan payment milik user yang login
-        if ($payment->user_id !== Auth::id()) {
+        if ($payment->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
+        }
+
+        // Ambil snap token dari midtrans_response atau dari request
+        $snapToken = $request->token ?? ($payment->midtrans_response['snap_token'] ?? null);
+
+        if (!$snapToken) {
+            // Jika token tidak ada, generate ulang
+            $params = [
+                'transaction_details' => [
+                    'order_id' => $payment->order_id,
+                    'gross_amount' => (int) $payment->amount,
+                ],
+                'customer_details' => [
+                    'first_name' => $payment->user->name,
+                    'email' => $payment->user->email,
+                    'phone' => $payment->user->phone ?? '',
+                ],
+            ];
+            
+            $snapToken = Snap::getSnapToken($params);
+            
+            // Simpan token baru
+            $payment->update(['midtrans_response' => ['snap_token' => $snapToken]]);
         }
 
         return view('payments.process', [
             'payment' => $payment,
-            'snapToken' => $request->token
+            'snapToken' => $snapToken
         ]);
+
+
+
     }
 
     /**
@@ -93,15 +123,27 @@ class PaymentController extends Controller
     }
 
     /**
-     * Finish payment page.
+     * Finish payment page (redirect dari Midtrans)
      */
     public function finish(Request $request)
     {
+        $orderId = $request->order_id;
+        
+        // Cari payment berdasarkan order_id
+        $payment = Payment::where('order_id', $orderId)->first();
+        
+        if ($payment && $payment->booking_id) {
+            // Redirect ke halaman detail booking
+            return redirect()->route('bookings.show', $payment->booking_id)
+                ->with('success', 'Pembayaran berhasil! Booking Anda telah dikonfirmasi.');
+        }
+
+        // Fallback ke halaman finish biasa
         return view('payments.finish', ['result' => $request->all()]);
     }
 
     /**
-     * Unfinish payment page.
+     * Unfinish payment page (redirect dari Midtrans)
      */
     public function unfinish(Request $request)
     {
@@ -109,10 +151,29 @@ class PaymentController extends Controller
     }
 
     /**
-     * Error payment page.
+     * Error payment page (redirect dari Midtrans)
      */
     public function error(Request $request)
     {
         return view('payments.error', ['result' => $request->all()]);
     }
+
+    /**
+     * Check payment status (untuk AJAX)
+     */
+    public function checkStatus($id)
+    {
+        $payment = Payment::findOrFail($id);
+        
+        if ($payment->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json([
+            'status' => $payment->status,
+            'booking_id' => $payment->booking_id
+        ]);
+    }
+
+    
 }

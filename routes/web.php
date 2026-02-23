@@ -39,11 +39,15 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])
 | MIDTRANS NOTIFICATION (WAJIB DI LUAR AUTH)
 |--------------------------------------------------------------------------
 */
-
 Route::post('/payment/notification', [PaymentController::class, 'notification'])
     ->name('payment.notification');
 
 
+Route::get('/payment/check-status/{id}', [PaymentController::class, 'checkStatus'])
+    ->name('payment.checkStatus');
+
+
+Route::get('/payment/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('payment.checkStatus');
 /*
 |--------------------------------------------------------------------------
 | AUTH ROUTES (Guest Only)
