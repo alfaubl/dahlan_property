@@ -113,97 +113,89 @@
             <div class="col-lg-9">
                 <div class="results-header">
                     <h5 class="fw-bold mb-0">
-                        <span id="propertyCount">0</span> Properti Ditemukan
+                        <span id="propertyCount"><?php echo e($properties->count()); ?></span> Properti Ditemukan
                     </h5>
                     <span class="text-muted">
                         <i class="fas fa-map-marker-alt me-1 text-primary"></i> 15 Kota
                     </span>
                 </div>
                 
-                <!-- Empty State -->
-                <div class="empty-state">
-                    <i class="fas fa-building"></i>
-                    <h3>Belum Ada Properti</h3>
-                    <p>Saat ini belum ada properti yang terdaftar. Silakan tambahkan properti baru.</p>
-                    
-                    <?php if(auth()->guard()->check()): ?>
-                        <?php if(Auth::user()->isAdmin()): ?>
-                            <a href="<?php echo e(route('properties.create')); ?>" class="btn btn-primary">
-                                <i class="fas fa-plus-circle me-2"></i>Tambah Properti Pertama
-                            </a>
-                        <?php else: ?>
-                            <p class="text-muted">Hubungi admin untuk menambahkan properti.</p>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <a href="<?php echo e(route('login')); ?>" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt me-2"></i>Login untuk Melihat
-                        </a>
-                    <?php endif; ?>
-                </div>
-                
-               
+                <!-- Properties Grid -->
                 <div class="row g-4">
                     <?php $__empty_1 = true; $__currentLoopData = $properties; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $property): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="col-md-6 col-xl-4">
-                        <div class="property-card card">
-                            <div class="property-image">
-                                <span class="property-badge"><?php echo e($property->status); ?></span>
-                                <span class="property-type"><?php echo e($property->type); ?></span>
-                                <img src="<?php echo e($property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'); ?>" alt="Property">
+                        <div class="property-card card h-100">
+                            <div class="property-image position-relative">
+                                <span class="property-badge position-absolute top-0 start-0 m-3"><?php echo e($property->status); ?></span>
+                                <span class="property-type position-absolute top-0 end-0 m-3"><?php echo e($property->type); ?></span>
+                                <img src="<?php echo e($property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'); ?>" 
+                                     alt="<?php echo e($property->title); ?>" class="card-img-top" style="height: 200px; object-fit: cover;">
                             </div>
-                            <div class="card-body">
-                                <div class="property-price">
+                            <div class="card-body d-flex flex-column">
+                                <div class="property-price text-primary fw-bold mb-2">
                                     Rp <?php echo e(number_format($property->price, 0, ',', '.')); ?>
 
-                                    <small>/<?php echo e($property->purpose == 'sale' ? 'jual' : 'bulan'); ?></small>
+                                    <small class="text-muted">/<?php echo e($property->purpose == 'sale' ? 'jual' : 'bulan'); ?></small>
                                 </div>
-                                <h5 class="property-title"><?php echo e($property->title); ?></h5>
-                                <div class="property-address">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <?php echo e($property->address); ?>, <?php echo e($property->city); ?>
+                                <h5 class="property-title card-title"><?php echo e($property->title); ?></h5>
+                                <div class="property-address text-muted small mb-3">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    <?php echo e($property->city); ?>
 
                                 </div>
-                                <div class="property-features">
-                                    <span class="property-feature">
-                                        <i class="fas fa-bed"></i> <?php echo e($property->bedrooms ?? '-'); ?> KT
+                                <div class="property-features d-flex gap-3 mb-3">
+                                    <span class="small">
+                                        <i class="fas fa-bed me-1"></i> <?php echo e($property->bedrooms ?? '-'); ?> KT
                                     </span>
-                                    <span class="property-feature">
-                                        <i class="fas fa-bath"></i> <?php echo e($property->bathrooms ?? '-'); ?> KM
+                                    <span class="small">
+                                        <i class="fas fa-bath me-1"></i> <?php echo e($property->bathrooms ?? '-'); ?> KM
                                     </span>
-                                    <span class="property-feature">
-                                        <i class="fas fa-vector-square"></i> <?php echo e($property->area ?? '-'); ?> m²
+                                    <span class="small">
+                                        <i class="fas fa-vector-square me-1"></i> <?php echo e($property->area ?? '-'); ?> m²
                                     </span>
+                                </div>
+                                
+                                <!-- ✅ TAMBAH INI: Tombol Aksi -->
+                                <div class="mt-auto d-grid gap-2">
+                                    <a href="<?php echo e(route('properties.show', $property->id)); ?>" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye me-2"></i>Lihat Detail
+                                    </a>
+                                    <?php if(auth()->guard()->check()): ?>
+                                        <a href="<?php echo e(route('properties.show', $property->id)); ?>#booking-section" class="btn btn-primary">
+                                            <i class="fas fa-calendar-check me-2"></i>Booking Sekarang
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="<?php echo e(route('login')); ?>" class="btn btn-primary">
+                                            <i class="fas fa-sign-in-alt me-2"></i>Login untuk Booking
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <div class="col-12">
-                        <div class="empty-state">
-                            <i class="fas fa-building"></i>
+                        <div class="empty-state text-center py-5">
+                            <i class="fas fa-building fa-3x text-muted mb-3"></i>
                             <h3>Belum Ada Properti</h3>
                             <p>Saat ini belum ada properti yang terdaftar.</p>
+                            <?php if(auth()->guard()->check()): ?>
+                                <a href="<?php echo e(route('properties.create')); ?>" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-2"></i>Tambah Properti
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php endif; ?>
                 </div>
                 
+                <!-- Pagination -->
+                <?php if($properties instanceof \Illuminate\Pagination\LengthAwarePaginator): ?>
                 <nav aria-label="Page navigation" class="mt-5">
-                    <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">4</a></li>
-                        <li class="page-item"><a class="page-link" href="#">5</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
-                        </li>
-                    </ul>
+                    <?php echo e($properties->links()); ?>
+
                 </nav>
-                -->
+                <?php endif; ?>
             </div>
         </div>
     </div>

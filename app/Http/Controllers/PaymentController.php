@@ -21,8 +21,6 @@ class PaymentController extends Controller
         Config::$is3ds = true;
     }
 
-    
-
     /**
      * Process payment page (dipanggil dari BookingController)
      */
@@ -60,13 +58,11 @@ class PaymentController extends Controller
             $payment->update(['midtrans_response' => ['snap_token' => $snapToken]]);
         }
 
-        return view('payments.process', [
+        // ✅ PERBAIKAN: View path singular 'payment' bukan 'payments'
+        return view('payment.process', [
             'payment' => $payment,
             'snapToken' => $snapToken
         ]);
-
-
-
     }
 
     /**
@@ -88,17 +84,17 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Payment not found'], 404);
         }
 
-        // Update status payment berdasarkan notifikasi
+        // ✅ PERBAIKAN: Standarisasi status ('success' bukan 'paid')
         if ($transaction == 'capture') {
             if ($type == 'credit_card') {
                 if ($fraud == 'challenge') {
                     $payment->status = 'pending';
                 } else {
-                    $payment->status = 'paid';
+                    $payment->status = 'success'; // ✅ Bukan 'paid'
                 }
             }
         } elseif ($transaction == 'settlement') {
-            $payment->status = 'paid';
+            $payment->status = 'success'; // ✅ Bukan 'paid'
         } elseif ($transaction == 'pending') {
             $payment->status = 'pending';
         } elseif ($transaction == 'deny') {
@@ -109,14 +105,28 @@ class PaymentController extends Controller
             $payment->status = 'failed';
         }
 
-        $payment->transaction_id = $notif->transaction_id;
-        $payment->payment_method = $type;
-        $payment->midtrans_response = $notif->getResponse();
+        $payment->transaction_id = $notif->transaction_id ?? null;
+        $payment->payment_method = $type ?? null;
+        
+        // ✅ PERBAIKAN: getResponse() tidak ada, manual array saja
+        $payment->midtrans_response = [
+            'transaction_status' => $transaction,
+            'order_id' => $orderId,
+            'payment_type' => $type,
+            'transaction_id' => $notif->transaction_id ?? null,
+            'transaction_time' => $notif->transaction_time ?? now(),
+            'gross_amount' => $notif->gross_amount ?? 0,
+            'signature_key' => $notif->signature_key ?? null
+        ];
+        
         $payment->save();
 
-        // Update status booking jika payment sukses
-        if ($payment->status === 'paid' && $payment->booking_id) {
-            $payment->booking->update(['status' => 'confirmed']);
+        // ✅ PERBAIKAN: Update status booking jika payment sukses
+        if ($payment->status === 'success' && $payment->booking_id) {
+            $payment->booking->update([
+                'status' => 'success', // ✅ Konsisten dengan Payment
+                'paid_at' => now()
+            ]);
         }
 
         return response()->json(['message' => 'Notification processed']);
@@ -133,13 +143,13 @@ class PaymentController extends Controller
         $payment = Payment::where('order_id', $orderId)->first();
         
         if ($payment && $payment->booking_id) {
-            // Redirect ke halaman detail booking
-            return redirect()->route('bookings.show', $payment->booking_id)
+            // ✅ PERBAIKAN: Route singular 'booking.show' bukan 'bookings.show'
+            return redirect()->route('booking.show', $payment->booking_id)
                 ->with('success', 'Pembayaran berhasil! Booking Anda telah dikonfirmasi.');
         }
 
         // Fallback ke halaman finish biasa
-        return view('payments.finish', ['result' => $request->all()]);
+        return view('payment.finish', ['result' => $request->all()]);
     }
 
     /**
@@ -147,7 +157,7 @@ class PaymentController extends Controller
      */
     public function unfinish(Request $request)
     {
-        return view('payments.unfinish', ['result' => $request->all()]);
+        return view('payment.unfinish', ['result' => $request->all()]);
     }
 
     /**
@@ -155,7 +165,7 @@ class PaymentController extends Controller
      */
     public function error(Request $request)
     {
-        return view('payments.error', ['result' => $request->all()]);
+        return view('payment.error', ['result' => $request->all()]);
     }
 
     /**
@@ -174,6 +184,4 @@ class PaymentController extends Controller
             'booking_id' => $payment->booking_id
         ]);
     }
-
-    
 }

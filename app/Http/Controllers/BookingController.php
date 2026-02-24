@@ -50,6 +50,9 @@ class BookingController extends Controller
         // Data chart booking 7 hari terakhir
         $chartData = $this->getBookingChartData($user->id);
         
+        // ✅ PERBAIKAN: Definisikan variabel $totalPrice yang sebelumnya hilang
+        $totalPrice = $totalSpending;
+        
         return view('bookings.index', compact(
             'user',
             'bookings',

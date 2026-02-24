@@ -42,7 +42,6 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])
 Route::post('/payment/notification', [PaymentController::class, 'notification'])
     ->name('payment.notification');
 
-Route::get('/payment/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('payment.checkStatus');
 /*
 |--------------------------------------------------------------------------
 | AUTH ROUTES (Guest Only)
@@ -50,7 +49,6 @@ Route::get('/payment/check-status/{id}', [PaymentController::class, 'checkStatus
 */
 
 Route::middleware('guest')->group(function () {
-
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
@@ -158,16 +156,21 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::prefix('payment')->name('payment.')->group(function () {
-
-        // Tambahan: process menerima parameter {payment} supaya tidak 404
-        Route::get('/process/{payment}', [PaymentController::class, 'process'])
-            ->name('process.withParam');
-
-        // Yang lama tetap ada
-        Route::get('/process', [PaymentController::class, 'process'])->name('process');
+        // ✅ PERBAIKAN: Tambah parameter {token?} agar bisa terima token dari redirect
+        Route::get('/process/{payment}/{token?}', [PaymentController::class, 'process'])->name('process');
+        
+        // ✅ TAMBAH: Routes untuk success/failed/retry
+        Route::get('/success/{payment}', [PaymentController::class, 'success'])->name('success');
+        Route::get('/failed/{payment}', [PaymentController::class, 'failed'])->name('failed');
+        Route::post('/retry/{payment}', [PaymentController::class, 'retry'])->name('retry');
+        
+        // Midtrans redirect pages
         Route::get('/finish', [PaymentController::class, 'finish'])->name('finish');
         Route::get('/unfinish', [PaymentController::class, 'unfinish'])->name('unfinish');
         Route::get('/error', [PaymentController::class, 'error'])->name('error');
+        
+        // ✅ PERBAIKAN: Check status harus di dalam auth middleware
+        Route::get('/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('checkStatus');
     });
 
     // Logout

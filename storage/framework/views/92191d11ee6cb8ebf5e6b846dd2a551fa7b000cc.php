@@ -3,8 +3,8 @@
 <?php $__env->startSection('title', 'Dashboard - Dahlan Property'); ?>
 
 <?php $__env->startSection('styles'); ?>
-    <?php echo $__env->make('partials.css.dashboard-css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-apex.css')); ?>">
+<?php echo $__env->make('partials.css.dashboard-css', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<link rel="stylesheet" href="<?php echo e(asset('css/dashboard-apex.css')); ?>">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -258,36 +258,36 @@
                         <td><span class="booking-price">Rp <?php echo e(number_format($booking->total_price ?? 0, 0, ',', '.')); ?></span></td>
                         <td>
                             <?php
-                                $statusClass = '';
-                                $statusText = '';
-                                if($booking->status == 'pending') {
-                                    $statusClass = 'status-pending';
-                                    $statusText = 'Menunggu';
-                                } elseif($booking->status == 'success') {
-                                    $statusClass = 'status-success';
-                                    $statusText = 'Selesai';
-                                } elseif($booking->status == 'expired') {
-                                    $statusClass = 'status-expired';
-                                    $statusText = 'Kadaluarsa';
-                                } elseif($booking->status == 'cancelled') {
-                                    $statusClass = 'status-cancelled';
-                                    $statusText = 'Dibatalkan';
-                                } else {
-                                    $statusClass = 'status-pending';
-                                    $statusText = 'Menunggu';
-                                }
+                            $statusClass = '';
+                            $statusText = '';
+                            if($booking->status == 'pending') {
+                            $statusClass = 'status-pending';
+                            $statusText = 'Menunggu';
+                            } elseif($booking->status == 'success') {
+                            $statusClass = 'status-success';
+                            $statusText = 'Selesai';
+                            } elseif($booking->status == 'expired') {
+                            $statusClass = 'status-expired';
+                            $statusText = 'Kadaluarsa';
+                            } elseif($booking->status == 'cancelled') {
+                            $statusClass = 'status-cancelled';
+                            $statusText = 'Dibatalkan';
+                            } else {
+                            $statusClass = 'status-pending';
+                            $statusText = 'Menunggu';
+                            }
                             ?>
                             <span class="status-badge <?php echo e($statusClass); ?>"><?php echo e($statusText); ?></span>
                         </td>
                         <td>
                             <?php if($booking->payment): ?>
-                                <?php if($booking->payment->status == 'success'): ?>
-                                    <span class="status-badge status-success">Lunas</span>
-                                <?php else: ?>
-                                    <span class="status-badge status-pending">Belum Lunas</span>
-                                <?php endif; ?>
+                            <?php if($booking->payment->status == 'success'): ?>
+                            <span class="status-badge status-success">Lunas</span>
                             <?php else: ?>
-                                <span class="status-badge status-pending">Belum Bayar</span>
+                            <span class="status-badge status-pending">Belum Lunas</span>
+                            <?php endif; ?>
+                            <?php else: ?>
+                            <span class="status-badge status-pending">Belum Bayar</span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -332,15 +332,15 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
-    <?php echo $__env->make('partials.js.dashboard-js', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-    <!-- ApexCharts -->
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="<?php echo e(asset('js/dashboard-apex.js')); ?>"></script>
-    <script>
-        window.dashboardData = {
-            chartSuccess: <?php echo json_encode($chartSuccess ?? [12, 19, 15) ?>,
-            chartPending: <?php echo json_encode($chartPending ?? [5, 7, 4) ?>
-        };
-    </script>
+<?php echo $__env->make('partials.js.dashboard-js', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<!-- ApexCharts -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="<?php echo e(asset('js/dashboard-apex.js')); ?>"></script>
+<script>
+    window.dashboardData = {
+        chartSuccess: <?php echo json_encode($chartSuccess, 15, 512) ?>,
+        chartPending: <?php echo json_encode($chartPending, 15, 512) ?>
+    };
+</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/dashboard/index.blade.php ENDPATH**/ ?>

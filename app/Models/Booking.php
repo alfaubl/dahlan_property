@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Booking extends Model
 {
@@ -14,12 +15,16 @@ class Booking extends Model
         'booking_date',
         'booking_time',
         'status',
-        'notes'
+        'notes',
+        'total_price',  
+        'paid_at'  
     ];
 
     protected $casts = [
         'booking_date' => 'date',
-        'booking_time' => 'datetime:H:i'
+        'booking_time' => 'string',  
+        'paid_at' => 'datetime',  
+        'total_price' => 'decimal:2'  
     ];
 
     public function user(): BelongsTo
@@ -32,7 +37,7 @@ class Booking extends Model
         return $this->belongsTo(Property::class);
     }
 
-    public function payment()
+    public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
     }
