@@ -10,16 +10,94 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
     public function __construct()
     {
-        // Set konfigurasi Midtrans
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = true;
         Config::$is3ds = true;
+    }
+
+    /**
+     * Display user's bookings dashboard
+     */
+    public function index()
+    {
+        $user = Auth::user();
+        
+        // Ambil semua booking user
+        $bookings = Booking::where('user_id', $user->id)
+            ->with(['property', 'payment'])
+            ->latest()
+            ->get();
+        
+        // Booking untuk tabel (5 terakhir)
+        $recentBookings = $bookings->take(5);
+        
+        // Statistik
+        $totalBookings = $bookings->count();
+        $pendingBookings = $bookings->where('status', 'pending')->count();
+        $successBookings = $bookings->where('status', 'success')->count();
+        $totalSpending = $bookings->where('status', 'success')->sum('total_price');
+        
+        // Data properti (untuk card statistik atas)
+        $totalProperties = Property::where('user_id', $user->id)->count();
+        
+        // Data chart booking 7 hari terakhir
+        $chartData = $this->getBookingChartData($user->id);
+        
+        return view('bookings.index', compact(
+            'user',
+            'bookings',
+            'recentBookings',
+            'totalBookings',
+            'pendingBookings',
+            'successBookings',
+            'totalSpending',
+            'totalProperties',
+            'chartData',
+            'totalPrice'
+        ));
+    }
+
+    /**
+     * Get booking data for chart (7 days)
+     */
+    private function getBookingChartData($userId)
+    {
+        $today = Carbon::today();
+        $successData = [];
+        $pendingData = [];
+        $labels = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = $today->copy()->subDays($i);
+            $dateStr = $date->format('Y-m-d');
+            
+            $successCount = Booking::where('user_id', $userId)
+                ->where('status', 'success')
+                ->whereDate('created_at', $dateStr)
+                ->count();
+            
+            $pendingCount = Booking::where('user_id', $userId)
+                ->where('status', 'pending')
+                ->whereDate('created_at', $dateStr)
+                ->count();
+            
+            $successData[] = $successCount;
+            $pendingData[] = $pendingCount;
+            $labels[] = $date->format('d M');
+        }
+        
+        return [
+            'success' => $successData,
+            'pending' => $pendingData,
+            'labels' => $labels
+        ];
     }
 
     /**
@@ -35,14 +113,9 @@ class BookingController extends Controller
         ]);
 
         $property = Property::findOrFail($request->property_id);
-
-        // Buat booking code unik
         $bookingCode = 'BOOK-' . strtoupper(Str::random(8));
-
-        // Hitung booking fee (10% dari harga)
         $bookingFee = $property->price * 0.1;
 
-        // Simpan booking
         $booking = Booking::create([
             'user_id' => Auth::id(),
             'property_id' => $request->property_id,
@@ -50,13 +123,12 @@ class BookingController extends Controller
             'booking_date' => $request->booking_date,
             'booking_time' => $request->booking_time,
             'status' => 'pending',
-            'notes' => $request->notes
+            'notes' => $request->notes,
+            'total_price' => $bookingFee
         ]);
 
-        // Buat order ID untuk Midtrans
         $orderId = 'BOOK-' . $booking->id . '-' . time();
 
-        // Simpan payment record
         $payment = Payment::create([
             'user_id' => Auth::id(),
             'booking_id' => $booking->id,
@@ -66,7 +138,6 @@ class BookingController extends Controller
             'status' => 'pending'
         ]);
 
-        // Siapkan parameter untuk Midtrans Snap
         $params = [
             'transaction_details' => [
                 'order_id' => $orderId,
@@ -89,15 +160,9 @@ class BookingController extends Controller
         ];
 
         try {
-            // Dapatkan Snap token
             $snapToken = Snap::getSnapToken($params);
-            
-            // Update payment dengan snap token
             $payment->update(['midtrans_response' => ['snap_token' => $snapToken]]);
-
-            // Redirect ke halaman payment process
             return redirect()->route('payment.process', ['payment' => $payment->id, 'token' => $snapToken]);
-
         } catch (\Exception $e) {
             return back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
         }
@@ -108,14 +173,11 @@ class BookingController extends Controller
      */
     public function show(Booking $booking)
     {
-        // Pastikan booking milik user yang login atau user adalah admin
         if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
         }
 
-        // Load relasi
         $booking->load(['property', 'payment', 'user']);
-
         return view('bookings.show', compact('booking'));
     }
 
@@ -124,37 +186,21 @@ class BookingController extends Controller
      */
     public function cancel(Booking $booking)
     {
-        // Pastikan booking milik user yang login
         if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403);
         }
 
-        // Hanya booking dengan status pending yang bisa dibatalkan
         if ($booking->status !== 'pending') {
             return back()->with('error', 'Booking tidak dapat dibatalkan karena sudah ' . $booking->status);
         }
 
         $booking->update(['status' => 'cancelled']);
 
-        // Update payment status juga
         if ($booking->payment) {
             $booking->payment->update(['status' => 'failed']);
         }
 
         return redirect()->route('dashboard')
             ->with('success', 'Booking berhasil dibatalkan.');
-    }
-
-    /**
-     * Get user's bookings (untuk dashboard)
-     */
-    public function index()
-    {
-        $bookings = Booking::where('user_id', Auth::id())
-            ->with('property')
-            ->latest()
-            ->paginate(10);
-
-        return view('bookings.index', compact('bookings'));
     }
 }

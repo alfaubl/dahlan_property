@@ -42,11 +42,6 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])
 Route::post('/payment/notification', [PaymentController::class, 'notification'])
     ->name('payment.notification');
 
-
-Route::get('/payment/check-status/{id}', [PaymentController::class, 'checkStatus'])
-    ->name('payment.checkStatus');
-
-
 Route::get('/payment/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('payment.checkStatus');
 /*
 |--------------------------------------------------------------------------
@@ -149,6 +144,8 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::prefix('bookings')->name('booking.')->group(function () {
+        Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::get('/create/{property}', [BookingController::class, 'create'])->name('create'); 
         Route::post('/', [BookingController::class, 'store'])->name('store');
         Route::get('/{booking}', [BookingController::class, 'show'])->name('show');
         Route::post('/{booking}/cancel', [BookingController::class, 'cancel'])->name('cancel');
