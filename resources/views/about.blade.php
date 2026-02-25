@@ -3,261 +3,285 @@
 @section('title', 'Tentang Kami - Dahlan Property')
 
 @section('styles')
-    @include('partials.css.about-css')
+<link rel="stylesheet" href="{{ asset('css/about.css') }}">
 @endsection
 
 @section('content')
-<!-- Hero Section -->
-<section class="hero-about">
-    <div class="container position-relative">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <span class="badge bg-white text-dark px-3 py-2 rounded-pill mb-3">
-                    <i class="fas fa-building me-2 text-primary"></i>Since 2024
-                </span>
-                <h1 class="display-4 fw-bold mb-4">Membangun Kepercayaan, <br>Menghadirkan Kenyamanan</h1>
-                <p class="lead mb-4 opacity-90">Dahlan Property hadir sebagai mitra terpercaya dalam menemukan properti impian Anda. Dengan pengalaman dan komitmen, kami menghubungkan Anda dengan hunian terbaik di seluruh Indonesia.</p>
-                <div class="d-flex gap-3">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-check-circle fa-2x me-2" style="color: rgba(255,255,255,0.9);"></i>
-                        <div>
-                            <span class="fw-bold d-block">100+</span>
-                            <small>Properti</small>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-user-tie fa-2x me-2" style="color: rgba(255,255,255,0.9);"></i>
-                        <div>
-                            <span class="fw-bold d-block">500+</span>
-                            <small>Klien Puas</small>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-city fa-2x me-2" style="color: rgba(255,255,255,0.9);"></i>
-                        <div>
-                            <span class="fw-bold d-block">15+</span>
-                            <small>Kota</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1073&q=80" 
-                     alt="Modern Building" 
-                     class="img-fluid rounded-4 shadow-lg"
-                     style="max-height: 500px; width: 100%; object-fit: cover;">
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Stats Section with Chart -->
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4 mb-5">
-            <div class="col-md-4">
-                <div class="stats-card h-100">
-                    <div class="bg-primary bg-opacity-10">
-                        <i class="fas fa-building text-primary"></i>
-                    </div>
-                    <h3 class="text-primary">150+</h3>
-                    <p class="text-muted mb-0">Total Properti</p>
-                    <small class="text-success">Tersebar di 15 kota</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card h-100">
-                    <div class="bg-success bg-opacity-10">
-                        <i class="fas fa-users text-success"></i>
-                    </div>
-                    <h3 class="text-success">500+</h3>
-                    <p class="text-muted mb-0">Klien Puas</p>
-                    <small class="text-success">Rating 4.9/5</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stats-card h-100">
-                    <div class="bg-warning bg-opacity-10">
-                        <i class="fas fa-clock text-warning"></i>
-                    </div>
-                    <h3 class="text-warning">5+</h3>
-                    <p class="text-muted mb-0">Tahun Pengalaman</p>
-                    <small class="text-success">Sejak 2024</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chart Section -->
-        <div class="row align-items-center mt-5">
-            <div class="col-lg-6">
-                <h2 class="fw-bold mb-4">Portofolio Properti Kami</h2>
-                <p class="text-muted mb-4">Kami memiliki berbagai tipe properti premium yang tersebar di seluruh Indonesia. Dari hunian mewah hingga komersial strategis, semua dirancang untuk kenyamanan dan investasi terbaik Anda.</p>
-                
-                <div class="value-card">
-                    <div class="bg-primary bg-opacity-10">
-                        <i class="fas fa-home text-primary"></i>
-                    </div>
-                    <div>
-                        <h5>Rumah Premium</h5>
-                        <p>35% dari total portofolio</p>
-                    </div>
-                </div>
-                
-                <div class="value-card">
-                    <div class="bg-info bg-opacity-10">
-                        <i class="fas fa-building text-info"></i>
-                    </div>
-                    <div>
-                        <h5>Apartemen Mewah</h5>
-                        <p>25% dari total portofolio</p>
-                    </div>
-                </div>
-                
-                <div class="value-card">
-                    <div class="bg-success bg-opacity-10">
-                        <i class="fas fa-store text-success"></i>
-                    </div>
-                    <div>
-                        <h5>Ruko & Komersial</h5>
-                        <p>20% dari total portofolio</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-lg rounded-4 p-3">
-                    <div class="chart-container">
-                        <canvas id="portfolioChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Vision Mission -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100 p-4">
-                    <div class="d-flex">
-                        <div class="bg-primary bg-opacity-10">
-                            <i class="fas fa-eye text-primary"></i>
-                        </div>
-                        <div>
-                            <h3>Visi</h3>
-                            <p>Menjadi perusahaan properti terdepan di Indonesia yang menghadirkan solusi hunian inovatif, berkualitas, dan berkelanjutan untuk setiap keluarga Indonesia.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100 p-4">
-                    <div class="d-flex">
-                        <div class="bg-success bg-opacity-10">
-                            <i class="fas fa-bullseye text-success"></i>
-                        </div>
-                        <div>
-                            <h3>Misi</h3>
-                            <ul class="list-unstyled">
-                                <li><i class="fas fa-check-circle text-success"></i> Menyediakan properti berkualitas dengan harga kompetitif</li>
-                                <li><i class="fas fa-check-circle text-success"></i> Memberikan pelayanan profesional dan transparan</li>
-                                <li><i class="fas fa-check-circle text-success"></i> Membangun kepercayaan jangka panjang dengan klien</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Milestones -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="fw-bold text-center mb-5">Perjalanan Kami</h2>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm p-4">
-                    <div class="milestone-item">
-                        <span class="milestone-year">2024</span>
-                        <div class="ms-4">
-                            <h5>Dahlan Property Didirikan</h5>
-                            <p>Memulai perjalanan dengan 1 kantor dan 5 properti</p>
-                        </div>
-                    </div>
-                    <div class="milestone-item">
-                        <span class="milestone-year">2025</span>
-                        <div class="ms-4">
-                            <h5>Ekspansi ke 5 Kota</h5>
-                            <p>Memperluas jaringan ke Jakarta, Surabaya, Bandung, Medan, Makassar</p>
-                        </div>
-                    </div>
-                    <div class="milestone-item">
-                        <span class="milestone-year">2026</span>
-                        <div class="ms-4">
-                            <h5>100+ Properti & 500+ Klien</h5>
-                            <p>Mencapai tonggak sejarah dengan portofolio properti premium</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Team Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="fw-bold text-center mb-2">Tim Profesional Kami</h2>
-        <p class="text-muted text-center mb-5">Didukung oleh para ahli properti yang berpengalaman</p>
+<div class="space-y-8 animate-slideIn">
+    
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="about-hero-bg"></div>
+        <div class="about-hero-pattern"></div>
         
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="team-card card border-0">
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80" alt="Team">
-                    <div class="card-body">
-                        <h5>Ahmad Dahlan</h5>
-                        <p class="text-primary">Founder & CEO</p>
-                        <small>15+ tahun pengalaman</small>
-                    </div>
+        <div class="about-hero-content">
+            <span class="about-hero-badge">Tentang Kami</span>
+            <h1 class="about-hero-title">Dahlan Property</h1>
+            <p class="about-hero-subtitle">
+                Mitra terpercaya Anda dalam menemukan properti impian sejak 2015
+            </p>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section class="mission-vision-section">
+        <div class="mission-vision-grid">
+            <!-- Mission Card -->
+            <div class="mission-card">
+                <div class="card-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h2 class="card-title">Misi Kami</h2>
+                <p class="card-text">
+                    Menjadi platform properti terdepan di Indonesia dengan menyediakan layanan yang transparan, terpercaya, dan inovatif. Kami berkomitmen untuk membantu setiap klien menemukan properti yang sesuai dengan kebutuhan dan impian mereka.
+                </p>
+            </div>
+
+            <!-- Vision Card -->
+            <div class="vision-card">
+                <div class="card-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h2 class="card-title">Visi Kami</h2>
+                <p class="card-text">
+                    Menciptakan ekosistem properti digital yang memudahkan setiap orang untuk memiliki, menjual, dan menyewakan properti dengan cara yang aman, cepat, dan menyenangkan.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" data-purecounter-start="0" data-purecounter-end="1500" data-purecounter-duration="2">0</div>
+                <div class="stat-label">Properti Terjual</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" data-purecounter-start="0" data-purecounter-end="500" data-purecounter-duration="2">0</div>
+                <div class="stat-label">Klien Puas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="2">0</div>
+                <div class="stat-label">Tahun Pengalaman</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" data-purecounter-start="0" data-purecounter-end="25" data-purecounter-duration="2">0</div>
+                <div class="stat-label">Tim Profesional</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="section-header">
+            <span class="section-badge">Nilai-Nilai Kami</span>
+            <h2>Prinsip yang Membangun Kami</h2>
+            <p>Nilai-nilai yang menjadi fondasi setiap langkah kami</p>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon integrity">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="value-title">Integritas</h3>
+                <p class="value-description">
+                    Kami menjunjung tinggi kejujuran dan transparansi dalam setiap transaksi
+                </p>
+            </div>
+
+            <div class="value-card">
+                <div class="value-icon excellence">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="value-title">Keunggulan</h3>
+                <p class="value-description">
+                    Selalu memberikan pelayanan terbaik dan melebihi ekspektasi
+                </p>
+            </div>
+
+            <div class="value-card">
+                <div class="value-icon innovation">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3 class="value-title">Inovasi</h3>
+                <p class="value-description">
+                    Terus berinovasi dalam teknologi dan layanan properti
+                </p>
+            </div>
+
+            <div class="value-card">
+                <div class="value-icon customer">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="value-title">Customer First</h3>
+                <p class="value-description">
+                    Kepuasan klien adalah prioritas utama kami
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section">
+        <div class="section-header">
+            <span class="section-badge">Perjalanan Kami</span>
+            <h2>Sejarah Dahlan Property</h2>
+            <p>Perjalanan panjang kami dalam industri properti</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2015</span>
+                    <h3 class="timeline-title">Awal Berdiri</h3>
+                    <p class="timeline-text">
+                        Dahlan Property didirikan dengan visi memudahkan masyarakat menemukan properti impian.
+                    </p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="team-card card border-0">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=688&q=80" alt="Team">
-                    <div class="card-body">
-                        <h5>Sarah Wijaya</h5>
-                        <p class="text-primary">Head of Marketing</p>
-                        <small>10+ tahun pengalaman</small>
-                    </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2017</span>
+                    <h3 class="timeline-title">Ekspansi Pertama</h3>
+                    <p class="timeline-text">
+                        Membuka cabang pertama di Surabaya dan melayani lebih dari 500 klien.
+                    </p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="team-card card border-0">
-                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80" alt="Team">
-                    <div class="card-body">
-                        <h5>Budi Santoso</h5>
-                        <p class="text-primary">Property Consultant</p>
-                        <small>8+ tahun pengalaman</small>
-                    </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2019</span>
+                    <h3 class="timeline-title">Platform Digital</h3>
+                    <p class="timeline-text">
+                        Meluncurkan platform digital untuk memudahkan pencarian properti secara online.
+                    </p>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="team-card card border-0">
-                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=761&q=80" alt="Team">
-                    <div class="card-body">
-                        <h5>Dewi Lestari</h5>
-                        <p class="text-primary">Customer Relations</p>
-                        <small>5+ tahun pengalaman</small>
-                    </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2024</span>
+                    <h3 class="timeline-title">Transformasi</h3>
+                    <p class="timeline-text">
+                        Bertransformasi menjadi marketplace properti terpercaya dengan ribuan properti.
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="section-header">
+            <span class="section-badge">Tim Kami</span>
+            <h2>Para Profesional di Belakang Layar</h2>
+            <p>Tim berpengalaman yang siap membantu Anda</p>
+        </div>
+
+        <div class="team-grid">
+            <!-- Team Member 1 -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a" alt="Ahmad Dahlan">
+                    <div class="team-social">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Ahmad Dahlan</h3>
+                    <p class="team-position">Founder & CEO</p>
+                    <p class="team-bio">Berpengalaman 15 tahun di industri properti dan pengembangan bisnis.</p>
+                </div>
+            </div>
+
+            <!-- Team Member 2 -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2" alt="Siti Nurhaliza">
+                    <div class="team-social">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Siti Nurhaliza</h3>
+                    <p class="team-position">Head of Marketing</p>
+                    <p class="team-bio">Ahli strategi marketing dengan portofolio lebih dari 100 kampanye sukses.</p>
+                </div>
+            </div>
+
+            <!-- Team Member 3 -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" alt="Budi Santoso">
+                    <div class="team-social">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Budi Santoso</h3>
+                    <p class="team-position">Lead Property Consultant</p>
+                    <p class="team-bio">Berpengalaman 10 tahun sebagai konsultan properti bersertifikasi.</p>
+                </div>
+            </div>
+
+            <!-- Team Member 4 -->
+            <div class="team-card">
+                <div class="team-image">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956" alt="Dewi Lestari">
+                    <div class="team-social">
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="team-info">
+                    <h3 class="team-name">Dewi Lestari</h3>
+                    <p class="team-position">Customer Relations</p>
+                    <p class="team-bio">Spesialis dalam membangun hubungan baik dengan klien dan mitra.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="about-cta">
+        <div class="about-cta-bg-1"></div>
+        <div class="about-cta-bg-2"></div>
+        
+        <div class="about-cta-content">
+            <h2 class="about-cta-title">Siap Bekerja Sama?</h2>
+            <p class="about-cta-text">
+                Tim kami siap membantu Anda menemukan properti impian atau memasarkan properti Anda.
+            </p>
+            <div class="about-cta-buttons">
+                <a href="{{ route('contact') }}" class="btn-about-primary">
+                    <i class="fas fa-headset mr-2"></i>
+                    Hubungi Kami
+                </a>
+                <a href="{{ route('properties.index') }}" class="btn-about-secondary">
+                    <i class="fas fa-building mr-2"></i>
+                    Lihat Properti
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
 @endsection
 
 @section('scripts')
-    @include('partials.js.about-js')
+<script src="{{ asset('js/about.js') }}"></script>
 @endsection

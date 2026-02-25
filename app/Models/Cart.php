@@ -1,19 +1,28 @@
 <?php
-namespace App\Models;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Cart extends Model {
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Cart extends Model
+{
     use SoftDeletes;
-    
-    protected $fillable = ['user_id', 'property_id', 'quantity'];
-    
-    public function user(): BelongsTo {
+
+    protected $fillable = [
+        'user_id',
+        'property_id',
+        'quantity'
+    ];
+
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
-    
-    public function property(): BelongsTo {
+
+    public function property(): BelongsTo
+    {
         return $this->belongsTo(Property::class);
     }
 }

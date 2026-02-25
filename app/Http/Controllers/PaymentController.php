@@ -2,186 +2,192 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
-use App\Models\Booking;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Booking;
+use App\Models\Payment;
 use Midtrans\Config;
 use Midtrans\Snap;
-use Midtrans\Notification;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
     public function __construct()
     {
-        // Set konfigurasi Midtrans
+        // Load konfigurasi Midtrans dari config
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
+        Config::$isSanitized = config('midtrans.is_sanitized', true);
+        Config::$is3ds = config('midtrans.is_3ds', true);
     }
 
     /**
-     * Process payment page (dipanggil dari BookingController)
+     * Generate Snap Token untuk frontend Snap.js
      */
-    public function process(Request $request)
+    public function generateSnapToken(Booking $booking)
     {
-        $payment = Payment::with('booking.property', 'user')
-            ->where('id', $request->payment)
-            ->firstOrFail();
-        
-        // Pastikan payment milik user yang login
-        if ($payment->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
-            abort(403);
-        }
-
-        // Ambil snap token dari midtrans_response atau dari request
-        $snapToken = $request->token ?? ($payment->midtrans_response['snap_token'] ?? null);
-
-        if (!$snapToken) {
-            // Jika token tidak ada, generate ulang
-            $params = [
-                'transaction_details' => [
-                    'order_id' => $payment->order_id,
-                    'gross_amount' => (int) $payment->amount,
-                ],
-                'customer_details' => [
-                    'first_name' => $payment->user->name,
-                    'email' => $payment->user->email,
-                    'phone' => $payment->user->phone ?? '',
-                ],
-            ];
-            
-            $snapToken = Snap::getSnapToken($params);
-            
-            // Simpan token baru
-            $payment->update(['midtrans_response' => ['snap_token' => $snapToken]]);
-        }
-
-        // ✅ PERBAIKAN: View path singular 'payment' bukan 'payments'
-        return view('payment.process', [
-            'payment' => $payment,
-            'snapToken' => $snapToken
-        ]);
-    }
-
-    /**
-     * Handle payment notification from Midtrans.
-     */
-    public function notification(Request $request)
-    {
-        $notif = new Notification();
-
-        $transaction = $notif->transaction_status;
-        $type = $notif->payment_type;
-        $orderId = $notif->order_id;
-        $fraud = $notif->fraud_status;
-
-        // Cari payment berdasarkan order_id
-        $payment = Payment::where('order_id', $orderId)->first();
-
-        if (!$payment) {
-            return response()->json(['message' => 'Payment not found'], 404);
-        }
-
-        // ✅ PERBAIKAN: Standarisasi status ('success' bukan 'paid')
-        if ($transaction == 'capture') {
-            if ($type == 'credit_card') {
-                if ($fraud == 'challenge') {
-                    $payment->status = 'pending';
-                } else {
-                    $payment->status = 'success'; // ✅ Bukan 'paid'
-                }
-            }
-        } elseif ($transaction == 'settlement') {
-            $payment->status = 'success'; // ✅ Bukan 'paid'
-        } elseif ($transaction == 'pending') {
-            $payment->status = 'pending';
-        } elseif ($transaction == 'deny') {
-            $payment->status = 'failed';
-        } elseif ($transaction == 'expire') {
-            $payment->status = 'expired';
-        } elseif ($transaction == 'cancel') {
-            $payment->status = 'failed';
-        }
-
-        $payment->transaction_id = $notif->transaction_id ?? null;
-        $payment->payment_method = $type ?? null;
-        
-        // ✅ PERBAIKAN: getResponse() tidak ada, manual array saja
-        $payment->midtrans_response = [
-            'transaction_status' => $transaction,
-            'order_id' => $orderId,
-            'payment_type' => $type,
-            'transaction_id' => $notif->transaction_id ?? null,
-            'transaction_time' => $notif->transaction_time ?? now(),
-            'gross_amount' => $notif->gross_amount ?? 0,
-            'signature_key' => $notif->signature_key ?? null
-        ];
-        
-        $payment->save();
-
-        // ✅ PERBAIKAN: Update status booking jika payment sukses
-        if ($payment->status === 'success' && $payment->booking_id) {
-            $payment->booking->update([
-                'status' => 'success', // ✅ Konsisten dengan Payment
-                'paid_at' => now()
-            ]);
-        }
-
-        return response()->json(['message' => 'Notification processed']);
-    }
-
-    /**
-     * Finish payment page (redirect dari Midtrans)
-     */
-    public function finish(Request $request)
-    {
-        $orderId = $request->order_id;
-        
-        // Cari payment berdasarkan order_id
-        $payment = Payment::where('order_id', $orderId)->first();
-        
-        if ($payment && $payment->booking_id) {
-            // ✅ PERBAIKAN: Route singular 'booking.show' bukan 'bookings.show'
-            return redirect()->route('booking.show', $payment->booking_id)
-                ->with('success', 'Pembayaran berhasil! Booking Anda telah dikonfirmasi.');
-        }
-
-        // Fallback ke halaman finish biasa
-        return view('payment.finish', ['result' => $request->all()]);
-    }
-
-    /**
-     * Unfinish payment page (redirect dari Midtrans)
-     */
-    public function unfinish(Request $request)
-    {
-        return view('payment.unfinish', ['result' => $request->all()]);
-    }
-
-    /**
-     * Error payment page (redirect dari Midtrans)
-     */
-    public function error(Request $request)
-    {
-        return view('payment.error', ['result' => $request->all()]);
-    }
-
-    /**
-     * Check payment status (untuk AJAX)
-     */
-    public function checkStatus($id)
-    {
-        $payment = Payment::findOrFail($id);
-        
-        if ($payment->user_id !== Auth::id()) {
+        // Validasi ownership
+        if ($booking->user_id !== auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
+        if ($booking->payment_status === 'paid') {
+            return response()->json(['error' => 'Booking already paid'], 400);
+        }
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $booking->order_id,
+                'gross_amount' => (int) $booking->total_amount,
+            ],
+            'customer_details' => [
+                'first_name' => auth()->user()->name ?? 'Customer',
+                'email' => auth()->user()->email,
+                'phone' => auth()->user()->phone ?? '',
+            ],
+            'callbacks' => [
+                'finish' => route('payment.finish'),
+                'unfinish' => route('payment.unfinish'),
+                'error' => route('payment.error'),
+            ],
+            'expiry' => [
+                'start_time' => date('Y-m-d H:i:s T'),
+                'unit' => 'minutes',
+                'duration' => 60,
+            ],
+        ];
+
+        try {
+            $snapToken = Snap::getSnapToken($params);
+            return response()->json(['snap_token' => $snapToken]);
+        } catch (\Exception $e) {
+            Log::error('Midtrans Snap Token Error: ' . $e->getMessage(), [
+                'order_id' => $booking->order_id,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json(['error' => 'Failed to generate payment token'], 500);
+        }
+    }
+
+    /**
+     * Handle Midtrans Server Notification (Webhook)
+     */
+    public function notification(Request $request)
+    {
+        $notification = $request->all();
+        Log::info('Midtrans Notification Received', $notification);
+
+        $orderId = $notification['order_id'] ?? null;
+        $transactionStatus = $notification['transaction_status'] ?? null;
+        $fraudStatus = $notification['fraud_status'] ?? null;
+
+        $payment = Payment::where('order_id', $orderId)->first();
+        
+        if (!$payment) {
+            Log::warning('Payment not found for order_id: ' . $orderId);
+            return response()->json(['error' => 'Payment not found'], 404);
+        }
+
+        switch ($transactionStatus) {
+            case 'capture':
+            case 'settlement':
+                $newStatus = ($fraudStatus === 'challenge') ? 'challenge' : 'paid';
+                $payment->update(['status' => $newStatus]);
+                if ($newStatus === 'paid') {
+                    $payment->booking->update(['payment_status' => 'paid']);
+                }
+                break;
+            case 'cancel':
+            case 'deny':
+            case 'expire':
+                $payment->update(['status' => 'cancelled']);
+                break;
+            case 'pending':
+                $payment->update(['status' => 'pending']);
+                break;
+        }
+
+        Log::info('Payment updated: ' . $orderId);
+        return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * Handle redirect setelah pembayaran selesai (Finish)
+     */
+    public function finish(Request $request)
+    {
+        $orderId = $request->query('order_id') ?? $request->segment(3);
+        
+        $payment = Payment::where('order_id', $orderId)
+            ->whereHas('booking', fn($q) => $q->where('user_id', auth()->id()))
+            ->first();
+
+        if (!$payment) {
+            return redirect()->route('dashboard')->with('error', 'Payment not found');
+        }
+
+        return redirect()->route('booking.show', $payment->booking_id)
+            ->with('success', 'Payment process completed. Please check your booking status.');
+    }
+
+    public function unfinish(Request $request)
+    {
+        return redirect()->route('dashboard')
+            ->with('info', 'Payment is pending. Please complete your payment.');
+    }
+
+    public function error(Request $request)
+    {
+        return redirect()->route('dashboard')
+            ->with('error', 'Payment failed. Please try again.');
+    }
+
+    public function success(Payment $payment)
+    {
+        if ($payment->booking->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        return redirect()->route('booking.show', $payment->booking_id)
+            ->with('success', 'Payment successful!');
+    }
+
+    public function failed(Payment $payment)
+    {
+        if ($payment->booking->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        return redirect()->route('booking.show', $payment->booking_id)
+            ->with('error', 'Payment failed. Please try again.');
+    }
+
+    public function retry(Payment $payment)
+    {
+        if ($payment->booking->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        return redirect()->route('booking.show', $payment->booking_id)
+            ->with('info', 'Please retry your payment.');
+    }
+
+    public function checkStatus($id)
+    {
+        $payment = Payment::where('id', $id)
+            ->whereHas('booking', fn($q) => $q->where('user_id', auth()->id()))
+            ->firstOrFail();
+
         return response()->json([
             'status' => $payment->status,
-            'booking_id' => $payment->booking_id
+            'payment_status' => $payment->booking->payment_status,
         ]);
+    }
+
+    public function process($paymentId, $token = null)
+    {
+        $payment = Payment::findOrFail($paymentId);
+        
+        if ($payment->booking->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        return redirect()->route('booking.show', $payment->booking_id);
     }
 }

@@ -1,158 +1,234 @@
 @extends('layouts.app')
 
-@section('title', $property->title . ' - Dahlan Property')
+@section('title', $property->title ?? 'Detail Properti')
 
 @section('styles')
-    @include('partials.css.property-show-css')
+<link rel="stylesheet" href="{{ asset('css/property-show.css') }}">
 @endsection
 
 @section('content')
-<div class="container py-5">
-    <div class="row">
-        <!-- Kolom Kiri: Detail Properti -->
-        <div class="col-lg-8">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('properties.index') }}">Jelajahi</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ $property->title }}</li>
-                </ol>
-            </nav>
-            
-            <h1 class="fw-bold mb-3">{{ $property->title }}</h1>
-            
-            <div class="d-flex align-items-center text-muted mb-4">
-                <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                <span>{{ $property->address }}, {{ $property->city }}, {{ $property->province }}</span>
-            </div>
-            
-            <div class="property-price mb-4">
-                <span class="h2 fw-bold text-primary">Rp {{ number_format($property->price, 0, ',', '.') }}</span>
-                <span class="text-muted">/{{ $property->purpose == 'sale' ? 'Jual' : 'Sewa' }}</span>
-            </div>
-            
-            @if($property->image)
-            <div class="property-gallery mb-4">
-                <img src="{{ $property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" 
-                     alt="{{ $property->title }}" class="img-fluid rounded-4 w-100" style="height: 400px; object-fit: cover;">
-            </div>
+<div class="property-show-container">
+    
+    <!-- Back Button -->
+    <a href="{{ route('properties.index') }}" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        <span>Kembali ke Daftar Properti</span>
+    </a>
+
+    <!-- Property Gallery -->
+    <div class="property-gallery">
+        <!-- Badges -->
+        <div class="gallery-badge">
+            @if($property->is_featured ?? false)
+            <span class="badge-featured">
+                <i class="fas fa-star mr-1"></i> FEATURED
+            </span>
             @endif
-            
-            <div class="property-description mb-5">
-                <h5 class="fw-bold mb-3">Deskripsi</h5>
-                <p class="text-muted">{{ $property->description ?? 'Tidak ada deskripsi' }}</p>
+        </div>
+
+        <!-- Main Image -->
+        <div class="gallery-main">
+            <img src="{{ $property->image_url ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" 
+                 alt="{{ $property->title }}">
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="gallery-thumb">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750" alt="Thumbnail 1">
+        </div>
+        <div class="gallery-thumb">
+            <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00" alt="Thumbnail 2">
+        </div>
+    </div>
+
+    <!-- Property Info Grid -->
+    <div class="property-info-grid">
+        <!-- Left Column -->
+        <div class="left-column">
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="property-title">{{ $property->title ?? 'Villa Eksklusif dengan Pemandangan Laut' }}</h1>
+                
+                <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ $property->location ?? 'Jl. Raya Uluwatu, Bali' }}</span>
+                </div>
+
+                <div class="property-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Luas Bangunan</div>
+                        <div class="meta-value">{{ $property->building_area ?? '250' }} m²</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Luas Tanah</div>
+                        <div class="meta-value">{{ $property->land_area ?? '300' }} m²</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Tahun</div>
+                        <div class="meta-value">{{ $property->year_built ?? '2024' }}</div>
+                    </div>
+                </div>
             </div>
-            
-            <div class="property-features mb-5">
-                <h5 class="fw-bold mb-3">Fasilitas</h5>
-                <div class="row g-3">
-                    @if($property->bedrooms)
-                    <div class="col-md-3 col-6">
-                        <div class="feature-item p-3 bg-light rounded-4 text-center">
-                            <i class="fas fa-bed fa-2x text-primary mb-2"></i>
-                            <span class="d-block">{{ $property->bedrooms }} Kamar Tidur</span>
+
+            <!-- Description -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i class="fas fa-align-left"></i>
+                    Deskripsi
+                </h2>
+                <div class="description-text">
+                    {{ $property->description ?? 'Villa mewah dengan pemandangan laut yang menakjubkan. Dilengkapi dengan kolam renang pribadi, taman tropis, dan akses langsung ke pantai. Cocok untuk investasi atau tempat liburan keluarga. Lokasi strategis dekat dengan berbagai fasilitas umum seperti restoran, supermarket, dan tempat wisata.' }}
+                </div>
+            </div>
+
+            <!-- Specifications -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    Spesifikasi Bangunan
+                </h2>
+                <div class="specs-grid">
+                    <div class="spec-item">
+                        <div class="spec-icon primary">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="spec-content">
+                            <div class="spec-label">Kamar Tidur</div>
+                            <div class="spec-value">{{ $property->bedrooms ?? '4' }} Kamar</div>
                         </div>
                     </div>
-                    @endif
-                    
-                    @if($property->bathrooms)
-                    <div class="col-md-3 col-6">
-                        <div class="feature-item p-3 bg-light rounded-4 text-center">
-                            <i class="fas fa-bath fa-2x text-primary mb-2"></i>
-                            <span class="d-block">{{ $property->bathrooms }} Kamar Mandi</span>
+
+                    <div class="spec-item">
+                        <div class="spec-icon success">
+                            <i class="fas fa-bath"></i>
+                        </div>
+                        <div class="spec-content">
+                            <div class="spec-label">Kamar Mandi</div>
+                            <div class="spec-value">{{ $property->bathrooms ?? '3' }} Kamar</div>
                         </div>
                     </div>
-                    @endif
-                    
-                    @if($property->area)
-                    <div class="col-md-3 col-6">
-                        <div class="feature-item p-3 bg-light rounded-4 text-center">
-                            <i class="fas fa-vector-square fa-2x text-primary mb-2"></i>
-                            <span class="d-block">{{ $property->area }} m²</span>
+
+                    <div class="spec-item">
+                        <div class="spec-icon warning">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="spec-content">
+                            <div class="spec-label">Garasi</div>
+                            <div class="spec-value">{{ $property->garage ?? '2' }} Mobil</div>
                         </div>
                     </div>
-                    @endif
+
+                    <div class="spec-item">
+                        <div class="spec-icon info">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="spec-content">
+                            <div class="spec-label">Listrik</div>
+                            <div class="spec-value">{{ $property->electricity ?? '5500' }} Watt</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facilities -->
+            <div class="section-card">
+                <h2 class="section-title">
+                    <i class="fas fa-check-circle"></i>
+                    Fasilitas
+                </h2>
+                <div class="facilities-grid">
+                    <div class="facility-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>AC Central</span>
+                    </div>
+                    <div class="facility-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Kolam Renang</span>
+                    </div>
+                    <div class="facility-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Keamanan 24 Jam</span>
+                    </div>
+                    <div class="facility-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Taman</span>
+                    </div>
+                    <div class="facility-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Internet</span>
+                    </div>
+                    <div class="facility-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Furnished</span>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Kolom Kanan: Booking Form -->
-        <div class="col-lg-4">
-            {{-- ========== FORM BOOKING ========== --}}
-            <div class="booking-section" id="booking-section">
-                <h3 class="fw-bold mb-4">Booking Kunjungan</h3>
-                
-                @auth
-                    <form action="{{ route('booking.store') }}" method="POST" class="card p-4 shadow-sm border-0">
-                        @csrf
-                        <input type="hidden" name="property_id" value="{{ $property->id }}">
-                        
-                        <div class="mb-3">
-                            <label for="booking_date" class="form-label fw-semibold">Tanggal Kunjungan</label>
-                            <input type="date" class="form-control" id="booking_date" name="booking_date" 
-                                   min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
-                            @error('booking_date')
-                                <span class="text-danger small">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="booking_time" class="form-label fw-semibold">Jam Kunjungan</label>
-                            <select class="form-select" id="booking_time" name="booking_time" required>
-                                <option value="">Pilih Jam</option>
-                                <option value="09:00">09:00 WIB</option>
-                                <option value="10:00">10:00 WIB</option>
-                                <option value="11:00">11:00 WIB</option>
-                                <option value="13:00">13:00 WIB</option>
-                                <option value="14:00">14:00 WIB</option>
-                                <option value="15:00">15:00 WIB</option>
-                                <option value="16:00">16:00 WIB</option>
-                            </select>
-                            @error('booking_time')
-                                <span class="text-danger small">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="notes" class="form-label fw-semibold">Catatan (Opsional)</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="2" 
-                                      placeholder="Contoh: Ingin survey dengan keluarga..."></textarea>
-                            @error('notes')
-                                <span class="text-danger small">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="alert alert-info d-flex align-items-center mb-4">
-                            <i class="fas fa-info-circle fa-2x me-3"></i>
-                            <div>
-                                <strong>Booking Fee: Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</strong>
-                                <p class="mb-0 small">(10% dari harga properti)</p>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-lg w-100">
-                            <i class="fas fa-calendar-check me-2"></i>
-                            Booking Sekarang
-                        </button>
-                    </form>
-                @else
-                    <div class="card p-4 text-center border-0 shadow-sm">
-                        <i class="fas fa-lock fa-3x text-muted mb-3"></i>
-                        <h5>Silakan login untuk booking</h5>
-                        <p class="text-muted small mb-3">Anda perlu login untuk melakukan booking properti ini</p>
-                        <a href="{{ route('login') }}" class="btn btn-primary">Login Sekarang</a>
+
+        <!-- Right Column - Booking Card -->
+        <div class="right-column">
+            <div class="booking-card">
+                <div class="booking-price-wrapper">
+                    <div class="booking-price">
+                        Rp {{ number_format($property->price ?? 2500000000, 0, ',', '.') }}
                     </div>
-                @endauth
-            </div>
-            
-            <!-- Contact Agent -->
-            <div class="card p-4 shadow-sm border-0 mt-4">
-                <h5 class="fw-bold mb-3">Butuh Bantuan?</h5>
-                <p class="text-muted small mb-3">Hubungi agent kami untuk informasi lebih lanjut</p>
-                <a href="https://wa.me/6281234567890" class="btn btn-success w-100">
-                    <i class="fab fa-whatsapp me-2"></i>Chat WhatsApp
+                    <div class="booking-period">/ {{ $property->price_unit ?? 'tahun' }}</div>
+                </div>
+
+                <div class="booking-features">
+                    <div class="booking-feature">
+                        <i class="fas fa-ruler-combined"></i>
+                        <span>Luas: {{ $property->building_area ?? '250' }} m²</span>
+                    </div>
+                    <div class="booking-feature">
+                        <i class="fas fa-bed"></i>
+                        <span>{{ $property->bedrooms ?? '4' }} Kamar Tidur</span>
+                    </div>
+                    <div class="booking-feature">
+                        <i class="fas fa-bath"></i>
+                        <span>{{ $property->bathrooms ?? '3' }} Kamar Mandi</span>
+                    </div>
+                    <div class="booking-feature">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Min. Sewa 1 Tahun</span>
+                    </div>
+                    <div class="booking-feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Keamanan 24 Jam</span>
+                    </div>
+                </div>
+
+                <a href="{{ route('bookings.create', $property->id) }}" class="btn-booking">
+                    <i class="fas fa-calendar-check"></i>
+                    Booking Sekarang
                 </a>
+
+                <!-- Agent Info -->
+                <div class="agent-card" data-phone="{{ $property->agent_phone ?? '081234567890' }}">
+                    <div class="agent-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="agent-info">
+                        <div class="agent-label">Agent</div>
+                        <div class="agent-name">{{ $property->agent_name ?? 'Budi Santoso' }}</div>
+                        <div class="agent-phone">
+                            <i class="fas fa-phone-alt"></i>
+                            <span>{{ $property->agent_phone ?? '0812-3456-7890' }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/property-show.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Additional initialization if needed
+        console.log('Property show page loaded');
+    });
+</script>
 @endsection

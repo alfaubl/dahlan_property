@@ -15,16 +15,17 @@ class Booking extends Model
         'booking_date',
         'booking_time',
         'status',
+        'payment_status',  // ✅ TAMBAHKAN INI (untuk tracking status pembayaran)
         'notes',
-        'total_price',  
-        'paid_at'  
+        'total_price',
+        'paid_at'
     ];
 
     protected $casts = [
         'booking_date' => 'date',
-        'booking_time' => 'string',  
-        'paid_at' => 'datetime',  
-        'total_price' => 'decimal:2'  
+        'booking_time' => 'string',
+        'paid_at' => 'datetime',
+        'total_price' => 'decimal:2'
     ];
 
     public function user(): BelongsTo

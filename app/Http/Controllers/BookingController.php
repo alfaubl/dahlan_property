@@ -7,15 +7,18 @@ use App\Models\Property;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Midtrans\Config;
 use Midtrans\Snap;
-use Carbon\Carbon;
 
 class BookingController extends Controller
 {
     public function __construct()
     {
+        $this->middleware('auth');
+
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = true;
@@ -23,88 +26,104 @@ class BookingController extends Controller
     }
 
     /**
-     * Display user's bookings dashboard
+     * ==============================
+     * LIST BOOKINGS
+     * ==============================
      */
     public function index()
     {
         $user = Auth::user();
-        
-        // Ambil semua booking user
-        $bookings = Booking::where('user_id', $user->id)
-            ->with(['property', 'payment'])
+
+        $baseQuery = Booking::with(['property', 'payment'])
+            ->where('user_id', $user->id);
+
+        $bookings = (clone $baseQuery)
             ->latest()
-            ->get();
-        
-        // Booking untuk tabel (5 terakhir)
-        $recentBookings = $bookings->take(5);
-        
-        // Statistik
-        $totalBookings = $bookings->count();
-        $pendingBookings = $bookings->where('status', 'pending')->count();
-        $successBookings = $bookings->where('status', 'success')->count();
-        $totalSpending = $bookings->where('status', 'success')->sum('total_price');
-        
-        // Data properti (untuk card statistik atas)
-        $totalProperties = Property::where('user_id', $user->id)->count();
-        
-        // Data chart booking 7 hari terakhir
-        $chartData = $this->getBookingChartData($user->id);
-        
-        // ✅ PERBAIKAN: Definisikan variabel $totalPrice yang sebelumnya hilang
-        $totalPrice = $totalSpending;
-        
+            ->paginate(10);
+
+        // ================= STATISTICS =================
+        $totalBookings = (clone $baseQuery)->count();
+
+        $pendingBookings = (clone $baseQuery)
+            ->whereHas('payment', function ($q) {
+                $q->where('status', 'pending');
+            })->count();
+
+        $successBookings = (clone $baseQuery)
+            ->whereHas('payment', function ($q) {
+                $q->where('status', 'paid');
+            })->count();
+
+        $cancelledBookings = (clone $baseQuery)
+            ->where('status', 'cancelled')
+            ->count();
+
+        // ================= CHART LAST 7 DAYS =================
+        $chartCategories = [];
+        $chartSuccess = [];
+        $chartPending = [];
+        $chartCancelled = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+
+            $date = Carbon::now()->subDays($i)->toDateString();
+
+            $chartCategories[] = Carbon::parse($date)->format('d M');
+
+            $dailyQuery = Booking::where('user_id', $user->id)
+                ->whereDate('created_at', $date);
+
+            $chartSuccess[] = (clone $dailyQuery)
+                ->whereHas('payment', function ($q) {
+                    $q->where('status', 'paid');
+                })->count();
+
+            $chartPending[] = (clone $dailyQuery)
+                ->whereHas('payment', function ($q) {
+                    $q->where('status', 'pending');
+                })->count();
+
+            $chartCancelled[] = (clone $dailyQuery)
+                ->where('status', 'cancelled')
+                ->count();
+        }
+
         return view('bookings.index', compact(
             'user',
             'bookings',
-            'recentBookings',
             'totalBookings',
             'pendingBookings',
             'successBookings',
-            'totalSpending',
-            'totalProperties',
-            'chartData',
-            'totalPrice'
+            'cancelledBookings',
+            'chartCategories',
+            'chartSuccess',
+            'chartPending',
+            'chartCancelled'
         ));
     }
 
     /**
-     * Get booking data for chart (7 days)
+     * ==============================
+     * CREATE FORM
+     * ==============================
      */
-    private function getBookingChartData($userId)
+    public function create(Request $request)
     {
-        $today = Carbon::today();
-        $successData = [];
-        $pendingData = [];
-        $labels = [];
-        
-        for ($i = 6; $i >= 0; $i--) {
-            $date = $today->copy()->subDays($i);
-            $dateStr = $date->format('Y-m-d');
-            
-            $successCount = Booking::where('user_id', $userId)
-                ->where('status', 'success')
-                ->whereDate('created_at', $dateStr)
-                ->count();
-            
-            $pendingCount = Booking::where('user_id', $userId)
-                ->where('status', 'pending')
-                ->whereDate('created_at', $dateStr)
-                ->count();
-            
-            $successData[] = $successCount;
-            $pendingData[] = $pendingCount;
-            $labels[] = $date->format('d M');
+        $property = Property::findOrFail($request->property_id);
+
+        if ($property->status !== 'available') {
+            return redirect()
+                ->route('properties.show', $property->id)
+                ->with('error', 'Properti tidak tersedia untuk booking.');
         }
-        
-        return [
-            'success' => $successData,
-            'pending' => $pendingData,
-            'labels' => $labels
-        ];
+
+        return view('bookings.create', compact('property'));
     }
 
     /**
-     * Store a newly created booking.
+     * ==============================
+     * STORE BOOKING
+     * ==============================
      */
     public function store(Request $request)
     {
@@ -115,25 +134,31 @@ class BookingController extends Controller
             'notes' => 'nullable|string|max:500'
         ]);
 
+        $user = Auth::user();
         $property = Property::findOrFail($request->property_id);
+
+        if ($property->status !== 'available') {
+            return back()->with('error', 'Properti tidak tersedia.');
+        }
+
         $bookingCode = 'BOOK-' . strtoupper(Str::random(8));
         $bookingFee = $property->price * 0.1;
 
         $booking = Booking::create([
-            'user_id' => Auth::id(),
-            'property_id' => $request->property_id,
+            'user_id' => $user->id,
+            'property_id' => $property->id,
             'booking_code' => $bookingCode,
             'booking_date' => $request->booking_date,
             'booking_time' => $request->booking_time,
             'status' => 'pending',
             'notes' => $request->notes,
-            'total_price' => $bookingFee
+            'total_price' => $property->price,
         ]);
 
         $orderId = 'BOOK-' . $booking->id . '-' . time();
 
         $payment = Payment::create([
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'booking_id' => $booking->id,
             'order_id' => $orderId,
             'amount' => $bookingFee,
@@ -147,63 +172,82 @@ class BookingController extends Controller
                 'gross_amount' => (int) $bookingFee,
             ],
             'customer_details' => [
-                'first_name' => Auth::user()->name,
-                'email' => Auth::user()->email,
-                'phone' => Auth::user()->phone ?? '',
+                'first_name' => $user->name ?? '',
+                'email' => $user->email ?? '',
+                'phone' => $user->phone ?? '',
             ],
-            'item_details' => [
-                [
-                    'id' => $property->id,
-                    'price' => (int) $bookingFee,
-                    'quantity' => 1,
-                    'name' => 'Booking Fee - ' . $property->title
-                ]
-            ],
-            'custom_field1' => 'booking_id: ' . $booking->id
         ];
 
         try {
+
             $snapToken = Snap::getSnapToken($params);
-            $payment->update(['midtrans_response' => ['snap_token' => $snapToken]]);
-            return redirect()->route('payment.process', ['payment' => $payment->id, 'token' => $snapToken]);
+
+            $payment->update([
+                'snap_token' => $snapToken,
+                'midtrans_response' => json_encode([
+                    'snap_token' => $snapToken
+                ])
+            ]);
+
+            return redirect()->route('payment.process', $payment->id);
+
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+
+            Log::error('Midtrans Error: ' . $e->getMessage());
+
+            return back()->with('error', 'Gagal memproses pembayaran.');
         }
     }
 
     /**
-     * Display the specified booking.
+     * ==============================
+     * SHOW BOOKING
+     * ==============================
      */
     public function show(Booking $booking)
     {
-        if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+        if (
+            $booking->user_id !== Auth::id() &&
+            Auth::user()->role !== 'admin'
+        ) {
             abort(403);
         }
 
         $booking->load(['property', 'payment', 'user']);
+
         return view('bookings.show', compact('booking'));
     }
 
     /**
-     * Cancel booking.
+     * ==============================
+     * CANCEL BOOKING
+     * ==============================
      */
     public function cancel(Booking $booking)
     {
-        if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+        if (
+            $booking->user_id !== Auth::id() &&
+            Auth::user()->role !== 'admin'
+        ) {
             abort(403);
         }
 
         if ($booking->status !== 'pending') {
-            return back()->with('error', 'Booking tidak dapat dibatalkan karena sudah ' . $booking->status);
+            return back()->with('error', 'Booking tidak dapat dibatalkan.');
         }
 
-        $booking->update(['status' => 'cancelled']);
+        $booking->update([
+            'status' => 'cancelled'
+        ]);
 
         if ($booking->payment) {
-            $booking->payment->update(['status' => 'failed']);
+            $booking->payment->update([
+                'status' => 'failed'
+            ]);
         }
 
-        return redirect()->route('dashboard')
+        return redirect()
+            ->route('bookings.index')
             ->with('success', 'Booking berhasil dibatalkan.');
     }
 }

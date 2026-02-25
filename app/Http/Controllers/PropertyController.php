@@ -4,151 +4,127 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
 {
     /**
-     * Display a listing of the properties.
+     * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        // Start query
-        $query = Property::query();
-        
-        // Apply filters
-        if ($request->has('search') && !empty($request->search)) {
-            $query->where(function($q) use ($request) {
-                $q->where('title', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%')
-                  ->orWhere('address', 'like', '%' . $request->search . '%')
-                  ->orWhere('city', 'like', '%' . $request->search . '%')
-                  ->orWhere('province', 'like', '%' . $request->search . '%');
-            });
-        }
-        
-        if ($request->has('type') && !empty($request->type)) {
-            $query->where('type', $request->type);
-        }
-        
-        if ($request->has('city') && !empty($request->city)) {
-            $query->where('city', 'like', '%' . $request->city . '%');
-        }
-        
-        if ($request->has('bedrooms') && !empty($request->bedrooms)) {
-            $query->where('bedrooms', '>=', $request->bedrooms);
-        }
-        
-        if ($request->has('price_range') && !empty($request->price_range)) {
-            $priceRange = explode('-', $request->price_range);
-            if (count($priceRange) == 2) {
-                $query->whereBetween('price', [$priceRange[0], $priceRange[1]]);
-            }
-        }
-        
-        // Get paginated results
-        $properties = $query->latest()->paginate(12);
+        $properties = Property::where('user_id', Auth::id())
+            ->latest()
+            ->paginate(10);
         
         return view('properties.index', compact('properties'));
     }
-    
+
     /**
-     * Show the form for creating a new property.
+     * Show the form for creating a new resource.
      */
     public function create()
     {
         return view('properties.create');
     }
-    
+
     /**
-     * Store a newly created property in storage.
+     * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        // Validation
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:house,apartment,land,commercial',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'city' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'bedrooms' => 'nullable|integer|min:0',
-            'bathrooms' => 'nullable|integer|min:0',
+            'type' => 'required|string',
+            'bedrooms' => 'nullable|integer',
+            'bathrooms' => 'nullable|integer',
+            'area' => 'nullable|numeric',
         ]);
-        
-        // Add user_id
-        $validated['user_id'] = auth()->id();
-        $validated['property_code'] = 'PROP-' . time() . '-' . rand(1000, 9999);
-        
-        // Create property
-        Property::create($validated);
-        
+
+        $property = Property::create([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'location' => $request->location,
+            'price' => $request->price,
+            'description' => $request->description,
+            'type' => $request->type,
+            'bedrooms' => $request->bedrooms,
+            'bathrooms' => $request->bathrooms,
+            'area' => $request->area,
+        ]);
+
         return redirect()->route('properties.index')
-            ->with('success', 'Properti berhasil ditambahkan!');
+            ->with('success', 'Property created successfully.');
     }
-    
+
     /**
-     * Display the specified property.
+     * Display the specified resource.
      */
     public function show(Property $property)
     {
+        // Load relations if needed
+        $property->load(['agent', 'images']);
+        
         return view('properties.show', compact('property'));
     }
-    
+
     /**
-     * Show the form for editing the specified property.
+     * Show the form for editing the specified resource.
      */
     public function edit(Property $property)
     {
-        // Check authorization
-        if ($property->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
+        // Validasi ownership
+        if ($property->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
         }
         
         return view('properties.edit', compact('property'));
     }
-    
+
     /**
-     * Update the specified property in storage.
+     * Update the specified resource in storage.
      */
     public function update(Request $request, Property $property)
     {
-        // Check authorization
-        if ($property->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
+        // Validasi ownership
+        if ($property->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
         }
-        
-        // Validation
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|in:house,apartment,land,commercial',
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'city' => 'required|string|max:100',
             'description' => 'nullable|string',
-            'bedrooms' => 'nullable|integer|min:0',
-            'bathrooms' => 'nullable|integer|min:0',
+            'type' => 'required|string',
+            'bedrooms' => 'nullable|integer',
+            'bathrooms' => 'nullable|integer',
+            'area' => 'nullable|numeric',
         ]);
-        
-        // Update property
-        $property->update($validated);
-        
+
+        $property->update($request->all());
+
         return redirect()->route('properties.index')
-            ->with('success', 'Properti berhasil diperbarui!');
+            ->with('success', 'Property updated successfully.');
     }
-    
+
     /**
-     * Remove the specified property from storage.
+     * Remove the specified resource from storage.
      */
     public function destroy(Property $property)
     {
-        // Check authorization
-        if ($property->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
+        // Validasi ownership
+        if ($property->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
         }
-        
-        // Delete property
+
         $property->delete();
-        
+
         return redirect()->route('properties.index')
-            ->with('success', 'Properti berhasil dihapus!');
+            ->with('success', 'Property deleted successfully.');
     }
 }

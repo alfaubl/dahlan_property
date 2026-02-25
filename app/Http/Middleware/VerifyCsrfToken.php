@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // ✅ WAJIB: Agar webhook Midtrans tidak ditolak Laravel (419 error)
+        '/payment/notification',
     ];
 }

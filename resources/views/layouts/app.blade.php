@@ -4,58 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    
     <title>@yield('title', 'Dahlan Property - Marketplace Properti Terbaik')</title>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    
-    <!-- CSS Payment -->
-    <link rel="stylesheet" href="{{ asset('css/payment.css') }}">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
-    @include('layouts.app-css')
-
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animations.css') }}">
+    
+    <!-- Page Specific CSS -->
     @yield('styles')
-
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}">
 </head>
+<body class="antialiased">
 
-<body>
-
+    <!-- Navbar -->
     @include('layouts.navbar')
 
-    <main>
-        @yield('content')
+    <!-- Main Content -->
+    <main class="py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            @yield('content')
+        </div>
     </main>
 
+    <!-- Footer -->
     @include('layouts.footer')
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- AOS JS -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-    <!-- Custom JS -->
-    @include('layouts.app-js')
-
-    <!-- Midtrans JS -->
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+    <!-- Core JS -->
+    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/navbar.js') }}"></script>
+    <script src="{{ asset('assets/js/animations.js') }}"></script>
     
-    <!-- Payment JS -->
-    <script src="{{ asset('js/payment.js') }}"></script>
-
+    <!-- Chart Libraries -->
+    @stack('charts')
+    
+    <!-- Page Specific JS -->
     @yield('scripts')
-
 </body>
 </html>

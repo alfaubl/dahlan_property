@@ -1,93 +1,61 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm py-2" id="mainNavbar">
-    <div class="container">
-        <!-- Brand/Logo -->
-        <a class="navbar-brand" href="/">
-            <div class="d-flex align-items-center">
-                <div class="brand-icon me-2 shadow-sm">
-                    <i class="fas fa-building"></i>
+<nav>
+    <div class="nav-container">
+        <div class="nav-wrapper">
+            <!-- Logo -->
+            <a href="<?php echo e(route('home')); ?>" class="logo-link">
+                <div class="logo-icon animate-float">
+                    <i class="fas fa-home"></i>
                 </div>
-                <div>
-                    <span class="brand-text brand-text-dark">Dahlan</span>
-                    <span class="brand-text brand-text-primary">Property</span>
-                    <small class="d-block brand-subtitle">Marketplace Properti</small>
-                </div>
-            </div>
-        </a>
+                <span class="logo-text">
+                    Dahlan<span class="logo-highlight">Property</span>
+                </span>
+            </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <div class="navbar-nav ms-auto align-items-center">
-                <a class="nav-link <?php echo e(request()->is('/') ? 'active' : ''); ?>" href="/">
-                    <i class="fas fa-home"></i> Beranda
-                </a>
-                
-                <a class="nav-link <?php echo e(request()->is('properties') ? 'active' : ''); ?>" href="/properties">
-                    <i class="fas fa-search"></i> Jelajahi
-                </a>
-                
-                <a class="nav-link <?php echo e(request()->is('about') ? 'active' : ''); ?>" href="/about">
-                    <i class="fas fa-info-circle"></i> Tentang
-                </a>
-                
-                <a class="nav-link <?php echo e(request()->is('contact') ? 'active' : ''); ?>" href="/contact">
-                    <i class="fas fa-envelope"></i> Kontak
-                </a>
-                
-                <div class="vr mx-2 d-none d-lg-block" style="height: 18px;"></div>
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="<?php echo e(route('home')); ?>" class="nav-link">Home</a>
+                <a href="<?php echo e(route('properties.index')); ?>" class="nav-link">Properties</a>
+                <a href="<?php echo e(route('about')); ?>" class="nav-link">About</a>
+                <a href="<?php echo e(route('contact')); ?>" class="nav-link">Contact</a>
                 
                 <?php if(auth()->guard()->check()): ?>
-                    <div class="dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle"></i> <?php echo e(Auth::user()->name); ?>
+                    <a href="<?php echo e(route('dashboard')); ?>" class="nav-link">Dashboard</a>
+                <?php endif; ?>
+            </div>
 
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            
-                            <li>
-                                <a class="dropdown-item" href="<?php echo e(route('dashboard')); ?>">
-                                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                </a>
-                            </li>
-                            
-                            
-                            <li>
-                                <a class="dropdown-item" href="<?php echo e(route('wishlist.index')); ?>">
-                                    <i class="fas fa-heart me-2"></i>Wishlist
-                                </a>
-                            </li>
-                            
-                            
-                            <li>
-                                <a class="dropdown-item" href="<?php echo e(route('profile.edit')); ?>">
-                                    <i class="fas fa-user me-2"></i>Profil
-                                </a>
-                            </li>
-                            
-                            
-                            <li><hr class="dropdown-divider"></li>
-                            
-                            
-                            <li>
-                                <form method="POST" action="<?php echo e(route('logout')); ?>">
-                                    <?php echo csrf_field(); ?>
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Keluar
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
+            <!-- User Menu -->
+            <div class="user-menu-wrapper">
+                <?php if(auth()->guard()->check()): ?>
+                    <div class="relative group">
+                        <button class="user-menu">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name"><?php echo e(Auth::user()->name); ?></span>
+                            <i class="fas fa-chevron-down chevron-icon"></i>
+                        </button>
+                        
+                        <div class="dropdown-menu">
+                            <a href="<?php echo e(route('profile.edit')); ?>" class="dropdown-item">
+                                <i class="fas fa-user-edit w-5"></i> Profile
+                            </a>
+                            <a href="<?php echo e(route('booking.index')); ?>" class="dropdown-item">
+                                <i class="fas fa-calendar-check w-5"></i> My Bookings
+                            </a>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                <?php echo csrf_field(); ?>
+                                <button type="submit" class="dropdown-item logout">
+                                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 <?php else: ?>
-                    <a class="nav-link" href="<?php echo e(route('login')); ?>">
-                        <i class="fas fa-sign-in-alt"></i> Masuk
-                    </a>
-                    
-                    <a class="btn btn-primary btn-glow btn-premium" href="<?php echo e(route('register')); ?>">
-                        <i class="fas fa-plus-circle me-1"></i> Pasang Iklan
-                    </a>
+                    <div class="auth-buttons">
+                        <a href="<?php echo e(route('login')); ?>" class="login-link">Login</a>
+                        <a href="<?php echo e(route('register')); ?>" class="register-btn">Register</a>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

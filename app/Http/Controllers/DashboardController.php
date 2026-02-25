@@ -26,7 +26,7 @@ class DashboardController extends Controller
             ->where('status', 'success')
             ->count();
             
-        // Total spending dari payment yang sukses
+        // Total spending
         $totalSpending = Payment::where('user_id', $user->id)
             ->where('status', 'success')
             ->sum('amount') ?? 0;
@@ -38,10 +38,6 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
         
-        // Data chart contoh (nanti ganti dengan data real)
-        $chartSuccess = [12, 19, 15, 17, 14, 23, 8];
-        $chartPending = [5, 7, 4, 6, 8, 5, 3];
-        
         return view('dashboard.index', compact(
             'user',
             'totalProperties',
@@ -49,9 +45,7 @@ class DashboardController extends Controller
             'pendingBookings',
             'successBookings',
             'totalSpending',
-            'recentBookings',
-            'chartSuccess',
-            'chartPending'
+            'recentBookings'
         ));
     }
 }

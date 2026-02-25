@@ -1,328 +1,475 @@
+{{-- resources\views\bookings\show.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Detail Booking - Dahlan Property')
-
-@section('styles')
-@include('partials.css.booking-show-css')
-@endsection
+@section('title', 'Detail Booking')
 
 @section('content')
-<div class="booking-show-container">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="booking-show-card">
-                    <!-- Header -->
-                    <div class="booking-show-header">
-                        <h1>Detail Booking</h1>
-                        <p>Informasi lengkap booking properti Anda</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            {{-- Back Button --}}
+            <div class="mb-4">
+                <a href="{{ route('booking.index') }}" class="btn btn-outline-secondary">
+                    ← Kembali ke Daftar Booking
+                </a>
+            </div>
+
+            {{-- Main Card --}}
+            <div class="card shadow-sm border-0">
+                
+                {{-- Header --}}
+                <div class="card-header bg-primary text-white py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="mb-1">
+                                <i class="bi bi-receipt me-2"></i>Detail Booking
+                            </h2>
+                            <p class="mb-0 opacity-75">Informasi lengkap booking properti Anda</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-light text-primary fs-6">
+                                {{ $booking->booking_code }}
+                            </span>
+                        </div>
                     </div>
+                </div>
 
-
-
-
-                    <!-- Body -->
-                    <div class="booking-show-body">
-                        <!-- Status Badge -->
-                        @php
+                {{-- Body --}}
+                <div class="card-body p-4">
+                    
+                    {{-- PHP Logic --}}
+                    @php
+                        $status = $booking->payment->status ?? 'pending';
+                        
                         $badge = match($status) {
-                        'paid' => 'bg-success',
-                        'pending' => 'bg-warning',
-                        'failed', 'expired', 'cancelled' => 'bg-danger',
-                        default => 'bg-secondary'
-                        };
-
-                        <h4>
-                            Status:
-                            $status = $booking->payment->status ?? 'pending';
-
-                            $badge = match($status) {
                             'paid' => 'bg-success',
                             'pending' => 'bg-warning',
-                            'failed', 'expired', 'cancelled' => 'bg-danger',
+                            'challenge' => 'bg-info',
+                            'failed', 'expired', 'cancelled', 'deny' => 'bg-danger',
                             default => 'bg-secondary'
-                            };
-                            @endphp
+                        };
+                        
+                        $statusLabel = match($status) {
+                            'paid' => 'Lunas',
+                            'pending' => 'Menunggu Pembayaran',
+                            'challenge' => 'Verifikasi',
+                            'failed' => 'Gagal',
+                            'expired' => 'Kadaluarsa',
+                            'cancelled' => 'Dibatalkan',
+                            'deny' => 'Ditolak',
+                            default => 'Tidak Diketahui'
+                        };
+                    @endphp
 
-                            <span id="payment-status" class="badge {{ $badge }}">
-                                {{ ucfirst($status) }}
+                    {{-- Status Badge --}}
+                    <div class="alert {{ $badge }} bg-opacity-10 border-0 rounded-3 mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">Status Pembayaran</h5>
+                                <small class="text-muted">Status transaksi pembayaran Anda</small>
+                            </div>
+                            <span class="badge {{ $badge }} px-4 py-2 fs-5">
+                                {{ $statusLabel }}
                             </span>
-
-                        </h4>
-
-                        if($status == 'confirmed') {
-                        $statusClass = 'confirmed';
-                        $statusIcon = 'fa-check-circle';
-                        } elseif($status == 'pending') {
-                        $statusClass = 'pending';
-                        $statusIcon = 'fa-clock';
-                        } elseif($status == 'cancelled') {
-                        $statusClass = 'cancelled';
-                        $statusIcon = 'fa-times-circle';
-                        } elseif($status == 'completed') {
-                        $statusClass = 'completed';
-                        $statusIcon = 'fa-check-double';
-                        }
-                        @endphp
-
-                        <div class="booking-status-badge {{ $statusClass }}">
-                            <i class="fas {{ $statusIcon }}"></i>
-                            <span>Status: {{ ucfirst($status) }}</span>
-                        </div>
-
-                        <!-- Booking Code -->
-                        <div class="booking-code-box">
-                            <div class="booking-code-label">Kode Booking</div>
-                            <div class="booking-code-value" id="bookingCode">{{ $booking->booking_code ?? 'BOOK-' . strtoupper(uniqid()) }}</div>
-                        </div>
-
-                        <!-- Charts Section -->
-                        <div class="booking-charts-section">
-                            <div class="row g-4">
-                                <div class="col-md-4">
-                                    <div class="booking-chart-card">
-                                        <div class="booking-chart-title">
-                                            <i class="fas fa-chart-pie"></i>
-                                            Status Booking
-                                        </div>
-                                        <div class="booking-chart-wrapper">
-                                            <canvas id="statusDistributionChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="booking-chart-card">
-                                        <div class="booking-chart-title">
-                                            <i class="fas fa-chart-line"></i>
-                                            Tren Booking
-                                        </div>
-                                        <div class="booking-chart-wrapper">
-                                            <canvas id="monthlyBookingsChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="booking-chart-card">
-                                        <div class="booking-chart-title">
-                                            <i class="fas fa-chart-bar"></i>
-                                            Rincian Biaya
-                                        </div>
-                                        <div class="booking-chart-wrapper">
-                                            <canvas id="paymentBreakdownChart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Property Info -->
-                        @if(isset($booking->property))
-                        <div class="booking-property-card">
-                            <div class="booking-property-image">
-                                <img src="{{ $booking->property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" alt="Property">
-                            </div>
-                            <div class="booking-property-details">
-                                <div class="booking-property-title">{{ $booking->property->title }}</div>
-                                <div class="booking-property-location">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    {{ $booking->property->address }}, {{ $booking->property->city }}
-                                </div>
-                                <div class="booking-property-price">
-                                    Rp {{ number_format($booking->property->price, 0, ',', '.') }}
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-
-                        <!-- Booking Details -->
-                        <div class="booking-info-section">
-                            <div class="booking-info-title">
-                                <i class="fas fa-calendar-alt"></i>
-                                Detail Booking
-                            </div>
-                            <div class="booking-info-grid">
-                                <div class="booking-info-item">
-                                    <div class="booking-info-icon">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="booking-info-content">
-                                        <div class="booking-info-label">Nama Pemesan</div>
-                                        <div class="booking-info-value">{{ $booking->user->name ?? 'User' }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="booking-info-item">
-                                    <div class="booking-info-icon">
-                                        <i class="fas fa-calendar"></i>
-                                    </div>
-                                    <div class="booking-info-content">
-                                        <div class="booking-info-label">Tanggal Booking</div>
-                                        <div class="booking-info-value">
-                                            {{ isset($booking->booking_date) ? \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') : '-' }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="booking-info-item">
-                                    <div class="booking-info-icon">
-                                        <i class="fas fa-clock"></i>
-                                    </div>
-                                    <div class="booking-info-content">
-                                        <div class="booking-info-label">Jam Booking</div>
-                                        <div class="booking-info-value">{{ $booking->booking_time ?? '-' }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="booking-info-item">
-                                    <div class="booking-info-icon">
-                                        <i class="fas fa-credit-card"></i>
-                                    </div>
-                                    <div class="booking-info-content">
-                                        <div class="booking-info-label">Total Pembayaran</div>
-                                        <div class="booking-info-value">Rp {{ number_format($booking->payment->amount ?? 0, 0, ',', '.') }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Notes -->
-                        @if(!empty($booking->notes))
-                        <div class="booking-info-section">
-                            <div class="booking-info-title">
-                                <i class="fas fa-sticky-note"></i>
-                                Catatan
-                            </div>
-                            <div class="p-3 bg-white rounded-3 border">
-                                {{ $booking->notes }}
-                            </div>
-                        </div>
-                        @endif
-
-                        <!-- Timeline -->
-                        <div class="booking-info-section">
-                            <div class="booking-info-title">
-                                <i class="fas fa-history"></i>
-                                Timeline Booking
-                            </div>
-                            <div class="booking-timeline">
-                                <div class="booking-timeline-item">
-                                    <div class="booking-timeline-icon completed">
-                                        <i class="fas fa-check"></i>
-                                    </div>
-                                    <div class="booking-timeline-content">
-                                        <div class="booking-timeline-title">Booking Dibuat</div>
-                                        <div class="booking-timeline-time">
-                                            <i class="fas fa-calendar-alt"></i>
-                                            {{ isset($booking->created_at) ? $booking->created_at->format('d F Y H:i') : '-' }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="booking-timeline-item">
-                                    <div class="booking-timeline-icon {{ $status == 'confirmed' || $status == 'completed' ? 'completed' : ($status == 'pending' ? 'active' : '') }}">
-                                        <i class="fas {{ $status == 'confirmed' || $status == 'completed' ? 'fa-check' : 'fa-clock' }}"></i>
-                                    </div>
-                                    <div class="booking-timeline-content">
-                                        <div class="booking-timeline-title">Konfirmasi Booking</div>
-                                        <div class="booking-timeline-time">
-                                            <i class="fas fa-hourglass-half"></i>
-                                            {{ $status == 'confirmed' ? 'Terkonfirmasi' : ($status == 'completed' ? 'Selesai' : 'Menunggu konfirmasi') }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="booking-timeline-item">
-                                    <div class="booking-timeline-icon {{ $status == 'completed' ? 'completed' : '' }}">
-                                        <i class="fas {{ $status == 'completed' ? 'fa-check-double' : 'fa-hourglass' }}"></i>
-                                    </div>
-                                    <div class="booking-timeline-content">
-                                        <div class="booking-timeline-title">Selesai</div>
-                                        <div class="booking-timeline-time">
-                                            <i class="fas fa-calendar-check"></i>
-                                            {{ $status == 'completed' ? 'Booking selesai' : 'Belum selesai' }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="booking-action-buttons">
-                            @if($status == 'pending')
-                            <button class="booking-btn booking-btn-warning" onclick="window.location.reload()">
-                                <i class="fas fa-sync-alt"></i>
-                                Refresh Status
-                            </button>
-                            <a href="{{ route('payment.process', ['payment' => $booking->payment->id ?? 0, 'token' => '']) }}" class="booking-btn booking-btn-primary">
-                                <i class="fas fa-credit-card"></i>
-                                Lanjutkan Pembayaran
-                            </a>
-                            <button class="booking-btn booking-btn-danger" onclick="cancelBooking()">
-                                <i class="fas fa-times"></i>
-                                Batalkan Booking
-                            </button>
-                            @elseif($status == 'confirmed')
-                            <a href="{{ route('payment.finish') }}" class="booking-btn booking-btn-success">
-                                <i class="fas fa-check-circle"></i>
-                                Lihat Status Pembayaran
-                            </a>
-                            <a href="{{ route('properties.index') }}" class="booking-btn booking-btn-outline">
-                                <i class="fas fa-search"></i>
-                                Cari Properti Lain
-                            </a>
-                            @elseif($status == 'completed')
-                            <a href="{{ route('properties.index') }}" class="booking-btn booking-btn-primary">
-                                <i class="fas fa-search"></i>
-                                Booking Lagi
-                            </a>
-                            <a href="{{ route('dashboard') }}" class="booking-btn booking-btn-outline">
-                                <i class="fas fa-tachometer-alt"></i>
-                                Ke Dashboard
-                            </a>
-                            @elseif($status == 'cancelled')
-                            <a href="{{ route('properties.index') }}" class="booking-btn booking-btn-primary">
-                                <i class="fas fa-search"></i>
-                                Cari Properti Lain
-                            </a>
-                            <a href="{{ route('dashboard') }}" class="booking-btn booking-btn-outline">
-                                <i class="fas fa-tachometer-alt"></i>
-                                Ke Dashboard
-                            </a>
-                            @endif
                         </div>
                     </div>
+
+                    {{-- Info Grid --}}
+                    <div class="row g-4 mb-4">
+                        {{-- Property Info --}}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted mb-3">
+                                        <i class="bi bi-house-door-fill me-2 text-primary"></i>Informasi Properti
+                                    </h6>
+                                    <table class="table table-borderless mb-0">
+                                        <tr>
+                                            <td class="text-muted">Nama Properti</td>
+                                            <td class="fw-bold">{{ $booking->property->name ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Lokasi</td>
+                                            <td>{{ $booking->property->location ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Harga</td>
+                                            <td class="text-primary fw-bold">
+                                                Rp {{ number_format($booking->total_price, 0, ',', '.') }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Booking Details --}}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title text-muted mb-3">
+                                        <i class="bi bi-calendar-event-fill me-2 text-primary"></i>Detail Booking
+                                    </h6>
+                                    <table class="table table-borderless mb-0">
+                                        <tr>
+                                            <td class="text-muted">Tanggal Booking</td>
+                                            <td class="fw-bold">{{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Waktu</td>
+                                            <td>{{ \Carbon\Carbon::parse($booking->booking_time)->format('H:i') }} WIB</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-muted">Dibuat Pada</td>
+                                            <td>{{ $booking->created_at->format('d M Y, H:i') }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Customer Info --}}
+                    @if($booking->user)
+                    <div class="card border-0 shadow-sm mb-4 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title text-muted mb-3">
+                                <i class="bi bi-person-fill me-2 text-primary"></i>Informasi Pemesan
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <strong>Nama:</strong>
+                                    <p class="mb-0">{{ $booking->user->name ?? '-' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Email:</strong>
+                                    <p class="mb-0">{{ $booking->user->email ?? '-' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Telepon:</strong>
+                                    <p class="mb-0">{{ $booking->user->phone ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Notes --}}
+                    @if($booking->notes)
+                    <div class="card border-0 shadow-sm mb-4 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title text-muted mb-2">
+                                <i class="bi bi-journal-text me-2 text-primary"></i>Catatan
+                            </h6>
+                            <p class="mb-0">{{ $booking->notes }}</p>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- Payment Info --}}
+                    @if($booking->payment)
+                    <div class="card border-0 shadow-sm mb-4 bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title text-muted mb-3">
+                                <i class="bi bi-credit-card-2-front me-2 text-primary"></i>Informasi Pembayaran
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <strong>Order ID:</strong>
+                                    <p class="mb-0 font-monospace small">{{ $booking->payment->order_id ?? '-' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Metode:</strong>
+                                    <p class="mb-0">{{ $booking->payment->payment_method ?? '-' }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Dibayar Pada:</strong>
+                                    <p class="mb-0">{{ $booking->paid_at ? \Carbon\Carbon::parse($booking->paid_at)->format('d M Y, H:i') : '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- ECHARTS GRAFIK STATISTIK BOOKING --}}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="mb-0">
+                                <i class="bi bi-graph-up me-2 text-primary"></i>Statistik Booking Anda
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-4">
+                                {{-- Chart Container --}}
+                                <div class="col-md-8">
+                                    <div id="bookingStatusChart" style="height: 350px;"></div>
+                                </div>
+                                
+                                {{-- Summary Cards --}}
+                                <div class="col-md-4">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="card bg-success bg-opacity-10 border-0">
+                                                <div class="card-body text-center">
+                                                    <h3 class="text-success mb-0">{{ $stats['paid'] ?? 0 }}</h3>
+                                                    <small class="text-muted">Lunas</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card bg-warning bg-opacity-10 border-0">
+                                                <div class="card-body text-center">
+                                                    <h3 class="text-warning mb-0">{{ $stats['pending'] ?? 0 }}</h3>
+                                                    <small class="text-muted">Pending</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card bg-danger bg-opacity-10 border-0">
+                                                <div class="card-body text-center">
+                                                    <h3 class="text-danger mb-0">{{ $stats['failed'] ?? 0 }}</h3>
+                                                    <small class="text-muted">Gagal</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card bg-secondary bg-opacity-10 border-0">
+                                                <div class="card-body text-center">
+                                                    <h3 class="text-secondary mb-0">{{ $stats['cancelled'] ?? 0 }}</h3>
+                                                    <small class="text-muted">Dibatalkan</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card bg-primary bg-opacity-10 border-0">
+                                                <div class="card-body text-center">
+                                                    <h3 class="text-primary mb-0">{{ $stats['total'] ?? 0 }}</h3>
+                                                    <small class="text-muted">Total Booking</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Action Buttons --}}
+                    <div class="d-flex gap-2 flex-wrap pt-3 border-top">
+                        @if($status === 'pending')
+                            <button type="button" class="btn btn-primary btn-pay" data-booking-id="{{ $booking->id }}">
+                                <i class="bi bi-credit-card me-2"></i>Bayar Sekarang
+                            </button>
+                        @endif
+
+                        @if($status === 'paid')
+                            <a href="#" class="btn btn-success">
+                                <i class="bi bi-download me-2"></i>Download Invoice
+                            </a>
+                        @endif
+
+                        @if($status === 'pending')
+                            <form action="{{ route('booking.cancel', $booking->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin membatalkan booking ini?')">
+                                @csrf
+                                @method('POST')
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle me-2"></i>Batalkan Booking
+                                </button>
+                            </form>
+                        @endif
+
+                        <a href="{{ route('booking.index') }}" class="btn btn-outline-secondary ms-auto">
+                            <i class="bi bi-arrow-left me-2"></i>Kembali
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
-@section('scripts')
-@include('partials.js.booking-show-js')
-<script>
-    function cancelBooking() {
-        if (confirm('Apakah Anda yakin ingin membatalkan booking ini?')) {
-            alert('Fitur pembatalan akan segera diimplementasikan');
-            // window.location.href = '{{ route("bookings.cancel", $booking->id ?? 0) }}';
-        }
-    }
-</script>
-{-- AUTO CHECK PAYMENT STATUS --}}
-@if(($booking->payment->status ?? 'pending') === 'pending')
-<script>
-    function checkPaymentStatus() {
-        fetch("{{ route('payment.checkStatus', $booking->payment->id ?? 0) }}")
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'paid') {
-                    location.reload();
-                }
-            });
-    }
-
-    setInterval(checkPaymentStatus, 5000);
-</script>
+{{-- Payment Modal --}}
+@if($status === 'pending')
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Proses Pembayaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mb-0">Memuat halaman pembayaran...</p>
+            </div>
+        </div>
+    </div>
+</div>
 @endif
 
 @endsection
+
+@push('styles')
+<style>
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    .badge {
+        min-width: 140px;
+    }
+    .table td {
+        padding: 0.5rem 0;
+    }
+</style>
+@endpush
+
+@push('scripts')
+{{-- ECharts Library --}}
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+
+<script>
+// ============================================
+// ECHARTS - Grafik Status Booking
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    const chartDom = document.getElementById('bookingStatusChart');
+    if (chartDom) {
+        const myChart = echarts.init(chartDom);
+        
+        const option = {
+            title: {
+                text: 'Distribusi Status Booking',
+                left: 'center',
+                textStyle: {
+                    fontSize: 16,
+                    fontWeight: 'bold'
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{b}: {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                top: 'middle'
+            },
+            series: [
+                {
+                    name: 'Status Booking',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: 20,
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { 
+                            value: {{ $stats['paid'] ?? 0 }}, 
+                            name: 'Lunas',
+                            itemStyle: { color: '#198754' }
+                        },
+                        { 
+                            value: {{ $stats['pending'] ?? 0 }}, 
+                            name: 'Pending',
+                            itemStyle: { color: '#ffc107' }
+                        },
+                        { 
+                            value: {{ $stats['failed'] ?? 0 }}, 
+                            name: 'Gagal',
+                            itemStyle: { color: '#dc3545' }
+                        },
+                        { 
+                            value: {{ $stats['cancelled'] ?? 0 }}, 
+                            name: 'Dibatalkan',
+                            itemStyle: { color: '#6c757d' }
+                        }
+                    ]
+                }
+            ]
+        };
+        
+        myChart.setOption(option);
+        
+        // Responsive resize
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    }
+    
+    {{-- MIDTRANS PAYMENT LOGIC --}}
+    @if($status === 'pending')
+    const payButton = document.querySelector('.btn-pay');
+    const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+    
+    if (payButton) {
+        payButton.addEventListener('click', function() {
+            const bookingId = this.dataset.bookingId;
+            paymentModal.show();
+            
+            fetch(`/payment/snap-token/${bookingId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                paymentModal.hide();
+                if (data.snap_token) {
+                    snap.pay(data.snap_token, {
+                        onSuccess: function(result) {
+                            window.location.href = '{{ route("booking.show", $booking->id) }}?success=1';
+                        },
+                        onPending: function(result) {
+                            window.location.href = '{{ route("booking.show", $booking->id) }}?pending=1';
+                        },
+                        onError: function(result) {
+                            alert('Pembayaran gagal. Silakan coba lagi.');
+                        },
+                        onClose: function() {}
+                    });
+                } else {
+                    alert('Gagal memuat token pembayaran.');
+                }
+            })
+            .catch(error => {
+                paymentModal.hide();
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            });
+        });
+    }
+    @endif
+});
+</script>
+
+{{-- Midtrans Snap.js --}}
+@if($status === 'pending')
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+@endif
+@endpush

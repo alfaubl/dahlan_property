@@ -1,0 +1,140 @@
+/* ===== FOOTER ===== */
+footer {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 2rem;
+    padding: 3rem 0;
+}
+
+.footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+    .footer-container {
+        padding: 0 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-container {
+        padding: 0 2rem;
+    }
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .footer-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* ===== COMPANY INFO ===== */
+.company-info {
+    grid-column: span 1;
+}
+
+@media (min-width: 768px) {
+    .company-info {
+        grid-column: span 2;
+    }
+}
+
+.company-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.logo-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, #4361ee, #4cc9f0);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.company-name {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #1f2937;
+}
+
+.company-description {
+    color: #4b5563;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* ===== QUICK LINKS ===== */
+.footer-title {
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #4b5563;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #4361ee;
+}
+
+/* ===== CONTACT INFO ===== */
+.contact-list {
+    list-style: none;
+    padding: 0;
+}
+
+.contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.contact-list i {
+    color: #4361ee;
+    margin-top: 0.2rem;
+}
+
+/* ===== COPYRIGHT ===== */
+.copyright {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.85rem;
+}
