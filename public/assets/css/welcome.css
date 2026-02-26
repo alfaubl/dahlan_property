@@ -1,0 +1,112 @@
+/* ===== WELCOME CSS ===== */
+
+/* Hero Section */
+.gradient-primary {
+    background: linear-gradient(135deg, #4361ee, #4cc9f0);
+}
+
+.gradient-success {
+    background: linear-gradient(135deg, #06d6a0, #059669);
+}
+
+.gradient-warning {
+    background: linear-gradient(135deg, #ffb703, #f97316);
+}
+
+/* Glass Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+    0%, 100% { opacity: 0.1; transform: scale(1); }
+    50% { opacity: 0.15; transform: scale(1.05); }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 4s ease-in-out infinite;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-scaleIn {
+    animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slideIn {
+    animation: slideIn 0.6s ease-out;
+}
+
+/* Colors */
+.bg-primary { background: #4361ee; }
+.bg-success { background: #06d6a0; }
+.bg-warning { background: #ffb703; }
+
+.text-primary { color: #4361ee; }
+.text-success { color: #06d6a0; }
+.text-warning { color: #ffb703; }
+
+/* Soft Shadow */
+.soft-shadow {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.soft-shadow-hover:hover {
+    box-shadow: 0 20px 30px -10px rgba(67, 97, 238, 0.3);
+    transform: translateY(-2px);
+    transition: all 0.3s;
+}
+
+/* Counter */
+.counter-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .counter-value {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .counter-value {
+        font-size: 1.5rem;
+    }
+}

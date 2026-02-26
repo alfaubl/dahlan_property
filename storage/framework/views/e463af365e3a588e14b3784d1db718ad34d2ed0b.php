@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Daftar Properti - Dahlan Property')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/properties.css') }}">
-@endsection
+<?php $__env->startSection('title', 'Daftar Properti - Dahlan Property'); ?>
 
-@section('content')
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/properties.css')); ?>">
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="properties-wrapper">
     
     <!-- ===== HEADER ===== -->
@@ -173,9 +173,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -234,4 +234,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/properties/index.blade.php ENDPATH**/ ?>

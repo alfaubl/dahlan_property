@@ -5,50 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <title>@yield('title', 'Dahlan Property - Marketplace Properti Terbaik')</title>
+    <title>@yield('title', 'Dahlan Property')</title>
     
-    <!-- Tailwind CDN -->
+    <!-- Tailwind CSS - HAPUS SPASI DI URL -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font Awesome -->
+    <!-- Font Awesome - HAPUS SPASI DI URL -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/footer.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/animations.css') }}">
     
-    <!-- Page Specific CSS -->
+    <!-- Google Font - HAPUS SPASI DI URL -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/footer.css') }}">
+    
     @yield('styles')
 </head>
-<body class="antialiased">
-
-    <!-- Navbar -->
+<body>
     @include('layouts.navbar')
-
-    <!-- Main Content -->
-    <main class="py-8 px-4 sm:px-6 lg:px-8">
+    
+    <main class="py-8 px-4">
         <div class="max-w-7xl mx-auto">
             @yield('content')
         </div>
     </main>
-
-    <!-- Footer -->
-    @include('layouts.footer')
-
-    <!-- Core JS -->
-    <script src="{{ asset('assets/js/app.js') }}"></script>
-    <script src="{{ asset('assets/js/navbar.js') }}"></script>
-    <script src="{{ asset('assets/js/animations.js') }}"></script>
     
-    <!-- Chart Libraries -->
+    <!-- Scripts -->
+    <script src="{{ asset('assets/js/navbar.js') }}"></script>
+    
+    <!-- ✅ FIX: Tambahkan @stack('charts') untuk render Chart.js/Highcharts -->
     @stack('charts')
     
-    <!-- Page Specific JS -->
     @yield('scripts')
 </body>
 </html>

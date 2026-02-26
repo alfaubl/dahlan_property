@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
@@ -33,18 +35,12 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])
 
 /*
 |--------------------------------------------------------------------------
-| MIDTRANS WEBHOOK - TANPA CSRF & TANPA AUTH ⚠️ PENTING
+| MIDTRANS WEBHOOK (TIDAK PERLU LOGIN)
 |--------------------------------------------------------------------------
 */
 Route::post('/payment/notification', [PaymentController::class, 'notification'])
     ->name('payment.notification');
 
-
-/*
-|--------------------------------------------------------------------------
-| MIDTRANS REDIRECT HANDLERS - TANPA AUTH MIDDLEWARE
-|--------------------------------------------------------------------------
-*/
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/finish', [PaymentController::class, 'finish'])->name('finish');
     Route::get('/unfinish', [PaymentController::class, 'unfinish'])->name('unfinish');
@@ -54,10 +50,11 @@ Route::prefix('payment')->name('payment.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| AUTH ROUTES (Guest Only)
+| AUTH ROUTES (GUEST ONLY)
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
+
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
 
@@ -74,7 +71,7 @@ Route::middleware('guest')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| PROTECTED ROUTES (HARUS LOGIN)
+| PROTECTED ROUTES (WAJIB LOGIN)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
@@ -109,29 +106,39 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    /* =======================
-       BOOKING ROUTES - PASTI KONSISTEN
-       ======================= */
+    /* BOOKING */
     Route::prefix('bookings')->name('booking.')->group(function () {
-        Route::get('/', [BookingController::class, 'index'])->name('index');        // route: booking.index
-        Route::get('/create/{property}', [BookingController::class, 'create'])->name('create'); // route: booking.create
-        Route::post('/', [BookingController::class, 'store'])->name('store');       // route: booking.store
-        Route::get('/{bookings', [BookingController::class, 'show'])->name('show'); // route: booking.show
-        Route::post('/{bookings}/cancel', [BookingController::class, 'cancel'])->name('cancel'); // route: booking.cancel
+        Route::get('/', [BookingController::class, 'index'])->name('index');
+        Route::get('/create/{property}', [BookingController::class, 'create'])->name('create');
+        Route::post('/', [BookingController::class, 'store'])->name('store');
+        Route::get('/{booking}', [BookingController::class, 'show'])->name('show');
+        Route::post('/{booking}/cancel', [BookingController::class, 'cancel'])->name('cancel');
     });
 
-    /* PAYMENT - USER SIDE */
+    /* PAYMENT */
     Route::prefix('payment')->name('payment.')->group(function () {
         Route::get('/process/{payment}/{token?}', [PaymentController::class, 'process'])->name('process');
         Route::get('/success/{payment}', [PaymentController::class, 'success'])->name('success');
         Route::get('/failed/{payment}', [PaymentController::class, 'failed'])->name('failed');
         Route::post('/retry/{payment}', [PaymentController::class, 'retry'])->name('retry');
         Route::get('/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('checkStatus');
-        
-        // Generate Snap Token untuk frontend
-        Route::post('/snap-token/{booking}', [PaymentController::class, 'generateSnapToken'])
-            ->name('snap-token');
+        Route::post('/snap-token/{booking}', [PaymentController::class, 'generateSnapToken'])->name('snap-token');
     });
 
+    /* LOGOUT NORMAL (WAJIB POST) */
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| FORCE LOGOUT (GLOBAL - TIDAK PAKAI AUTH MIDDLEWARE)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/force-logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login');
+})->name('force.logout');

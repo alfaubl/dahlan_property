@@ -3,74 +3,69 @@
 <?php $__env->startSection('title', 'Dahlan Property - Marketplace Properti Terbaik'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<link rel="stylesheet" href="<?php echo e(asset('css/welcome.css')); ?>">
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/welcome.css')); ?>">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="space-y-16 animate-slideIn">
     
     <!-- ===== HERO SECTION ===== -->
-    <section class="hero-section">
-        <div class="hero-bg-gradient"></div>
-        <div class="hero-bg-element-1"></div>
-        <div class="hero-bg-element-2"></div>
-        <div class="hero-bg-element-3"></div>
+    <section class="relative overflow-hidden rounded-3xl soft-shadow min-h-[500px] flex items-center gradient-primary">
+        <!-- Animated Background -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-10 rounded-full -mr-20 -mt-20 animate-float"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-white opacity-10 rounded-full -ml-20 -mb-20 animate-pulse-slow"></div>
         
-        <div class="hero-content">
-            <div class="max-w-3xl mx-auto text-center" data-animate="true">
-                <!-- Badge -->
-                <div class="hero-badge">
-                    <i class="fas fa-crown"></i>
-                    <span>Premium Property Marketplace</span>
-                </div>
+        <!-- Hero Content -->
+        <div class="relative z-10 container mx-auto px-6 py-16 text-white text-center">
+            <div class="max-w-3xl mx-auto">
+                <span class="inline-block bg-white/20 backdrop-blur-lg px-6 py-3 rounded-full text-sm font-semibold mb-8 animate-scaleIn">
+                    <i class="fas fa-crown text-yellow-300 mr-2"></i>
+                    Premium Property Marketplace
+                </span>
                 
-                <!-- Main Title -->
-                <h1 class="hero-title">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                     Temukan Properti 
-                    <span class="hero-title-gradient">
-                        Impian
-                    </span>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300">Impian</span>
                     Anda
                 </h1>
                 
-                <!-- Description -->
-                <p class="hero-description">
+                <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
                     Platform properti terpercaya dengan ribuan pilihan rumah, apartemen, ruko, dan villa di seluruh Indonesia
                 </p>
                 
                 <!-- Search Bar -->
-                <div class="search-container">
-                    <div class="search-wrapper">
-                        <div class="search-input-wrapper">
-                            <i class="fas fa-search search-icon"></i>
+                <div class="max-w-2xl mx-auto">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex-1 relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                             <input type="text" 
                                    placeholder="Cari properti berdasarkan lokasi, nama, atau tipe..."
-                                   class="search-input">
+                                   class="w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all">
                         </div>
-                        <button class="search-button">
+                        <button class="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="fas fa-search"></i>
                             <span>Cari</span>
                         </button>
                     </div>
                 </div>
-                
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value counter-value" data-purecounter-start="0" data-purecounter-end="1500" data-purecounter-duration="3">0</div>
-                        <div class="stat-label">Properti</div>
+
+                <!-- Stats Counter -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold counter-value" data-purecounter-start="0" data-purecounter-end="1500" data-purecounter-duration="3">0</div>
+                        <div class="text-white/80 text-sm">Properti</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value counter-value" data-purecounter-start="0" data-purecounter-end="500" data-purecounter-duration="3">0</div>
-                        <div class="stat-label">Kota</div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold counter-value" data-purecounter-start="0" data-purecounter-end="500" data-purecounter-duration="3">0</div>
+                        <div class="text-white/80 text-sm">Kota</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value counter-value" data-purecounter-start="0" data-purecounter-end="2500" data-purecounter-duration="3">0</div>
-                        <div class="stat-label">Klien</div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold counter-value" data-purecounter-start="0" data-purecounter-end="2500" data-purecounter-duration="3">0</div>
+                        <div class="text-white/80 text-sm">Klien</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value counter-value" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="3">0</div>
-                        <div class="stat-label">Tahun</div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold counter-value" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="3">0</div>
+                        <div class="text-white/80 text-sm">Tahun</div>
                     </div>
                 </div>
             </div>
@@ -79,89 +74,111 @@
 
     <!-- ===== FITUR SECTION ===== -->
     <section class="py-16">
-        <div class="section-header">
-            <span class="section-badge">MENGAPA MEMILIH KAMI</span>
-            <h2 class="section-title">Kenapa Harus DahlanProperty?</h2>
-            <p class="section-subtitle">Kami memberikan pengalaman terbaik dalam mencari properti impian Anda</p>
+        <div class="text-center mb-12">
+            <span class="gradient-primary text-white px-6 py-2 rounded-full text-sm font-semibold inline-block mb-4">MENGAPA MEMILIH KAMI</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kenapa Harus DahlanProperty?</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Kami memberikan pengalaman terbaik dalam mencari properti impian Anda</p>
         </div>
 
-        <div class="features-grid">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <!-- Fitur 1 -->
-            <div class="feature-card">
-                <div class="feature-icon-wrapper primary">
+            <div class="glass-card rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 group">
+                <div class="w-20 h-20 gradient-primary rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-shield-alt"></i>
                 </div>
-                <h3 class="feature-title">100% Terpercaya</h3>
-                <p class="feature-description">Semua properti terverifikasi dan legalitas terjamin. Kami pastikan keamanan transaksi Anda.</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">100% Terpercaya</h3>
+                <p class="text-gray-600 leading-relaxed">Semua properti terverifikasi dan legalitas terjamin. Kami pastikan keamanan transaksi Anda.</p>
             </div>
 
             <!-- Fitur 2 -->
-            <div class="feature-card">
-                <div class="feature-icon-wrapper success">
+            <div class="glass-card rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 group">
+                <div class="w-20 h-20 gradient-success rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-clock"></i>
                 </div>
-                <h3 class="feature-title">24/7 Layanan</h3>
-                <p class="feature-description">Tim customer service kami siap membantu Anda kapan saja, di mana saja.</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">24/7 Layanan</h3>
+                <p class="text-gray-600 leading-relaxed">Tim customer service kami siap membantu Anda kapan saja, di mana saja.</p>
             </div>
 
             <!-- Fitur 3 -->
-            <div class="feature-card">
-                <div class="feature-icon-wrapper warning">
+            <div class="glass-card rounded-2xl p-8 text-center hover:shadow-xl transition-all duration-300 group">
+                <div class="w-20 h-20 gradient-warning rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-6 group-hover:scale-110 transition-transform">
                     <i class="fas fa-hand-holding-usd"></i>
                 </div>
-                <h3 class="feature-title">Harga Terbaik</h3>
-                <p class="feature-description">Dapatkan penawaran harga terbaik dan promo menarik untuk setiap transaksi.</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Harga Terbaik</h3>
+                <p class="text-gray-600 leading-relaxed">Dapatkan penawaran harga terbaik dan promo menarik untuk setiap transaksi.</p>
             </div>
         </div>
     </section>
 
-    <!-- ===== PROPERTY STATS CHART ===== -->
-    <section class="stats-chart-section">
-        <div class="chart-card">
-            <div class="chart-grid">
+    <!-- ===== APEXCHARTS SECTION ===== -->
+    <section class="py-16">
+        <div class="glass-card rounded-3xl p-8 md:p-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Content -->
-                <div class="chart-content">
-                    <span class="section-badge">STATISTIK PROPERTI</span>
-                    <h2>Pertumbuhan Properti di Indonesia</h2>
-                    <p class="chart-description">
-                        Pasar properti di Indonesia terus berkembang pesat. Lihat distribusi dan pertumbuhan properti berdasarkan tipe dan wilayah.
+                <div>
+                    <span class="gradient-primary text-white px-6 py-2 rounded-full text-sm font-semibold inline-block mb-4">STATISTIK PROPERTI</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Pertumbuhan Properti di Indonesia</h2>
+                    <p class="text-gray-600 mb-8 text-lg leading-relaxed">
+                        Pasar properti di Indonesia terus berkembang pesat. Lihat distribusi dan pertumbuhan properti berdasarkan tipe bangunan.
                     </p>
                     
-                    <div class="stats-list">
-                        <div class="stat-list-item">
-                            <span class="stat-dot primary"></span>
-                            <span class="stat-list-text">Pertumbuhan 25% per tahun</span>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-primary"></div>
+                            <span class="text-gray-700">Pertumbuhan 25% per tahun</span>
                         </div>
-                        <div class="stat-list-item">
-                            <span class="stat-dot success"></span>
-                            <span class="stat-list-text">Lebih dari 1500 properti tersedia</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-success"></div>
+                            <span class="text-gray-700">Lebih dari 1500 properti tersedia</span>
                         </div>
-                        <div class="stat-list-item">
-                            <span class="stat-dot warning"></span>
-                            <span class="stat-list-text">Tersebar di 500 kota</span>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-warning"></div>
+                            <span class="text-gray-700">Tersebar di 500 kota</span>
                         </div>
                     </div>
 
-                    <div class="chart-actions">
-                        <a href="<?php echo e(route('properties.index')); ?>" class="btn-primary">
-                            <i class="fas fa-building"></i>
+                    <div class="mt-8 flex gap-4">
+                        <a href="<?php echo e(route('properties.index')); ?>" class="gradient-primary text-white px-8 py-4 rounded-xl soft-shadow hover:soft-shadow transition-all duration-300">
                             Lihat Properti
                         </a>
-                        <a href="<?php echo e(route('contact')); ?>" class="btn-secondary">
-                            <i class="fas fa-envelope"></i>
+                        <a href="<?php echo e(route('contact')); ?>" class="bg-gray-100 text-gray-700 px-8 py-4 rounded-xl hover:bg-gray-200 transition-all duration-300">
                             Hubungi Kami
                         </a>
                     </div>
                 </div>
 
-                <!-- Right Chart -->
+                <!-- Right Chart - ApexCharts -->
                 <div>
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h3>Distribusi Properti</h3>
+                    <div class="bg-gray-50 rounded-2xl p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="font-bold text-gray-900">Distribusi Properti</h3>
                             <span class="text-sm text-gray-500">2024</span>
                         </div>
-                        <div id="welcomeChart" style="height: 300px;"></div>
+                        <div id="distributionChart" class="w-full" style="height: 350px;"></div>
+                        
+                        <!-- Legend -->
+                        <div class="flex flex-wrap justify-center gap-4 mt-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-sm" style="background: #4361ee;"></span>
+                                <span class="text-xs text-gray-600">Rumah</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-sm" style="background: #06d6a0;"></span>
+                                <span class="text-xs text-gray-600">Apartemen</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-sm" style="background: #ffb703;"></span>
+                                <span class="text-xs text-gray-600">Ruko</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-sm" style="background: #ef476f;"></span>
+                                <span class="text-xs text-gray-600">Kantor</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-sm" style="background: #4cc9f0;"></span>
+                                <span class="text-xs text-gray-600">Villa</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -170,179 +187,101 @@
 
     <!-- ===== PROPERTIES GRID ===== -->
     <section class="py-16">
-        <div class="section-header">
-            <span class="section-badge">PROPERTI PILIHAN</span>
-            <h2 class="section-title">Properti Unggulan</h2>
-            <p class="section-subtitle">Temukan properti terbaik dengan fasilitas premium</p>
+        <div class="text-center mb-12">
+            <span class="gradient-primary text-white px-6 py-2 rounded-full text-sm font-semibold inline-block mb-4">PROPERTI PILIHAN</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Properti Unggulan</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Temukan properti terbaik dengan fasilitas premium</p>
         </div>
 
-        <div class="properties-grid">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Property Card 1 -->
-            <div class="property-card" data-property-id="1">
-                <div class="property-image">
-                    <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994" alt="Property">
-                    <div class="property-price">
-                        <span>Rp 2.5M</span>
+            <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994" alt="Property" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-full">
+                        <span class="text-primary font-semibold">Rp 2.5M</span>
                     </div>
                 </div>
-                <div class="property-details">
-                    <h3 class="property-title">Villa Eksklusif Bali</h3>
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Villa Eksklusif Bali</h3>
+                    <p class="text-gray-600 mb-4 flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt text-primary"></i>
                         JL. Raya Uluwatu, Badung
                     </p>
-                    <div class="property-features">
-                        <span><i class="fas fa-bed"></i> 4 KT</span>
-                        <span><i class="fas fa-bath"></i> 3 KM</span>
-                        <span><i class="fas fa-vector-square"></i> 250 m²</span>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-bed text-primary mr-1"></i> 4 KT</span>
+                        <span><i class="fas fa-bath text-primary mr-1"></i> 3 KM</span>
+                        <span><i class="fas fa-vector-square text-primary mr-1"></i> 250 m²</span>
                     </div>
                 </div>
             </div>
 
             <!-- Property Card 2 -->
-            <div class="property-card" data-property-id="2">
-                <div class="property-image">
-                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00" alt="Property">
-                    <div class="property-price">
-                        <span>Rp 8.5M</span>
+            <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00" alt="Property" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-full">
+                        <span class="text-primary font-semibold">Rp 8.5M</span>
                     </div>
                 </div>
-                <div class="property-details">
-                    <h3 class="property-title">Apartemen Mewah SCBD</h3>
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Apartemen Mewah SCBD</h3>
+                    <p class="text-gray-600 mb-4 flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt text-primary"></i>
                         Jl. Sudirman, Jakarta Pusat
                     </p>
-                    <div class="property-features">
-                        <span><i class="fas fa-bed"></i> 3 KT</span>
-                        <span><i class="fas fa-bath"></i> 2 KM</span>
-                        <span><i class="fas fa-vector-square"></i> 150 m²</span>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-bed text-primary mr-1"></i> 3 KT</span>
+                        <span><i class="fas fa-bath text-primary mr-1"></i> 2 KM</span>
+                        <span><i class="fas fa-vector-square text-primary mr-1"></i> 150 m²</span>
                     </div>
                 </div>
             </div>
 
             <!-- Property Card 3 -->
-            <div class="property-card" data-property-id="3">
-                <div class="property-image">
-                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750" alt="Property">
-                    <div class="property-price">
-                        <span>Rp 1.2M</span>
+            <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750" alt="Property" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-full">
+                        <span class="text-primary font-semibold">Rp 1.2M</span>
                     </div>
                 </div>
-                <div class="property-details">
-                    <h3 class="property-title">Rumah Modern BSD</h3>
-                    <p class="property-location">
-                        <i class="fas fa-map-marker-alt"></i>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Rumah Modern BSD</h3>
+                    <p class="text-gray-600 mb-4 flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt text-primary"></i>
                         BSD City, Tangerang
                     </p>
-                    <div class="property-features">
-                        <span><i class="fas fa-bed"></i> 4 KT</span>
-                        <span><i class="fas fa-bath"></i> 3 KM</span>
-                        <span><i class="fas fa-vector-square"></i> 200 m²</span>
+                    <div class="flex items-center gap-4 text-sm text-gray-500">
+                        <span><i class="fas fa-bed text-primary mr-1"></i> 4 KT</span>
+                        <span><i class="fas fa-bath text-primary mr-1"></i> 3 KM</span>
+                        <span><i class="fas fa-vector-square text-primary mr-1"></i> 200 m²</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="view-all-btn">
-            <a href="<?php echo e(route('properties.index')); ?>" class="btn-primary">
+        <div class="text-center mt-12">
+            <a href="<?php echo e(route('properties.index')); ?>" class="inline-flex items-center gap-2 gradient-primary text-white px-8 py-4 rounded-xl soft-shadow hover:soft-shadow transition-all duration-300">
                 <span>Lihat Semua Properti</span>
                 <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
 
-    <!-- ===== TESTIMONIALS ===== -->
-    <section class="testimonials-section">
-        <div class="chart-card">
-            <div class="section-header">
-                <span class="section-badge">TESTIMONIAL</span>
-                <h2 class="section-title">Apa Kata Mereka?</h2>
-                <p class="section-subtitle">Pengalaman nyata dari klien yang telah menggunakan layanan kami</p>
-            </div>
-
-            <div class="testimonials-grid">
-                <!-- Testimonial 1 -->
-                <div class="testimonial-card">
-                    <i class="fas fa-quote-right quote-icon"></i>
-                    <div class="testimonial-author">
-                        <div class="author-avatar primary">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>Budi Santoso</h4>
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="testimonial-text">"Pelayanan sangat memuaskan, properti sesuai dengan deskripsi. Proses cepat dan mudah!"</p>
-                </div>
-
-                <!-- Testimonial 2 -->
-                <div class="testimonial-card">
-                    <i class="fas fa-quote-right quote-icon"></i>
-                    <div class="testimonial-author">
-                        <div class="author-avatar success">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>Siti Aisyah</h4>
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="testimonial-text">"Rekomendasi properti sangat akurat. Tim marketing responsif dan membantu proses sampai selesai."</p>
-                </div>
-
-                <!-- Testimonial 3 -->
-                <div class="testimonial-card">
-                    <i class="fas fa-quote-right quote-icon"></i>
-                    <div class="testimonial-author">
-                        <div class="author-avatar warning">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="author-info">
-                            <h4>Ahmad Hidayat</h4>
-                            <div class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="testimonial-text">"Platformnya lengkap, fitur pencarian sangat membantu. Harga kompetitif dan transparan."</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- ===== CTA SECTION ===== -->
-    <section class="cta-section">
-        <div class="cta-bg-1"></div>
-        <div class="cta-bg-2"></div>
+    <section class="gradient-primary rounded-3xl soft-shadow p-16 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-20 -mt-20 animate-float"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-10 rounded-full -ml-10 -mb-10 animate-pulse-slow"></div>
         
-        <div class="cta-content">
-            <h2 class="cta-title">Siap Menemukan Properti Impian?</h2>
-            <p class="cta-description">Bergabung dengan ribuan klien yang telah menemukan properti impian mereka bersama kami</p>
-            <div class="cta-buttons">
-                <a href="<?php echo e(route('register')); ?>" class="btn-white">
-                    <i class="fas fa-user-plus"></i>
+        <div class="relative z-10 text-center text-white max-w-3xl mx-auto">
+            <h2 class="text-4xl font-bold mb-6">Siap Menemukan Properti Impian?</h2>
+            <p class="text-xl text-white/90 mb-8">Bergabung dengan ribuan klien yang telah menemukan properti impian mereka bersama kami</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="<?php echo e(route('register')); ?>" class="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
                     Daftar Sekarang
                 </a>
-                <a href="<?php echo e(route('contact')); ?>" class="btn-outline-white">
-                    <i class="fas fa-headset"></i>
+                <a href="<?php echo e(route('contact')); ?>" class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-primary transition-all duration-300">
                     Hubungi Kami
                 </a>
             </div>
@@ -352,6 +291,8 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
-<script src="<?php echo e(asset('js/welcome.js')); ?>"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs@1.5.0/dist/purecounter_vanilla.js"></script>
+<script src="<?php echo e(asset('assets/js/welcome.js')); ?>"></script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/welcome.blade.php ENDPATH**/ ?>

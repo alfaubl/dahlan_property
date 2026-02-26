@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Tentang Kami - Dahlan Property')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/about.css') }}">
-@endsection
+<?php $__env->startSection('title', 'Tentang Kami - Dahlan Property'); ?>
 
-@section('content')
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/about.css')); ?>">
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="about-wrapper">
     
     <!-- ===== HERO SECTION ===== -->
@@ -311,11 +311,11 @@
                 Tim kami siap membantu Anda menemukan properti impian atau memasarkan properti Anda.
             </p>
             <div class="cta-buttons">
-                <a href="{{ route('contact') }}" class="btn-primary">
+                <a href="<?php echo e(route('contact')); ?>" class="btn-primary">
                     <i class="fas fa-headset"></i>
                     Hubungi Kami
                 </a>
-                <a href="{{ route('properties.index') }}" class="btn-secondary">
+                <a href="<?php echo e(route('properties.index')); ?>" class="btn-secondary">
                     <i class="fas fa-building"></i>
                     Lihat Properti
                 </a>
@@ -323,9 +323,10 @@
         </div>
     </section>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script src="{{ asset('assets/js/about.js') }}"></script>
-@endsection
+<script src="<?php echo e(asset('assets/js/about.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/about.blade.php ENDPATH**/ ?>

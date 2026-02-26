@@ -7,174 +7,135 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 
 class AuthController extends Controller
 {
-    /**
-     * Show login form
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN
+    |--------------------------------------------------------------------------
+    */
+
     public function showLoginForm()
     {
         return view('auth.login');
     }
-    
-    /**
-     * Handle login request
-     */
+
     public function login(Request $request)
     {
-        // Validation rules
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required|string|min:8',
-        ], [
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'password.required' => 'Password harus diisi',
-            'password.min' => 'Password minimal 8 karakter',
         ]);
-        
-        // Check validation
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput($request->except('password'));
-        }
-        
-        // Attempt to login
+
         $credentials = $request->only('email', 'password');
-        $remember = $request->has('remember');
-        
+        $remember = $request->boolean('remember');
+
         if (Auth::attempt($credentials, $remember)) {
+
             $request->session()->regenerate();
-            
-            // Redirect based on user role
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            
+
             return redirect()->intended(route('dashboard'))
-                ->with('success', 'Login berhasil! Selamat datang ' . $user->name . '.');
+                ->with('success', 'Login berhasil! Selamat datang ' . Auth::user()->name);
         }
-        
-        // If login fails
+
         return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->withInput($request->except('password'));
+            'email' => 'Email atau password salah.'
+        ])->onlyInput('email');
     }
-    
-    /**
-     * Show registration form
-     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | REGISTER
+    |--------------------------------------------------------------------------
+    */
+
     public function showRegistrationForm()
     {
         return view('auth.register');
     }
-    
-    /**
-     * Handle registration request
-     */
+
     public function register(Request $request)
     {
-        // Validation rules
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
-            'terms' => 'accepted',
-        ], [
-            'name.required' => 'Nama lengkap harus diisi',
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password harus diisi',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak cocok',
-            'terms.accepted' => 'Anda harus menyetujui syarat & ketentuan',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:8|confirmed',
         ]);
-        
-        // Check validation
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput($request->except('password', 'password_confirmation'));
-        }
-        
-        // Create user
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'phone' => $request->phone,
             'role' => 'user',
-            'avatar' => null,
-            'is_active' => true,
         ]);
-        
-        // Login user
+
         Auth::login($user);
-        
-        // Redirect to dashboard
+
         return redirect()->route('dashboard')
-            ->with('success', 'Registrasi berhasil! Selamat datang di Dahlan Property.');
+            ->with('success', 'Registrasi berhasil!');
     }
-    
-    // ========== FORGOT PASSWORD METHODS ==========
-    
-    /**
-     * Show forgot password form
-     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOGOUT
+    |--------------------------------------------------------------------------
+    */
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->with('success', 'Berhasil logout.');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORGOT PASSWORD
+    |--------------------------------------------------------------------------
+    */
+
     public function showForgotPasswordForm()
     {
         return view('auth.forgot-password');
     }
-    
-    /**
-     * Send reset link email
-     */
+
     public function sendResetLinkEmail(Request $request)
     {
-        // Validation
         $request->validate([
             'email' => 'required|email',
         ]);
-        
-        // Send reset link using Laravel's built-in Password broker
+
         $status = Password::sendResetLink(
             $request->only('email')
         );
-        
-        // Return response based on status
+
         return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
+            ? back()->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
     }
-    
-    // ========== RESET PASSWORD METHODS ==========
-    
-    /**
-     * Show reset password form
-     */
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESET PASSWORD
+    |--------------------------------------------------------------------------
+    */
+
     public function showResetForm($token)
     {
-        // Ambil email dari query string (URL) - INI YANG DIPERBAIKI!
-        $email = request()->email;
-        
         return view('auth.reset-password', [
             'token' => $token,
-            'email' => $email
+            'email' => request()->email
         ]);
     }
-    
-    /**
-     * Reset password
-     */
+
     public function reset(Request $request)
     {
         $request->validate([
@@ -182,36 +143,21 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8|confirmed',
         ]);
-        
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
                     'password' => Hash::make($password)
                 ])->setRememberToken(Str::random(60));
-                
+
                 $user->save();
-                
                 event(new PasswordReset($user));
             }
         );
-        
+
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('status', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
-    }
-    
-    /**
-     * Handle logout
-     */
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        
-        return redirect('/')
-            ->with('success', 'Anda telah berhasil logout.');
+            : back()->withErrors(['email' => __($status)]);
     }
 }

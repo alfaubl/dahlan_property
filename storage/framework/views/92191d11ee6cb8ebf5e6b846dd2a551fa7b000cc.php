@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Dashboard - Dahlan Property')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}">
-@endsection
+<?php $__env->startSection('title', 'Dashboard - Dahlan Property'); ?>
 
-@section('content')
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/dashboard.css')); ?>">
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="dashboard-wrapper">
     
     <!-- GREETING CARD -->
@@ -16,16 +16,18 @@
                 <i class="fas fa-user-circle"></i>
             </div>
             <div>
-                <h1 class="greeting-title">Selamat Datang, {{ $user->name ?? 'Pengguna' }}! 👋</h1>
+                <h1 class="greeting-title">Selamat Datang, <?php echo e($user->name ?? 'Pengguna'); ?>! 👋</h1>
                 <div class="greeting-badges">
                     <span class="greeting-badge">
-                        <i class="far fa-calendar"></i> {{ now()->format('l, d F Y') }}
+                        <i class="far fa-calendar"></i> <?php echo e(now()->format('l, d F Y')); ?>
+
                     </span>
                     <span class="greeting-badge">
-                        <i class="fas fa-building"></i> {{ $totalProperties ?? 0 }} Properti
+                        <i class="fas fa-building"></i> <?php echo e($totalProperties ?? 0); ?> Properti
                     </span>
                     <span class="greeting-badge">
-                        <i class="fas fa-star"></i> Member since {{ $user->created_at->format('M Y') ?? '2024' }}
+                        <i class="fas fa-star"></i> Member since <?php echo e($user->created_at->format('M Y') ?? '2024'); ?>
+
                     </span>
                 </div>
             </div>
@@ -39,7 +41,7 @@
                 <i class="fas fa-building"></i>
             </div>
             <div class="stat-content">
-                <div class="stat-value">{{ $totalProperties ?? 0 }}</div>
+                <div class="stat-value"><?php echo e($totalProperties ?? 0); ?></div>
                 <div class="stat-label">Total Properti</div>
                 <div class="stat-trend up">
                     <i class="fas fa-arrow-up"></i> Terdaftar
@@ -52,7 +54,7 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <div class="stat-content">
-                <div class="stat-value">{{ $availableProperties ?? 0 }}</div>
+                <div class="stat-value"><?php echo e($availableProperties ?? 0); ?></div>
                 <div class="stat-label">Tersedia</div>
                 <div class="stat-trend neutral">
                     <i class="fas fa-clock"></i> Siap disewa
@@ -65,7 +67,7 @@
                 <i class="fas fa-clock"></i>
             </div>
             <div class="stat-content">
-                <div class="stat-value">{{ $rentedProperties ?? 0 }}</div>
+                <div class="stat-value"><?php echo e($rentedProperties ?? 0); ?></div>
                 <div class="stat-label">Disewa</div>
                 <div class="stat-trend neutral">
                     <i class="fas fa-calendar"></i> Dalam masa sewa
@@ -78,7 +80,7 @@
                 <i class="fas fa-dollar-sign"></i>
             </div>
             <div class="stat-content">
-                <div class="stat-value">Rp {{ number_format($totalSpending ?? 0, 0, ',', '.') }}</div>
+                <div class="stat-value">Rp <?php echo e(number_format($totalSpending ?? 0, 0, ',', '.')); ?></div>
                 <div class="stat-label">Pendapatan</div>
                 <div class="stat-trend up">
                     <i class="fas fa-chart-line"></i> Bulan ini
@@ -168,18 +170,19 @@
             </div>
         </div>
         <div class="quick-right">
-            <a href="{{ route('properties.index') }}" class="btn-outline">
+            <a href="<?php echo e(route('properties.index')); ?>" class="btn-outline">
                 <i class="fas fa-list"></i> Semua Properti
             </a>
-            <a href="{{ route('properties.create') }}" class="btn-primary">
+            <a href="<?php echo e(route('properties.create')); ?>" class="btn-primary">
                 <i class="fas fa-plus-circle"></i> Tambah Properti
             </a>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script src="{{ asset('assets/js/dashboard.js') }}"></script>
-@endsection
+<script src="<?php echo e(asset('assets/js/dashboard.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/dashboard/index.blade.php ENDPATH**/ ?>

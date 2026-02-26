@@ -16,36 +16,34 @@ class DashboardController extends Controller
         
         // Data properti
         $totalProperties = Property::where('user_id', $user->id)->count();
+        $availableProperties = Property::where('user_id', $user->id)
+            ->where('status', 'available')
+            ->count();
+        $rentedProperties = Property::where('user_id', $user->id)
+            ->where('status', 'rented')
+            ->count();
         
-        // Data booking
-        $totalBookings = Booking::where('user_id', $user->id)->count();
-        $pendingBookings = Booking::where('user_id', $user->id)
-            ->where('status', 'pending')
-            ->count();
-        $successBookings = Booking::where('user_id', $user->id)
-            ->where('status', 'success')
-            ->count();
-            
-        // Total spending
+        // Data spending
         $totalSpending = Payment::where('user_id', $user->id)
             ->where('status', 'success')
             ->sum('amount') ?? 0;
-            
-        // Recent bookings
-        $recentBookings = Booking::with(['property', 'payment'])
-            ->where('user_id', $user->id)
-            ->latest()
-            ->limit(10)
-            ->get();
+        
+        // Data untuk chart distribusi
+        $distributionData = [
+            Property::where('user_id', $user->id)->where('type', 'rumah')->count(),
+            Property::where('user_id', $user->id)->where('type', 'apartemen')->count(),
+            Property::where('user_id', $user->id)->where('type', 'ruko')->count(),
+            Property::where('user_id', $user->id)->where('type', 'kantor')->count(),
+            Property::where('user_id', $user->id)->where('type', 'villa')->count(),
+        ];
         
         return view('dashboard.index', compact(
             'user',
             'totalProperties',
-            'totalBookings',
-            'pendingBookings',
-            'successBookings',
+            'availableProperties',
+            'rentedProperties',
             'totalSpending',
-            'recentBookings'
+            'distributionData'
         ));
     }
 }
