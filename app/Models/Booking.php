@@ -15,7 +15,7 @@ class Booking extends Model
         'booking_date',
         'booking_time',
         'status',
-        'payment_status',  // ✅ TAMBAHKAN INI (untuk tracking status pembayaran)
+        'payment_status',
         'notes',
         'total_price',
         'paid_at'

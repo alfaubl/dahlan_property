@@ -118,16 +118,27 @@
     <!-- ===== PROPERTIES GRID ===== -->
     <div class="properties-grid" id="propertiesGrid">
         <!-- Property Card 1 -->
+         @forelse($properties ?? [] as $property)
         <div class="property-card">
             <div class="property-image">
-                <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994" alt="Property">
-                <div class="property-price">Rp 2,5 M</div>
+                <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994"  alt="{{ $property->title }}">
+                        <div class="property-price">Rp {{ number_format($property->price ?? 2500000000, 0, ',', '.') }}</div>
+
+         <!-- TOMBOL BOOKING - PAKAI $property DARI LOOP -->
+            <a href="{{ route('booking.create', $property->id) }}" class="btn-booking-card">
+                <i class="fas fa-calendar-check"></i> Booking Sekarang
+            </a>
+
+
+        </div>
+        <div class="property-details">
+            <h3 class="property-title">{{ $property->title ?? 'Villa Eksklusif Bali' }}</h3>
+            <div class="property-location">
+                <i class="fas fa-map-marker-alt"></i> {{ $property->location ?? 'JL. Raya Uluwatu, Badung' }}
             </div>
-            <div class="property-details">
-                <h3 class="property-title">Villa Eksklusif Bali</h3>
-                <div class="property-location">
-                    <i class="fas fa-map-marker-alt"></i> JL. Raya Uluwatu, Badung
-                </div>
+
+
+            </div>
                 <div class="property-features">
                     <span><i class="fas fa-bed"></i> 4 KT</span>
                     <span><i class="fas fa-bath"></i> 3 KM</span>
@@ -219,19 +230,108 @@ document.addEventListener('DOMContentLoaded', function() {
     // Filter toggle
     const filterToggle = document.getElementById('filterToggle');
     const filterSection = document.getElementById('filterSection');
-    
+
     if (filterToggle && filterSection) {
         filterToggle.addEventListener('click', function() {
             filterSection.classList.toggle('active');
             const icon = this.querySelector('i');
-            icon.className = filterSection.classList.contains('active') ? 'fas fa-times' : 'fas fa-sliders-h';
+            if (icon) {
+                icon.className = filterSection.classList.contains('active') ? 'fas fa-times' : 'fas fa-sliders-h';
+            }
         });
     }
 
     // Reset filter
-    document.getElementById('resetFilters')?.addEventListener('click', function() {
-        document.querySelectorAll('.filter-select').forEach(select => select.value = '');
-    });
+    const resetBtn = document.getElementById('resetFilters');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-select').forEach(select => select.value = '');
+        });
+    }
 });
 </script>
+
+@extends('layouts.app')
+
+{{-- ================= CONTENT ================= --}}
+@section('content')
+
+<div class="container">
+
+    <h1>Data Properties</h1>
+
+    {{-- Contoh Loop --}}
+    @if($properties->count() > 0)
+
+        <div class="row">
+            @foreach($properties as $property)
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>{{ $property->name }}</h5>
+                            <p>{{ $property->type }}</p>
+                            <p>{{ $property->price }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+    @else
+        <p>Tidak ada data properti.</p>
+    @endif
+
+    {{-- Chart Container --}}
+    <div id="propertiesChart"></div>
+
+</div>
+
 @endsection
+{{-- ================= END CONTENT ================= --}}
+
+
+
+{{-- ================= SCRIPTS ================= --}}
+@section('scripts')
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const options = {
+        series: [{
+            name: 'Jumlah Properti',
+            data: [450, 320, 280, 190, 160]
+        }],
+        chart: {
+            type: 'bar',
+            height: 300,
+            toolbar: { show: false },
+            background: 'transparent'
+        },
+        colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+        plotOptions: {
+            bar: {
+                borderRadius: 8,
+                columnWidth: '60%',
+                distributed: true
+            }
+        },
+        xaxis: {
+            categories: ['Rumah', 'Apartemen', 'Ruko', 'Kantor', 'Villa']
+        }
+    };
+
+    const chart = new ApexCharts(
+        document.getElementById('propertiesChart'),
+        options
+    );
+
+    chart.render();
+
+});
+</script>
+
+@endsection
+{{-- ================= END SCRIPTS ================= --}}

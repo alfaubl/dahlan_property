@@ -1,172 +1,118 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Properti - Dahlan Property')
+@section('title', 'Booking Properti - Dahlan Property')
 
 @section('styles')
-    @include('partials.css.property-create-css')
+<link rel="stylesheet" href="{{ asset('assets/css/booking-create.css') }}">
 @endsection
 
 @section('content')
-<div class="create-container">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="create-card">
-                    <!-- Header -->
-                    <div class="create-header">
-                        <h1>Tambah Properti Baru</h1>
-                        <p>Lengkapi data properti Anda dengan lengkap dan akurat</p>
+<div class="booking-wrapper">
+    <div class="booking-container">
+        
+        <!-- Header -->
+        <div class="booking-header">
+            <h1 class="booking-title">
+                <i class="fas fa-calendar-check"></i>
+                Booking Properti
+            </h1>
+            <p class="booking-subtitle">Isi form di bawah untuk melakukan booking properti</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="booking-card">
+            
+            <!-- Property Info -->
+            <div class="property-info-card">
+                <div class="property-info-header">
+                    <i class="fas fa-building"></i>
+                    <h3>Informasi Properti</h3>
+                </div>
+                <div class="property-info-body">
+                    <div class="property-info-row">
+                        <span class="info-label">Nama Properti</span>
+                        <span class="info-value">{{ $property->title }}</span>
                     </div>
-
-                    <!-- Body -->
-                    <div class="create-body">
-                        <form id="propertyForm" action="{{ route('properties.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            
-                            <!-- Informasi Dasar -->
-                            <div class="form-section">
-                                <h5 class="section-title">
-                                    <i class="fas fa-info-circle"></i>
-                                    Informasi Dasar
-                                </h5>
-                                
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Judul Properti <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                                               id="title" name="title" value="{{ old('title') }}" required>
-                                        @error('title')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <label class="form-label">Tipe <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('type') is-invalid @enderror" name="type" required>
-                                            <option value="">Pilih Tipe</option>
-                                            <option value="house" {{ old('type') == 'house' ? 'selected' : '' }}>Rumah</option>
-                                            <option value="apartment" {{ old('type') == 'apartment' ? 'selected' : '' }}>Apartemen</option>
-                                            <option value="land" {{ old('type') == 'land' ? 'selected' : '' }}>Tanah</option>
-                                            <option value="commercial" {{ old('type') == 'commercial' ? 'selected' : '' }}>Komersial</option>
-                                            <option value="villa" {{ old('type') == 'villa' ? 'selected' : '' }}>Villa</option>
-                                        </select>
-                                        @error('type')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <label class="form-label">Harga <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">Rp</span>
-                                            <input type="number" class="form-control @error('price') is-invalid @enderror" 
-                                                   id="price" name="price" value="{{ old('price') }}" required min="0">
-                                            @error('price')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-6">
-                                        <label class="form-label">Kota <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control @error('city') is-invalid @enderror" 
-                                               name="city" value="{{ old('city') }}" required>
-                                        @error('city')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Lokasi -->
-                            <div class="form-section">
-                                <h5 class="section-title">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    Lokasi
-                                </h5>
-                                
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Alamat</label>
-                                        <input type="text" class="form-control" name="address" value="{{ old('address') }}">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Provinsi</label>
-                                        <input type="text" class="form-control" name="province" value="{{ old('province') }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Detail Properti -->
-                            <div class="form-section">
-                                <h5 class="section-title">
-                                    <i class="fas fa-home"></i>
-                                    Detail Properti
-                                </h5>
-                                
-                                <div class="row g-3">
-                                    <div class="col-md-3 col-6">
-                                        <label class="form-label">Kamar Tidur</label>
-                                        <input type="number" class="form-control" name="bedrooms" value="{{ old('bedrooms', 0) }}" min="0">
-                                    </div>
-                                    <div class="col-md-3 col-6">
-                                        <label class="form-label">Kamar Mandi</label>
-                                        <input type="number" class="form-control" name="bathrooms" value="{{ old('bathrooms', 0) }}" min="0">
-                                    </div>
-                                    <div class="col-md-3 col-6">
-                                        <label class="form-label">Luas (m²)</label>
-                                        <input type="number" class="form-control" name="area" value="{{ old('area', 0) }}" min="0">
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-3">
-                                    <label class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" name="description" rows="3" placeholder="Jelaskan detail properti Anda...">{{ old('description') }}</textarea>
-                                </div>
-                            </div>
-
-                            <!-- Status -->
-                            <div class="form-section">
-                                <h5 class="section-title">
-                                    <i class="fas fa-tag"></i>
-                                    Status
-                                </h5>
-                                
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Status</label>
-                                        <select class="form-select" name="status">
-                                            <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
-                                            <option value="sold" {{ old('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
-                                            <option value="rented" {{ old('status') == 'rented' ? 'selected' : '' }}>Disewa</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Tujuan</label>
-                                        <select class="form-select" name="purpose">
-                                            <option value="sale" {{ old('purpose') == 'sale' ? 'selected' : '' }}>Dijual</option>
-                                            <option value="rent" {{ old('purpose') == 'rent' ? 'selected' : '' }}>Disewa</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tombol Aksi -->
-                            <div class="d-flex gap-3 justify-content-end mt-4">
-                                <a href="{{ route('properties.index') }}" class="btn-cancel">Batal</a>
-                                <button type="submit" class="btn-save" id="saveBtn">
-                                    <i class="fas fa-save"></i> Simpan Properti
-                                </button>
-                            </div>
-                        </form>
+                    <div class="property-info-row">
+                        <span class="info-label">Lokasi</span>
+                        <span class="info-value">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{ $property->location }}
+                        </span>
+                    </div>
+                    <div class="property-info-row">
+                        <span class="info-label">Harga</span>
+                        <span class="info-value price">Rp {{ number_format($property->price, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="property-info-row fee">
+                        <span class="info-label">Booking Fee (10%)</span>
+                        <span class="info-value">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Form Booking -->
+            <form action="{{ route('booking.store') }}" method="POST" class="booking-form" id="bookingForm">
+                @csrf
+                <input type="hidden" name="property_id" value="{{ $property->id }}">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar"></i>
+                            Tanggal Booking <span class="text-danger">*</span>
+                        </label>
+                        <input type="date" name="booking_date" class="form-control" 
+                               min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-clock"></i>
+                            Waktu <span class="text-danger">*</span>
+                        </label>
+                        <input type="time" name="booking_time" class="form-control" value="10:00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-sticky-note"></i>
+                        Catatan (opsional)
+                    </label>
+                    <textarea name="notes" class="form-control" rows="4" placeholder="Tambahkan catatan untuk pemilik properti..."></textarea>
+                </div>
+
+                <!-- Ringkasan -->
+                <div class="summary-card">
+                    <h4 class="summary-title">Ringkasan Booking</h4>
+                    <div class="summary-row">
+                        <span>Harga Properti</span>
+                        <span>Rp {{ number_format($property->price, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Booking Fee (10%)</span>
+                        <span class="fee-amount">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total Dibayar</span>
+                        <span class="total-amount">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi -->
+                <div class="form-actions">
+                    <a href="{{ route('properties.show', $property->id) }}" class="btn-cancel">
+                        <i class="fas fa-arrow-left"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fas fa-credit-card"></i>
+                        Lanjutkan ke Pembayaran
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-    @include('partials.js.property-create-js')
 @endsection

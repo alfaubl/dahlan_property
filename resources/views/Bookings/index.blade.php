@@ -1,257 +1,161 @@
 @extends('layouts.app')
 
-@section('title', 'Booking Saya - Dahlan Property')
+@section('title', 'Daftar Properti - Dahlan Property')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/bookings.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/properties.css') }}">
 @endsection
 
 @section('content')
-<div class="bookings-container">
+<div class="properties-wrapper">
     
-    <!-- HEADER SECTION -->
-    <div class="header-section">
-        <div class="header-left">
-            <h1>
-                <i class="fas fa-calendar-check"></i>
-                Daftar Booking Saya
-            </h1>
-            <p>
-                <span class="status-dot"></span>
-                Kelola status booking properti Anda
-            </p>
+    <!-- HEADER -->
+    <div class="properties-header">
+        <div>
+            <h1 class="header-title">Jelajahi Properti</h1>
+            <p class="header-subtitle">Temukan properti impian Anda dari ribuan pilihan terbaik</p>
         </div>
-        <a href="{{ route('properties.index') }}" class="btn-booking">
-            <i class="fas fa-plus-circle"></i>
-            <span>Booking Baru</span>
-            <i class="fas fa-arrow-right"></i>
-        </a>
+        <button class="filter-toggle" id="filterToggle">
+            <i class="fas fa-sliders-h"></i>
+            <span>Filter</span>
+        </button>
+    </div>
+
+    <!-- FILTER SECTION -->
+    <div class="filter-section" id="filterSection">
+        <form id="filterForm">
+            <div class="filter-grid">
+                <div class="filter-item">
+                    <label class="filter-label">Tipe Properti</label>
+                    <select class="filter-select" name="type">
+                        <option value="">Semua Tipe</option>
+                        <option value="rumah">Rumah</option>
+                        <option value="apartemen">Apartemen</option>
+                        <option value="ruko">Ruko</option>
+                        <option value="kantor">Kantor</option>
+                        <option value="villa">Villa</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Lokasi</label>
+                    <select class="filter-select" name="location">
+                        <option value="">Semua Lokasi</option>
+                        <option value="jakarta">Jakarta</option>
+                        <option value="bandung">Bandung</option>
+                        <option value="surabaya">Surabaya</option>
+                        <option value="bali">Bali</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">Harga</label>
+                    <select class="filter-select" name="price">
+                        <option value="">Semua Harga</option>
+                        <option value="<500">< Rp 500 Jt</option>
+                        <option value="500-1000">Rp 500 Jt - 1 M</option>
+                        <option value=">1000">> Rp 1 M</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn-reset" id="resetFilters">Reset</button>
+                <button type="submit" class="btn-apply">Terapkan Filter</button>
+            </div>
+        </form>
     </div>
 
     <!-- STATS CARDS -->
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-icon total">
-                <i class="fas fa-calendar-check"></i>
+            <div class="stat-icon" style="background: #3b82f6;">
+                <i class="fas fa-building"></i>
             </div>
-            <div class="stat-content">
-                <span class="stat-label">Total Booking</span>
-                <span class="stat-value">{{ $totalBookings ?? 0 }}</span>
-                <span class="stat-trend">
-                    <i class="fas fa-arrow-up"></i> All time
-                </span>
+            <div>
+                <div class="stat-value">1.500+</div>
+                <div class="stat-label">Total Properti</div>
             </div>
         </div>
-
         <div class="stat-card">
-            <div class="stat-icon pending">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-content">
-                <span class="stat-label">Menunggu</span>
-                <span class="stat-value">{{ $pendingBookings ?? 0 }}</span>
-                <span class="stat-trend">
-                    <i class="fas fa-hourglass-half"></i> Perlu tindakan
-                </span>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon success">
+            <div class="stat-icon" style="background: #10b981;">
                 <i class="fas fa-check-circle"></i>
             </div>
-            <div class="stat-content">
-                <span class="stat-label">Selesai</span>
-                <span class="stat-value">{{ $successBookings ?? 0 }}</span>
-                <span class="stat-trend">
-                    <i class="fas fa-check"></i> Berhasil
-                </span>
+            <div>
+                <div class="stat-value">1.200+</div>
+                <div class="stat-label">Tersedia</div>
             </div>
         </div>
-
         <div class="stat-card">
-            <div class="stat-icon cancelled">
-                <i class="fas fa-times-circle"></i>
+            <div class="stat-icon" style="background: #f59e0b;">
+                <i class="fas fa-clock"></i>
             </div>
-            <div class="stat-content">
-                <span class="stat-label">Dibatalkan</span>
-                <span class="stat-value">{{ $cancelledBookings ?? 0 }}</span>
-                <span class="stat-trend">
-                    <i class="fas fa-ban"></i> Batal
-                </span>
+            <div>
+                <div class="stat-value">24/7</div>
+                <div class="stat-label">Layanan</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #ef4444;">
+                <i class="fas fa-smile"></i>
+            </div>
+            <div>
+                <div class="stat-value">98%</div>
+                <div class="stat-label">Kepuasan</div>
             </div>
         </div>
     </div>
 
     <!-- CHART SECTION -->
-    <div class="chart-card">
+    <div class="chart-section">
         <div class="chart-header">
-            <div class="chart-title">
-                <div class="chart-icon">
-                    <i class="fas fa-chart-line"></i>
+            <div>
+                <h3 class="chart-title">Distribusi Properti</h3>
+                <p class="chart-subtitle">Berdasarkan tipe bangunan</p>
+            </div>
+            <span class="chart-badge">2024</span>
+        </div>
+        <div id="propertiesChart" class="chart-container"></div>
+    </div>
+
+    <!-- PROPERTIES GRID -->
+    <div class="properties-grid" id="propertiesGrid">
+        @forelse($properties ?? [] as $property)
+        <div class="property-card" data-id="{{ $property->id }}">
+            <div class="property-image">
+                <img src="{{ $property->main_image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" alt="Property">
+                <div class="property-price">Rp {{ number_format($property->price ?? 2500000000,0,',','.') }}</div>
+                <a href="{{ route('booking.create', $property->id) }}" class="btn-booking-card">
+                    <i class="fas fa-calendar-check"></i> Booking Sekarang
+                </a>
+            </div>
+            <div class="property-details">
+                <h3 class="property-title">{{ $property->title ?? 'Villa Eksklusif Bali' }}</h3>
+                <div class="property-location">
+                    <i class="fas fa-map-marker-alt"></i> {{ $property->location ?? 'JL. Raya Uluwatu, Badung' }}
                 </div>
-                <div>
-                    <h3>Statistik 7 Hari Terakhir</h3>
-                    <p>Perkembangan booking properti Anda</p>
+                <div class="property-features">
+                    <span><i class="fas fa-bed"></i> {{ $property->bedrooms ?? 4 }} KT</span>
+                    <span><i class="fas fa-bath"></i> {{ $property->bathrooms ?? 3 }} KM</span>
+                    <span><i class="fas fa-vector-square"></i> {{ $property->area ?? 250 }} m²</span>
                 </div>
             </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <span class="legend-dot success"></span>
-                    <span>Sukses</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-dot pending"></span>
-                    <span>Pending</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-dot cancelled"></span>
-                    <span>Batal</span>
-                </div>
-            </div>
         </div>
-        <div class="chart-container">
-            <canvas id="bookingsChart"></canvas>
+        @empty
+        <div class="empty-properties">
+            <p>Belum ada properti</p>
         </div>
+        @endforelse
     </div>
 
-    <!-- FILTER SECTION -->
-    <div class="filter-section">
-        <div class="filter-tabs">
-            <button class="filter-btn active" data-filter="all">
-                <i class="fas fa-list"></i> Semua
-            </button>
-            <button class="filter-btn" data-filter="pending">
-                <i class="fas fa-clock"></i> Menunggu
-            </button>
-            <button class="filter-btn" data-filter="success">
-                <i class="fas fa-check-circle"></i> Selesai
-            </button>
-            <button class="filter-btn" data-filter="cancelled">
-                <i class="fas fa-times-circle"></i> Batal
-            </button>
-        </div>
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Cari ID atau properti...">
-        </div>
+    <!-- PAGINATION -->
+    @if(isset($properties) && method_exists($properties, 'links'))
+    <div class="pagination">
+        {{ $properties->links() }}
     </div>
+    @endif
 
-    <!-- TABLE SECTION -->
-    <div class="table-card">
-        <div class="table-header">
-            <h3>
-                <i class="fas fa-history"></i>
-                Riwayat Booking
-            </h3>
-            <span class="table-count">{{ $bookings->total() ?? 0 }} total</span>
-        </div>
-
-        <div class="table-responsive">
-            <table class="bookings-table">
-                <thead>
-                    <tr>
-                        <th>ID Booking</th>
-                        <th>Properti</th>
-                        <th>Tanggal</th>
-                        <th>Check In</th>
-                        <th>Check Out</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    @forelse($bookings ?? [] as $booking)
-                    <tr data-status="{{ $booking->status ?? 'pending' }}" data-id="{{ $booking->id }}">
-                        <td>
-                            <span class="booking-id">#{{ substr($booking->booking_code ?? $booking->id, -4) }}</span>
-                        </td>
-                        <td>
-                            <div class="property-info">
-                                <strong>{{ $booking->property->title ?? '-' }}</strong>
-                                <small>{{ $booking->property->location ?? '-' }}</small>
-                            </div>
-                        </td>
-                        <td>{{ \Carbon\Carbon::parse($booking->created_at)->format('d/m') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($booking->booking_date)->format('d/m') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($booking->booking_date)->addDays(7)->format('d/m') }}</td>
-                        <td>
-                            <span class="booking-price">Rp{{ number_format($booking->total_price ?? 0,0,',','.') }}</span>
-                        </td>
-                        <td>
-                            @php
-                            $status = $booking->status ?? 'pending';
-                            $badgeClass = 'badge-pending';
-                            $badgeIcon = 'fa-clock';
-                            if($status === 'success') {
-                                $badgeClass = 'badge-success';
-                                $badgeIcon = 'fa-check-circle';
-                            } elseif($status === 'cancelled') {
-                                $badgeClass = 'badge-cancelled';
-                                $badgeIcon = 'fa-times-circle';
-                            }
-                            @endphp
-                            <span class="status-badge {{ $badgeClass }}">
-                                <i class="fas {{ $badgeIcon }}"></i>
-                                {{ ucfirst($status) }}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-group">
-                                <a href="{{ route('booking.show', $booking->id) }}" class="action-btn btn-view" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @if($booking->status == 'pending')
-                                    <a href="#" class="action-btn btn-pay" title="Bayar" onclick="bayar({{ $booking->id }}); return false;">
-                                        <i class="fas fa-credit-card"></i>
-                                    </a>
-                                    <button class="action-btn btn-cancel" title="Batalkan" onclick="batal({{ $booking->id }}); return false;">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                @endif
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8">
-                            <div class="empty-state">
-                                <i class="fas fa-calendar-times"></i>
-                                <h3>Belum Ada Booking</h3>
-                                <p>Mulai booking properti impian Anda sekarang</p>
-                                <a href="{{ route('properties.index') }}" class="empty-btn">
-                                    <i class="fas fa-search"></i> Cari Properti
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        @if(isset($bookings) && method_exists($bookings, 'links'))
-        <div class="pagination">
-            {{ $bookings->links() }}
-        </div>
-        @endif
-    </div>
 </div>
 @endsection
 
-@push('charts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-@endpush
-
 @section('scripts')
-<script src="{{ asset('assets/js/bookings.js') }}"></script>
-<script>
-window.bookingData = {
-success: {!! json_encode($chartSuccess ?? [0,0,0,0,0,0,0]) !!},
-pending: {!! json_encode($chartPending ?? [0,0,0,0,0,0,0]) !!},
-cancelled: {!! json_encode($chartCancelled ?? [0,0,0,0,0,0,0]) !!},
-categories: {!! json_encode($chartCategories ?? ['20 Feb','21 Feb','22 Feb','23 Feb','24 Feb','25 Feb','26 Feb']) !!}
-};
-</script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="{{ asset('assets/js/properties.js') }}"></script>
 @endsection

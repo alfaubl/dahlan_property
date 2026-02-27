@@ -19,18 +19,12 @@ class BookingController extends Controller
     {
         $this->middleware('auth');
 
-        // Midtrans Configuration
         Config::$serverKey = config('midtrans.server_key');
         Config::$isProduction = config('midtrans.is_production');
         Config::$isSanitized = true;
         Config::$is3ds = true;
     }
 
-    /**
-     * ==============================
-     * LIST BOOKINGS (INDEX)
-     * ==============================
-     */
     public function index()
     {
         $user = Auth::user();
@@ -77,11 +71,6 @@ class BookingController extends Controller
         ));
     }
 
-    /**
-     * ==============================
-     * FORM BOOKING (CREATE)
-     * ==============================
-     */
     public function create(Request $request)
     {
         $property = Property::findOrFail($request->property_id);
@@ -95,11 +84,6 @@ class BookingController extends Controller
         return view('bookings.create', compact('property'));
     }
 
-    /**
-     * ==============================
-     * SIMPAN BOOKING (STORE)
-     * ==============================
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -116,11 +100,9 @@ class BookingController extends Controller
             return back()->with('error', 'Properti tidak tersedia.');
         }
 
-        // Generate kode booking
         $bookingCode = 'BOOK-' . strtoupper(Str::random(8));
-        $bookingFee = $property->price * 0.1; // 10% dari harga
+        $bookingFee = $property->price * 0.1;
 
-        // Simpan booking
         $booking = Booking::create([
             'user_id' => $user->id,
             'property_id' => $property->id,
@@ -132,10 +114,8 @@ class BookingController extends Controller
             'total_price' => $property->price,
         ]);
 
-        // Buat order ID untuk Midtrans
         $orderId = 'BOOK-' . $booking->id . '-' . time();
 
-        // Simpan payment
         $payment = Payment::create([
             'user_id' => $user->id,
             'booking_id' => $booking->id,
@@ -145,7 +125,6 @@ class BookingController extends Controller
             'status' => 'pending'
         ]);
 
-        // Parameter Midtrans
         $params = [
             'transaction_details' => [
                 'order_id' => $orderId,
@@ -159,16 +138,13 @@ class BookingController extends Controller
         ];
 
         try {
-            // Dapatkan Snap Token dari Midtrans
             $snapToken = Snap::getSnapToken($params);
 
-            // Update payment dengan snap token
             $payment->update([
                 'snap_token' => $snapToken,
                 'midtrans_response' => json_encode(['snap_token' => $snapToken])
             ]);
 
-            // Redirect ke halaman payment process
             return redirect()->route('payment.process', $payment->id);
 
         } catch (\Exception $e) {
@@ -177,32 +153,27 @@ class BookingController extends Controller
         }
     }
 
-    /**
-     * ==============================
-     * DETAIL BOOKING (SHOW)
-     * ==============================
-     */
     public function show(Booking $booking)
     {
-        // Cek kepemilikan
         if ($booking->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized access.');
         }
 
-        // Load relasi
         $booking->load(['property', 'payment', 'user']);
 
-        return view('bookings.show', compact('booking'));
+        $stats = [
+            'paid' => Booking::where('user_id', Auth::id())->where('status', 'success')->count(),
+            'pending' => Booking::where('user_id', Auth::id())->where('status', 'pending')->count(),
+            'failed' => Booking::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
+            'cancelled' => Booking::where('user_id', Auth::id())->where('status', 'cancelled')->count(),
+            'total' => Booking::where('user_id', Auth::id())->count()
+        ];
+
+        return view('bookings.show', compact('booking', 'stats'));
     }
 
-    /**
-     * ==============================
-     * CANCEL BOOKING (CANCEL)
-     * ==============================
-     */
     public function cancel(Booking $booking)
     {
-        // Cek kepemilikan
         if ($booking->user_id !== Auth::id()) {
             return response()->json([
                 'success' => false,
@@ -210,7 +181,6 @@ class BookingController extends Controller
             ], 403);
         }
 
-        // Cek status
         if ($booking->status !== 'pending') {
             return response()->json([
                 'success' => false,
@@ -218,10 +188,8 @@ class BookingController extends Controller
             ]);
         }
 
-        // Update status booking
         $booking->update(['status' => 'cancelled']);
 
-        // Update status payment jika ada
         if ($booking->payment) {
             $booking->payment->update(['status' => 'failed']);
         }
