@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Booking Properti - Dahlan Property')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/booking-create.css') }}">
-@endsection
+<?php $__env->startSection('title', 'Booking Properti - Dahlan Property'); ?>
 
-@section('content')
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/booking-create.css')); ?>">
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="booking-create-wrapper">
     <div class="booking-create-container">
         
@@ -27,30 +27,31 @@
                     <!-- Property Info -->
                     <div class="property-summary">
                         <div class="property-image">
-                            {{-- ✅ FIX: Hapus spasi di URL --}}
-                            <img src="{{ $property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" alt="{{ $property->title }}">
+                            
+                            <img src="<?php echo e($property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'); ?>" alt="<?php echo e($property->title); ?>">
                         </div>
                         <div class="property-info">
-                            <h3>{{ $property->title }}</h3>
+                            <h3><?php echo e($property->title); ?></h3>
                             <p class="location">
                                 <i class="fas fa-map-marker-alt"></i>
-                                {{ $property->location }}
+                                <?php echo e($property->location); ?>
+
                             </p>
                             <div class="price-tag">
                                 <span class="label">Harga</span>
-                                <span class="value">Rp {{ number_format($property->price, 0, ',', '.') }}</span>
+                                <span class="value">Rp <?php echo e(number_format($property->price, 0, ',', '.')); ?></span>
                             </div>
                             <div class="fee-tag">
                                 <span class="label">Booking Fee (10%)</span>
-                                <span class="value">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
+                                <span class="value">Rp <?php echo e(number_format($property->price * 0.1, 0, ',', '.')); ?></span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Booking Form -->
-                    <form action="{{ route('booking.store') }}" method="POST" class="booking-form" id="bookingForm">
-                        @csrf
-                        <input type="hidden" name="property_id" value="{{ $property->id }}">
+                    <form action="<?php echo e(route('booking.store')); ?>" method="POST" class="booking-form" id="bookingForm">
+                        <?php echo csrf_field(); ?>
+                        <input type="hidden" name="property_id" value="<?php echo e($property->id); ?>">
                         
                         <div class="form-row">
                             <div class="form-group">
@@ -59,7 +60,7 @@
                                     Tanggal Booking <span class="required">*</span>
                                 </label>
                                 <input type="date" name="booking_date" class="form-control" 
-                                       min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
+                                       min="<?php echo e(date('Y-m-d', strtotime('+1 day'))); ?>" required>
                             </div>
 
                             <div class="form-group">
@@ -83,20 +84,20 @@
                             <h4>Ringkasan Pembayaran</h4>
                             <div class="summary-row">
                                 <span>Harga Properti</span>
-                                <span>Rp {{ number_format($property->price, 0, ',', '.') }}</span>
+                                <span>Rp <?php echo e(number_format($property->price, 0, ',', '.')); ?></span>
                             </div>
                             <div class="summary-row">
                                 <span>Booking Fee (10%)</span>
-                                <span class="fee">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
+                                <span class="fee">Rp <?php echo e(number_format($property->price * 0.1, 0, ',', '.')); ?></span>
                             </div>
                             <div class="summary-total">
                                 <span>Total Dibayar</span>
-                                <span class="total">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
+                                <span class="total">Rp <?php echo e(number_format($property->price * 0.1, 0, ',', '.')); ?></span>
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <a href="{{ route('properties.show', $property->id) }}" class="btn-cancel">
+                            <a href="<?php echo e(route('properties.show', $property->id)); ?>" class="btn-cancel">
                                 <i class="fas fa-arrow-left"></i> Kembali
                             </a>
                             <button type="submit" class="btn-submit" id="submitBtn">
@@ -165,7 +166,7 @@
                 <div class="info-card">
                     <h3><i class="fas fa-headset"></i> Butuh Bantuan?</h3>
                     <p>Tim customer service kami siap membantu Anda 24/7</p>
-                    <a href="{{ route('contact') }}" class="contact-link">
+                    <a href="<?php echo e(route('contact')); ?>" class="contact-link">
                         <i class="fas fa-phone-alt"></i> Hubungi Kami
                     </a>
                 </div>
@@ -173,8 +174,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
-<script src="{{ asset('assets/js/booking-create.js') }}"></script>
-@endsection
+<?php $__env->startSection('scripts'); ?>
+<script src="<?php echo e(asset('assets/js/booking-create.js')); ?>"></script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/bookings/create.blade.php ENDPATH**/ ?>

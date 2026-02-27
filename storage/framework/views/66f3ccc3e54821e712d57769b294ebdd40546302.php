@@ -1,23 +1,23 @@
-\@extends('layouts.app')
+\
 
-@section('title', 'Detail Booking - Dahlan Property')
+<?php $__env->startSection('title', 'Detail Booking - Dahlan Property'); ?>
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/booking-show.css') }}">
-@endsection
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/booking-show.css')); ?>">
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="booking-show-wrapper">
     <div class="booking-show-container">
         
         <!-- ===== BACK BUTTON ===== -->
-        <a href="{{ route('booking.index') }}" class="back-btn">
+        <a href="<?php echo e(route('booking.index')); ?>" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             Kembali ke Daftar Booking
         </a>
 
         <!-- ===== STATUS BANNER ===== -->
-        @php
+        <?php
             $status = $booking->payment->status ?? $booking->status ?? 'pending';
             $statusConfig = match($status) {
                 'paid', 'success' => ['class' => 'success', 'icon' => 'fa-check-circle', 'text' => 'Pembayaran Lunas'],
@@ -26,19 +26,19 @@
                 'failed' => ['class' => 'failed', 'icon' => 'fa-exclamation-circle', 'text' => 'Pembayaran Gagal'],
                 default => ['class' => 'pending', 'icon' => 'fa-clock', 'text' => 'Menunggu Pembayaran']
             };
-        @endphp
+        ?>
 
-        <div class="status-banner status-{{ $statusConfig['class'] }}">
+        <div class="status-banner status-<?php echo e($statusConfig['class']); ?>">
             <div class="status-info">
-                <i class="fas {{ $statusConfig['icon'] }}"></i>
+                <i class="fas <?php echo e($statusConfig['icon']); ?>"></i>
                 <div>
                     <h3>Status Pembayaran</h3>
-                    <p>{{ $statusConfig['text'] }}</p>
+                    <p><?php echo e($statusConfig['text']); ?></p>
                 </div>
             </div>
             <div class="booking-code">
                 <span>Kode Booking</span>
-                <strong>{{ $booking->booking_code }}</strong>
+                <strong><?php echo e($booking->booking_code); ?></strong>
             </div>
         </div>
 
@@ -54,17 +54,18 @@
                     </h3>
                     <div class="property-detail">
                         <div class="property-image">
-                            <img src="{{ $booking->property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" alt="{{ $booking->property->title }}">
+                            <img src="<?php echo e($booking->property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'); ?>" alt="<?php echo e($booking->property->title); ?>">
                         </div>
                         <div class="property-info">
-                            <h4>{{ $booking->property->title }}</h4>
+                            <h4><?php echo e($booking->property->title); ?></h4>
                             <p class="location">
                                 <i class="fas fa-map-marker-alt"></i>
-                                {{ $booking->property->location }}
+                                <?php echo e($booking->property->location); ?>
+
                             </p>
                             <div class="price-row">
                                 <span>Harga Properti</span>
-                                <strong>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</strong>
+                                <strong>Rp <?php echo e(number_format($booking->total_price, 0, ',', '.')); ?></strong>
                             </div>
                         </div>
                     </div>
@@ -79,27 +80,27 @@
                     <table class="detail-table">
                         <tr>
                             <td>Tanggal Booking</td>
-                            <td>{{ \Carbon\Carbon::parse($booking->booking_date)->format('d F Y') }}</td>
+                            <td><?php echo e(\Carbon\Carbon::parse($booking->booking_date)->format('d F Y')); ?></td>
                         </tr>
                         <tr>
                             <td>Waktu</td>
-                            <td>{{ \Carbon\Carbon::parse($booking->booking_time)->format('H:i') }} WIB</td>
+                            <td><?php echo e(\Carbon\Carbon::parse($booking->booking_time)->format('H:i')); ?> WIB</td>
                         </tr>
                         <tr>
                             <td>Dibuat Pada</td>
-                            <td>{{ $booking->created_at->format('d M Y, H:i') }}</td>
+                            <td><?php echo e($booking->created_at->format('d M Y, H:i')); ?></td>
                         </tr>
-                        @if($booking->notes)
+                        <?php if($booking->notes): ?>
                         <tr>
                             <td>Catatan</td>
-                            <td>{{ $booking->notes }}</td>
+                            <td><?php echo e($booking->notes); ?></td>
                         </tr>
-                        @endif
+                        <?php endif; ?>
                     </table>
                 </div>
 
                 <!-- Customer Info -->
-                @if($booking->user)
+                <?php if($booking->user): ?>
                 <div class="detail-card">
                     <h3 class="card-title">
                         <i class="fas fa-user"></i>
@@ -108,19 +109,19 @@
                     <table class="detail-table">
                         <tr>
                             <td>Nama</td>
-                            <td>{{ $booking->user->name }}</td>
+                            <td><?php echo e($booking->user->name); ?></td>
                         </tr>
                         <tr>
                             <td>Email</td>
-                            <td>{{ $booking->user->email }}</td>
+                            <td><?php echo e($booking->user->email); ?></td>
                         </tr>
                         <tr>
                             <td>Telepon</td>
-                            <td>{{ $booking->user->phone ?? '-' }}</td>
+                            <td><?php echo e($booking->user->phone ?? '-'); ?></td>
                         </tr>
                     </table>
                 </div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <!-- RIGHT COLUMN - PAYMENT -->
@@ -131,65 +132,66 @@
                         Informasi Pembayaran
                     </h3>
 
-                    @if($booking->payment)
+                    <?php if($booking->payment): ?>
                     <div class="payment-details">
                         <div class="payment-row">
                             <span>Order ID</span>
-                            <span class="order-id">{{ $booking->payment->order_id }}</span>
+                            <span class="order-id"><?php echo e($booking->payment->order_id); ?></span>
                         </div>
                         <div class="payment-row">
                             <span>Metode</span>
-                            <span>{{ $booking->payment->payment_method ?? '-' }}</span>
+                            <span><?php echo e($booking->payment->payment_method ?? '-'); ?></span>
                         </div>
                         <div class="payment-row">
                             <span>Status</span>
-                            <span class="payment-status status-{{ $statusConfig['class'] }}">
-                                {{ $statusConfig['text'] }}
+                            <span class="payment-status status-<?php echo e($statusConfig['class']); ?>">
+                                <?php echo e($statusConfig['text']); ?>
+
                             </span>
                         </div>
-                        @if($booking->paid_at)
+                        <?php if($booking->paid_at): ?>
                         <div class="payment-row">
                             <span>Dibayar Pada</span>
-                            <span>{{ \Carbon\Carbon::parse($booking->paid_at)->format('d M Y, H:i') }}</span>
+                            <span><?php echo e(\Carbon\Carbon::parse($booking->paid_at)->format('d M Y, H:i')); ?></span>
                         </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
 
                     <div class="price-summary">
                         <div class="price-row">
                             <span>Harga Properti</span>
-                            <span>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                            <span>Rp <?php echo e(number_format($booking->total_price, 0, ',', '.')); ?></span>
                         </div>
                         <div class="price-row">
                             <span>Booking Fee (10%)</span>
-                            <span>Rp {{ number_format($booking->payment->amount, 0, ',', '.') }}</span>
+                            <span>Rp <?php echo e(number_format($booking->payment->amount, 0, ',', '.')); ?></span>
                         </div>
                         <div class="price-row total">
                             <span>Total</span>
-                            <span>Rp {{ number_format($booking->payment->amount, 0, ',', '.') }}</span>
+                            <span>Rp <?php echo e(number_format($booking->payment->amount, 0, ',', '.')); ?></span>
                         </div>
                     </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        @if($status == 'pending')
-                            <a href="{{ route('payment.process', $booking->id) }}" class="btn-pay">
+                        <?php if($status == 'pending'): ?>
+                            <a href="<?php echo e(route('payment.process', $booking->id)); ?>" class="btn-pay">
                                 <i class="fas fa-credit-card"></i>
                                 Bayar Sekarang
                             </a>
-                            <button class="btn-cancel" onclick="cancelBooking({{ $booking->id }})">
+                            <button class="btn-cancel" onclick="cancelBooking(<?php echo e($booking->id); ?>)">
                                 <i class="fas fa-times-circle"></i>
                                 Batalkan Booking
                             </button>
-                        @endif
+                        <?php endif; ?>
 
-                        @if($status == 'paid' || $status == 'success')
+                        <?php if($status == 'paid' || $status == 'success'): ?>
                             <a href="#" class="btn-invoice">
                                 <i class="fas fa-download"></i>
                                 Download Invoice
                             </a>
-                        @endif
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -198,18 +200,19 @@
                     <i class="fas fa-headset"></i>
                     <h4>Butuh Bantuan?</h4>
                     <p>Hubungi customer service kami</p>
-                    <a href="{{ route('contact') }}" class="support-link">Hubungi Sekarang</a>
+                    <a href="<?php echo e(route('contact')); ?>" class="support-link">Hubungi Sekarang</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
-<script src="{{ asset('assets/js/booking-show.js') }}"></script>
+<?php $__env->startSection('scripts'); ?>
+<script src="<?php echo e(asset('assets/js/booking-show.js')); ?>"></script>
 <script>
-    window.bookingId = {{ $booking->id }};
-    window.csrfToken = '{{ csrf_token() }}';
+    window.bookingId = <?php echo e($booking->id); ?>;
+    window.csrfToken = '<?php echo e(csrf_token()); ?>';
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/bookings/show.blade.php ENDPATH**/ ?>

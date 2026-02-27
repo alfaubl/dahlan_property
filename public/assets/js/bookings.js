@@ -3,134 +3,77 @@ document.addEventListener('DOMContentLoaded', function() {
     initChart();
     initFilters();
     initSearch();
+    initCancelButtons();
 });
 
-/**
- * Initialize Chart.js
- */
 function initChart() {
-    const ctx = document.getElementById('bookingsChart');
-    
-    // Cek apakah Chart.js sudah loaded
-    if (typeof Chart === 'undefined') {
-        console.warn('Chart.js belum loaded');
-        return;
-    }
-    
-    // Cek apakah element chart ada
-    if (!ctx) {
-        console.warn('Element bookingsChart tidak ditemukan');
-        return;
-    }
-    
-    // Cek apakah data sudah ada
-    const data = window.bookingData;
-    if (!data) {
-        console.warn('Data booking tidak ditemukan');
-        return;
-    }
-    
-    // Destroy chart lama jika ada (untuk prevent duplikasi)
-    const existingChart = Chart.getChart(ctx);
-    if (existingChart) {
-        existingChart.destroy();
-    }
-    
-    // Create new chart
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.categories,
-            datasets: [
-                {
-                    label: 'Sukses',
-                    data: data.success,
-                    backgroundColor: '#10b981',
-                    borderRadius: 6,
-                    barPercentage: 0.7
-                },
-                {
-                    label: 'Pending',
-                    data: data.pending,
-                    backgroundColor: '#f59e0b',
-                    borderRadius: 6,
-                    barPercentage: 0.7
-                },
-                {
-                    label: 'Batal',
-                    data: data.cancelled,
-                    backgroundColor: '#ef4444',
-                    borderRadius: 6,
-                    barPercentage: 0.7
-                }
-            ]
+    const canvas = document.getElementById('bookingsChart');
+    if (!canvas || typeof ApexCharts === 'undefined') return;
+
+    const data = window.bookingData || {
+        success: [12, 19, 15, 17, 14, 23, 8],
+        pending: [5, 7, 4, 6, 8, 5, 3],
+        cancelled: [2, 1, 3, 2, 1, 2, 1],
+        categories: ['H-6', 'H-5', 'H-4', 'H-3', 'H-2', 'Kmr', 'H Ini']
+    };
+
+    const options = {
+        series: [
+            { name: 'Sukses', data: data.success },
+            { name: 'Pending', data: data.pending },
+            { name: 'Batal', data: data.cancelled }
+        ],
+        chart: {
+            type: 'bar',
+            height: 300,
+            stacked: true,
+            toolbar: { show: false },
+            animations: { enabled: true }
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            aspectRatio: 2.5,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    padding: 12,
-                    titleFont: { size: 13 },
-                    bodyFont: { size: 12 },
-                    borderRadius: 8,
-                    displayColors: true
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1,
-                        font: { size: 11 }
-                    },
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: { size: 11 }
-                    },
-                    grid: {
-                        display: false
-                    }
-                }
-            },
-            animation: {
-                duration: 800,
-                easing: 'easeOutQuart'
+        colors: ['#10b981', '#f59e0b', '#ef4444'],
+        plotOptions: {
+            bar: {
+                borderRadius: 6,
+                columnWidth: '60%',
+                horizontal: false
             }
-        }
-    });
+        },
+        xaxis: {
+            categories: data.categories,
+            labels: { style: { fontSize: '11px' } }
+        },
+        yaxis: {
+            labels: { style: { fontSize: '11px' } },
+            title: { text: 'Jumlah Booking' }
+        },
+        tooltip: {
+            theme: 'dark',
+            y: { formatter: (val) => val + ' booking' }
+        },
+        legend: { position: 'top' },
+        grid: { borderColor: '#e2e8f0' }
+    };
+
+    const chart = new ApexCharts(canvas, options);
+    chart.render();
 }
 
-/**
- * Initialize Filter Tabs
- */
 function initFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const rows = document.querySelectorAll('#tableBody tr[data-status]');
-    
+    const tableBody = document.getElementById('tableBody');
+
+    if (!filterBtns.length || !tableBody) return;
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active dari semua button
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Get filter value
-            const filter = this.getAttribute('data-filter');
-            
-            // Filter table rows
+
+            const filter = this.dataset.filter;
+            const rows = tableBody.querySelectorAll('tr');
+
             rows.forEach(row => {
-                const status = row.getAttribute('data-status');
-                
-                if (filter === 'all' || status === filter) {
+                if (filter === 'all' || row.dataset.status === filter) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
@@ -140,62 +83,54 @@ function initFilters() {
     });
 }
 
-/**
- * Initialize Search Functionality
- */
 function initSearch() {
     const searchInput = document.getElementById('searchInput');
-    const rows = document.querySelectorAll('#tableBody tr[data-status]');
-    
-    if (!searchInput) return;
-    
-    const searchFunction = function() {
-        const query = searchInput.value.toLowerCase().trim();
-        
+    const tableBody = document.getElementById('tableBody');
+
+    if (!searchInput || !tableBody) return;
+
+    searchInput.addEventListener('keyup', function() {
+        const term = this.value.toLowerCase();
+        const rows = tableBody.querySelectorAll('tr');
+
         rows.forEach(row => {
-            // Skip empty state row
-            if (row.querySelector('.empty-state')) {
-                return;
-            }
-            
             const text = row.textContent.toLowerCase();
-            
-            if (text.includes(query)) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = text.includes(term) ? '' : 'none';
         });
-    };
-    
-    // Search on input
-    searchInput.addEventListener('input', searchFunction);
-    
-    // Search on Enter key
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            searchFunction();
-        }
     });
 }
 
-/**
- * Payment function (dummy)
- */
-function bayar(bookingId) {
-    if (confirm('Lanjutkan pembayaran untuk booking #' + bookingId + '?')) {
-        alert('Redirect ke payment gateway...');
-        // window.location.href = '/payment/' + bookingId;
-    }
-}
+function initCancelButtons() {
+    window.cancelBooking = function(id) {
+        if (!confirm('Yakin ingin membatalkan booking ini?')) return;
 
-/**
- * Cancel booking function (dummy)
- */
-function batal(bookingId) {
-    if (confirm('Yakin ingin membatalkan booking #' + bookingId + '?')) {
-        alert('Booking dibatalkan');
-        // Implement cancel logic here
-    }
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        fetch(`/bookings/${id}/cancel`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': window.csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert('Booking dibatalkan');
+                location.reload();
+            } else {
+                alert(data.message || 'Gagal membatalkan');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        })
+        .catch(() => {
+            alert('Terjadi kesalahan');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+    };
 }

@@ -29,33 +29,31 @@ class BookingController extends Controller
     {
         $user = Auth::user();
 
-        $baseQuery = Booking::with(['property'])
-            ->where('user_id', $user->id);
-
-        $bookings = (clone $baseQuery)
+        $bookings = Booking::with(['property', 'payment'])
+            ->where('user_id', $user->id)
             ->latest()
             ->paginate(10);
 
-        $totalBookings = (clone $baseQuery)->count();
-        $pendingBookings = (clone $baseQuery)->where('status', 'pending')->count();
-        $successBookings = (clone $baseQuery)->where('status', 'success')->count();
-        $cancelledBookings = (clone $baseQuery)->where('status', 'cancelled')->count();
+        $totalBookings = Booking::where('user_id', $user->id)->count();
+        $pendingBookings = Booking::where('user_id', $user->id)->where('status', 'pending')->count();
+        $successBookings = Booking::where('user_id', $user->id)->where('status', 'success')->count();
+        $cancelledBookings = Booking::where('user_id', $user->id)->where('status', 'cancelled')->count();
 
-        $chartCategories = [];
+        // Chart data
         $chartSuccess = [];
         $chartPending = [];
         $chartCancelled = [];
+        $chartCategories = [];
 
         for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i)->toDateString();
-            $chartCategories[] = Carbon::parse($date)->format('d M');
+            $date = Carbon::now()->subDays($i);
+            $chartCategories[] = $date->format('d M');
 
-            $dailyQuery = Booking::where('user_id', $user->id)
-                ->whereDate('created_at', $date);
+            $dayQuery = Booking::where('user_id', $user->id)->whereDate('created_at', $date);
 
-            $chartSuccess[] = (clone $dailyQuery)->where('status', 'success')->count();
-            $chartPending[] = (clone $dailyQuery)->where('status', 'pending')->count();
-            $chartCancelled[] = (clone $dailyQuery)->where('status', 'cancelled')->count();
+            $chartSuccess[] = (clone $dayQuery)->where('status', 'success')->count();
+            $chartPending[] = (clone $dayQuery)->where('status', 'pending')->count();
+            $chartCancelled[] = (clone $dayQuery)->where('status', 'cancelled')->count();
         }
 
         return view('bookings.index', compact(
@@ -64,16 +62,17 @@ class BookingController extends Controller
             'pendingBookings',
             'successBookings',
             'cancelledBookings',
-            'chartCategories',
             'chartSuccess',
             'chartPending',
-            'chartCancelled'
+            'chartCancelled',
+            'chartCategories'
         ));
     }
-
-    public function create(Request $request)
+    
+    // ✅ FIX: Ganti parameter dari Request jadi $property (dari route)
+    public function create(Property $property)
     {
-        $property = Property::findOrFail($request->property_id);
+        // ✅ Tetap pakai logic Anda, hanya ganti cara ambil property
 
         if ($property->status !== 'available') {
             return redirect()
@@ -146,7 +145,6 @@ class BookingController extends Controller
             ]);
 
             return redirect()->route('payment.process', $payment->id);
-
         } catch (\Exception $e) {
             Log::error('Midtrans Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal memproses pembayaran.');

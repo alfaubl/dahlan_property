@@ -1,12 +1,12 @@
-@extends('layouts.app')
 
-@section('title', 'Daftar Booking Saya - Dahlan Property')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/bookings.css') }}">
-@endsection
+<?php $__env->startSection('title', 'Daftar Booking Saya - Dahlan Property'); ?>
 
-@section('content')
+<?php $__env->startSection('styles'); ?>
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/bookings.css')); ?>">
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="bookings-wrapper">
     
     <!-- ===== HEADER ===== -->
@@ -18,7 +18,7 @@
             </h1>
             <p class="header-subtitle">Kelola dan lihat status booking properti Anda</p>
         </div>
-        <a href="{{ route('properties.index') }}" class="btn-booking-new">
+        <a href="<?php echo e(route('properties.index')); ?>" class="btn-booking-new">
             <i class="fas fa-plus-circle"></i>
             <span>Booking Baru</span>
             <i class="fas fa-arrow-right"></i>
@@ -32,7 +32,7 @@
                 <i class="fas fa-calendar-check"></i>
             </div>
             <div class="stat-info">
-                <span class="stat-value">{{ $totalBookings ?? 0 }}</span>
+                <span class="stat-value"><?php echo e($totalBookings ?? 0); ?></span>
                 <span class="stat-label">Total Booking</span>
             </div>
         </div>
@@ -41,7 +41,7 @@
                 <i class="fas fa-clock"></i>
             </div>
             <div class="stat-info">
-                <span class="stat-value">{{ $pendingBookings ?? 0 }}</span>
+                <span class="stat-value"><?php echo e($pendingBookings ?? 0); ?></span>
                 <span class="stat-label">Menunggu</span>
             </div>
         </div>
@@ -50,7 +50,7 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <div class="stat-info">
-                <span class="stat-value">{{ $successBookings ?? 0 }}</span>
+                <span class="stat-value"><?php echo e($successBookings ?? 0); ?></span>
                 <span class="stat-label">Selesai</span>
             </div>
         </div>
@@ -59,7 +59,7 @@
                 <i class="fas fa-times-circle"></i>
             </div>
             <div class="stat-info">
-                <span class="stat-value">{{ $cancelledBookings ?? 0 }}</span>
+                <span class="stat-value"><?php echo e($cancelledBookings ?? 0); ?></span>
                 <span class="stat-label">Dibatalkan</span>
             </div>
         </div>
@@ -125,23 +125,23 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                @forelse($bookings ?? [] as $booking)
-                <tr data-status="{{ $booking->status }}" data-id="{{ $booking->id }}">
+                <?php $__empty_1 = true; $__currentLoopData = $bookings ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $booking): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <tr data-status="<?php echo e($booking->status); ?>" data-id="<?php echo e($booking->id); ?>">
                     <td>
-                        <span class="booking-id">#{{ $booking->booking_code ?? $booking->id }}</span>
+                        <span class="booking-id">#<?php echo e($booking->booking_code ?? $booking->id); ?></span>
                     </td>
                     <td>
                         <div class="property-info">
-                            <strong>{{ $booking->property->title ?? '-' }}</strong>
-                            <small>{{ $booking->property->location ?? '-' }}</small>
+                            <strong><?php echo e($booking->property->title ?? '-'); ?></strong>
+                            <small><?php echo e($booking->property->location ?? '-'); ?></small>
                         </div>
                     </td>
-                    <td>{{ \Carbon\Carbon::parse($booking->created_at)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($booking->booking_date)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($booking->booking_date)->addDays(7)->format('d/m/Y') }}</td>
-                    <td class="booking-price">Rp {{ number_format($booking->total_price ?? 0, 0, ',', '.') }}</td>
+                    <td><?php echo e(\Carbon\Carbon::parse($booking->created_at)->format('d/m/Y')); ?></td>
+                    <td><?php echo e(\Carbon\Carbon::parse($booking->booking_date)->format('d/m/Y')); ?></td>
+                    <td><?php echo e(\Carbon\Carbon::parse($booking->booking_date)->addDays(7)->format('d/m/Y')); ?></td>
+                    <td class="booking-price">Rp <?php echo e(number_format($booking->total_price ?? 0, 0, ',', '.')); ?></td>
                     <td>
-                        @php
+                        <?php
                             $badgeClass = match($booking->status) {
                                 'pending' => 'badge-pending',
                                 'success' => 'badge-success',
@@ -154,65 +154,69 @@
                                 'cancelled' => 'fa-times-circle',
                                 default => 'fa-clock'
                             };
-                        @endphp
-                        <span class="status-badge {{ $badgeClass }}">
-                            <i class="fas {{ $badgeIcon }}"></i>
-                            {{ ucfirst($booking->status) }}
+                        ?>
+                        <span class="status-badge <?php echo e($badgeClass); ?>">
+                            <i class="fas <?php echo e($badgeIcon); ?>"></i>
+                            <?php echo e(ucfirst($booking->status)); ?>
+
                         </span>
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <a href="{{ route('booking.show', $booking->id) }}" class="action-btn btn-view" title="Lihat Detail">
+                            <a href="<?php echo e(route('booking.show', $booking->id)); ?>" class="action-btn btn-view" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            @if($booking->status == 'pending')
-                                <a href="{{ route('payment.process', $booking->id) }}" class="action-btn btn-pay" title="Bayar">
+                            <?php if($booking->status == 'pending'): ?>
+                                <a href="<?php echo e(route('payment.process', $booking->id)); ?>" class="action-btn btn-pay" title="Bayar">
                                     <i class="fas fa-credit-card"></i>
                                 </a>
-                                <button class="action-btn btn-cancel" onclick="cancelBooking({{ $booking->id }})" title="Batalkan">
+                                <button class="action-btn btn-cancel" onclick="cancelBooking(<?php echo e($booking->id); ?>)" title="Batalkan">
                                     <i class="fas fa-times"></i>
                                 </button>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>
-                @empty
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <tr>
                     <td colspan="8">
                         <div class="empty-state">
                             <i class="fas fa-calendar-times"></i>
                             <h3>Belum Ada Booking</h3>
                             <p>Mulai booking properti impian Anda sekarang</p>
-                            <a href="{{ route('properties.index') }}" class="empty-btn">
+                            <a href="<?php echo e(route('properties.index')); ?>" class="empty-btn">
                                 <i class="fas fa-search"></i> Cari Properti
                             </a>
                         </div>
                     </td>
                 </tr>
-                @endforelse
+                <?php endif; ?>
             </tbody>
         </table>
     </div>
 
     <!-- ===== PAGINATION ===== -->
-    @if(isset($bookings) && method_exists($bookings, 'links'))
+    <?php if(isset($bookings) && method_exists($bookings, 'links')): ?>
     <div class="pagination">
-        {{ $bookings->links() }}
-    </div>
-    @endif
-</div>
-@endsection
+        <?php echo e($bookings->links()); ?>
 
-@section('scripts')
+    </div>
+    <?php endif; ?>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script src="{{ asset('assets/js/bookings.js') }}"></script>
+<script src="<?php echo e(asset('assets/js/bookings.js')); ?>"></script>
 <script>
     window.bookingData = {
-        success: {!! json_encode($chartSuccess ?? [0,0,0,0,0,0,0]) !!},
-        pending: {!! json_encode($chartPending ?? [0,0,0,0,0,0,0]) !!},
-        cancelled: {!! json_encode($chartCancelled ?? [0,0,0,0,0,0,0]) !!},
-        categories: {!! json_encode($chartCategories ?? ['21 Feb','22 Feb','23 Feb','24 Feb','25 Feb','26 Feb','27 Feb']) !!}
+        success: <?php echo json_encode($chartSuccess ?? [0,0,0,0,0,0,0]); ?>,
+        pending: <?php echo json_encode($chartPending ?? [0,0,0,0,0,0,0]); ?>,
+        cancelled: <?php echo json_encode($chartCancelled ?? [0,0,0,0,0,0,0]); ?>,
+        categories: <?php echo json_encode($chartCategories ?? ['21 Feb','22 Feb','23 Feb','24 Feb','25 Feb','26 Feb','27 Feb']); ?>
+
     };
-    window.csrfToken = '{{ csrf_token() }}';
+    window.csrfToken = '<?php echo e(csrf_token()); ?>';
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/bookings/index.blade.php ENDPATH**/ ?>
