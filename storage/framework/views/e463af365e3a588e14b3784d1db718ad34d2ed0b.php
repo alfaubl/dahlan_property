@@ -21,22 +21,22 @@
             <!-- Search Bar -->
             <div class="hero-search">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" placeholder="Cari properti berdasarkan lokasi, nama, atau tipe...">
-                <button class="search-btn">Cari</button>
+                <input type="text" id="heroSearchInput" placeholder="Cari properti berdasarkan lokasi, nama, atau tipe...">
+                <button class="search-btn" onclick="searchProperty()">Cari</button>
             </div>
             
             <!-- Stats -->
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <span class="hero-stat-value">1500+</span>
+                    <span class="hero-stat-value"><?php echo e($totalProperties ?? 1500); ?>+</span>
                     <span class="hero-stat-label">Properti</span>
                 </div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">500+</span>
+                    <span class="hero-stat-value"><?php echo e($totalCities ?? 500); ?>+</span>
                     <span class="hero-stat-label">Kota</span>
                 </div>
                 <div class="hero-stat">
-                    <span class="hero-stat-value">98%</span>
+                    <span class="hero-stat-value"><?php echo e($satisfactionRate ?? 98); ?>%</span>
                     <span class="hero-stat-label">Kepuasan</span>
                 </div>
             </div>
@@ -52,7 +52,7 @@
             </button>
         </div>
         <div class="filter-body" id="filterBody">
-            <form id="filterForm">
+            <form id="filterForm" action="<?php echo e(route('properties.index')); ?>" method="GET">
                 <div class="filter-grid">
                     <div class="filter-item">
                         <label class="filter-label">Tipe Properti</label>
@@ -90,22 +90,22 @@
                         <label class="filter-label">Harga Minimal</label>
                         <select class="filter-select" name="min_price">
                             <option value="">Minimal</option>
-                            <option value="100">Rp 100 Jt</option>
-                            <option value="500">Rp 500 Jt</option>
-                            <option value="1000">Rp 1 M</option>
-                            <option value="2000">Rp 2 M</option>
-                            <option value="5000">Rp 5 M</option>
+                            <option value="100000000">Rp 100 Jt</option>
+                            <option value="500000000">Rp 500 Jt</option>
+                            <option value="1000000000">Rp 1 M</option>
+                            <option value="2000000000">Rp 2 M</option>
+                            <option value="5000000000">Rp 5 M</option>
                         </select>
                     </div>
                     <div class="filter-item">
                         <label class="filter-label">Harga Maksimal</label>
                         <select class="filter-select" name="max_price">
                             <option value="">Maksimal</option>
-                            <option value="500">Rp 500 Jt</option>
-                            <option value="1000">Rp 1 M</option>
-                            <option value="2000">Rp 2 M</option>
-                            <option value="5000">Rp 5 M</option>
-                            <option value="10000">Rp 10 M</option>
+                            <option value="500000000">Rp 500 Jt</option>
+                            <option value="1000000000">Rp 1 M</option>
+                            <option value="2000000000">Rp 2 M</option>
+                            <option value="5000000000">Rp 5 M</option>
+                            <option value="10000000000">Rp 10 M</option>
                         </select>
                     </div>
                     <div class="filter-item">
@@ -220,10 +220,26 @@
     <div class="properties-grid" id="propertiesGrid">
         <?php $__empty_1 = true; $__currentLoopData = $properties ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $property): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
         <div class="property-card" data-id="<?php echo e($property->id); ?>">
-            <div class="property-badge <?php echo e($property->status); ?>">
+            <!-- Status Badge -->
+            <div class="property-badge <?php echo e($property->status ?? 'available'); ?>">
                 <?php echo e($property->status == 'available' ? 'Tersedia' : ($property->status == 'sold' ? 'Terjual' : 'Disewa')); ?>
 
             </div>
+            
+            <!-- ✅ FAVORITE BUTTON (WISHLIST) -->
+            <?php if(auth()->guard()->check()): ?>
+                <button class="btn-favorite <?php echo e(in_array($property->id, $favoriteIds ?? []) ? 'active' : ''); ?>" 
+                        data-property-id="<?php echo e($property->id); ?>" 
+                        onclick="toggleFavorite(<?php echo e($property->id); ?>)" 
+                        title="<?php echo e(in_array($property->id, $favoriteIds ?? []) ? 'Hapus dari favorit' : 'Tambah ke favorit'); ?>">
+                    <i class="fas fa-heart"></i>
+                </button>
+            <?php else: ?>
+                <a href="<?php echo e(route('login')); ?>" class="btn-favorite" title="Login untuk favorite">
+                    <i class="fas fa-heart"></i>
+                </a>
+            <?php endif; ?>
+            
             <div class="property-image">
                 <img src="<?php echo e($property->image ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'); ?>" alt="<?php echo e($property->title); ?>">
                 <div class="property-price">
@@ -235,7 +251,7 @@
                 <h3 class="property-title"><?php echo e($property->title ?? 'Villa Eksklusif Bali'); ?></h3>
                 <div class="property-location">
                     <i class="fas fa-map-marker-alt"></i>
-                    <?php echo e($property->location ?? 'JL. Raya Uluwatu, Badung'); ?>
+                    <?php echo e($property->location ?? $property->city ?? 'JL. Raya Uluwatu, Badung'); ?>
 
                 </div>
                 <div class="property-features">
@@ -254,13 +270,18 @@
                 </div>
                 <div class="property-footer">
                     <div class="property-agent">
-                        <img src="https://ui-avatars.com/api/?name=<?php echo e(urlencode($property->agent ?? 'Dahlan')); ?>&background=3b82f6&color=fff" alt="Agent">
-                        <span><?php echo e($property->agent ?? 'Ahmad Dahlan'); ?></span>
+                        <img src="https://ui-avatars.com/api/?name=<?php echo e(urlencode($property->agent ?? $property->user->name ?? 'Dahlan')); ?>&background=3b82f6&color=fff" alt="Agent">
+                        <span><?php echo e($property->agent ?? $property->user->name ?? 'Ahmad Dahlan'); ?></span>
                     </div>
-                    <a href="<?php echo e(route('booking.create', $property->id)); ?>" class="btn-booking">
-                        <i class="fas fa-calendar-check"></i>
-                        Booking
-                    </a>
+                    <div class="property-actions">
+                        <a href="<?php echo e(route('properties.show', $property->id)); ?>" class="btn-detail" title="Lihat Detail">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="<?php echo e(route('booking.create', $property->id)); ?>" class="btn-booking">
+                            <i class="fas fa-calendar-check"></i>
+                            Booking
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -303,7 +324,101 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
+
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="<?php echo e(asset('assets/js/properties.js')); ?>"></script>
+<script>
+// ===== TOGGLE FAVORITE FUNCTION =====
+function toggleFavorite(propertyId) {
+    fetch(`/wishlist/toggle/${propertyId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const btn = document.querySelector(`.btn-favorite[data-property-id="${propertyId}"]`);
+            if (data.action === 'added') {
+                btn.classList.add('active');
+                showToast('✅ Ditambahkan ke favorit');
+            } else {
+                btn.classList.remove('active');
+                showToast('❌ Dihapus dari favorit');
+            }
+        } else {
+            showToast('⚠️ ' + (data.message || 'Terjadi kesalahan'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('⚠️ Terjadi kesalahan');
+    });
+}
+
+// ===== SHOW TOAST NOTIFICATION =====
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #1f2937;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        z-index: 9999;
+        animation: slideIn 0.3s ease-out;
+        font-size: 14px;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
+
+// Add animation keyframes
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
+// ===== SEARCH FUNCTION =====
+function searchProperty() {
+    const query = document.getElementById('heroSearchInput').value;
+    if (query) {
+        window.location.href = `<?php echo e(route('properties.index')); ?>?search=${encodeURIComponent(query)}`;
+    }
+}
+
+// ===== ENTER KEY SEARCH =====
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('heroSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchProperty();
+            }
+        });
+    }
+});
+</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/properties/index.blade.php ENDPATH**/ ?>

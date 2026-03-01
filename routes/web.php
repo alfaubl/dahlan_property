@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', fn() => redirect()->route('dashboard'));
 
     /* PROPERTIES CRUD */
+    Route::get('/properties/my', [PropertyController::class, 'myProperties'])->name('properties.my');
     Route::get('/properties/create', [PropertyController::class, 'create'])->name('properties.create');
     Route::post('/properties', [PropertyController::class, 'store'])->name('properties.store');
     Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])->name('properties.edit');

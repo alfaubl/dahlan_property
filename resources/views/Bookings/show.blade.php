@@ -1,22 +1,22 @@
-\@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detail Booking - Dahlan Property')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/booking-show.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/bookings-show.css') }}">
 @endsection
 
 @section('content')
 <div class="booking-show-wrapper">
     <div class="booking-show-container">
         
-        <!-- ===== BACK BUTTON ===== -->
+        <!-- BACK BUTTON -->
         <a href="{{ route('booking.index') }}" class="back-btn">
             <i class="fas fa-arrow-left"></i>
             Kembali ke Daftar Booking
         </a>
 
-        <!-- ===== STATUS BANNER ===== -->
+        <!-- STATUS BANNER -->
         @php
             $status = $booking->payment->status ?? $booking->status ?? 'pending';
             $statusConfig = match($status) {
@@ -42,10 +42,12 @@
             </div>
         </div>
 
-        <!-- ===== MAIN CONTENT ===== -->
+        <!-- MAIN GRID -->
         <div class="booking-detail-grid">
-            <!-- LEFT COLUMN - DETAILS -->
+            
+            <!-- LEFT COLUMN -->
             <div class="detail-column">
+                
                 <!-- Property Info -->
                 <div class="detail-card">
                     <h3 class="card-title">
@@ -162,11 +164,11 @@
                         </div>
                         <div class="price-row">
                             <span>Booking Fee (10%)</span>
-                            <span>Rp {{ number_format($booking->payment->amount, 0, ',', '.') }}</span>
+                            <span class="fee-amount">Rp {{ number_format($booking->payment->amount, 0, ',', '.') }}</span>
                         </div>
                         <div class="price-row total">
-                            <span>Total</span>
-                            <span>Rp {{ number_format($booking->payment->amount, 0, ',', '.') }}</span>
+                            <span>Total Dibayar</span>
+                            <span class="total-amount">Rp {{ number_format($booking->payment->amount, 0, ',', '.') }}</span>
                         </div>
                     </div>
                     @endif
@@ -180,7 +182,7 @@
                             </a>
                             <button class="btn-cancel" onclick="cancelBooking({{ $booking->id }})">
                                 <i class="fas fa-times-circle"></i>
-                                Batalkan Booking
+                                Batalkan
                             </button>
                         @endif
 
@@ -192,14 +194,72 @@
                         @endif
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Support Card -->
-                <div class="support-card">
-                    <i class="fas fa-headset"></i>
-                    <h4>Butuh Bantuan?</h4>
-                    <p>Hubungi customer service kami</p>
-                    <a href="{{ route('contact') }}" class="support-link">Hubungi Sekarang</a>
+        <!-- APEXCHARTS 3D SECTION -->
+        <div class="apexcharts-3d-section">
+            <div class="section-header">
+                <div class="header-icon">
+                    <i class="fas fa-chart-pie"></i>
                 </div>
+                <div class="header-text">
+                    <h2>Analisis Pembayaran 3D</h2>
+                    <p>Visualisasi interaktif komposisi biaya booking</p>
+                </div>
+                <div class="header-badge">
+                    <span class="badge-3d">3D</span>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <!-- 3D Pie Chart -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Komposisi Biaya</h3>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #3b82f6;"></span>
+                                <span>Harga Properti ({{ round(($booking->total_price / ($booking->total_price + ($booking->payment->amount ?? $booking->total_price * 0.1)) * 100)) }}%)</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #f59e0b;"></span>
+                                <span>Booking Fee ({{ round((($booking->payment->amount ?? $booking->total_price * 0.1) / ($booking->total_price + ($booking->payment->amount ?? $booking->total_price * 0.1)) * 100)) }}%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pieChart3D" class="chart-container"></div>
+                </div>
+
+                <!-- 3D Bar Chart - Perbandingan -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Perbandingan Nilai</h3>
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #3b82f6;"></span>
+                                <span>Harga Properti</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-dot" style="background: #f59e0b;"></span>
+                                <span>Booking Fee</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="barChart3D" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- 3D Donut Chart with Total -->
+            <div class="chart-card donut-card">
+                <div class="chart-header">
+                    <h3>Total Pembayaran</h3>
+                    <div class="total-display">
+                        <span class="total-label">Total Dibayar:</span>
+                        <span class="total-value">Rp {{ number_format(($booking->payment->amount ?? $booking->total_price * 0.1), 0, ',', '.') }}</span>
+                    </div>
+                </div>
+                <div id="donutChart3D" class="chart-container donut-container"></div>
             </div>
         </div>
     </div>
@@ -207,9 +267,15 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('assets/js/booking-show.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="{{ asset('assets/js/bookings-show.js') }}"></script>
 <script>
     window.bookingId = {{ $booking->id }};
     window.csrfToken = '{{ csrf_token() }}';
+    window.paymentData = {
+        propertyPrice: {{ $booking->total_price ?? 8500000000 }},
+        bookingFee: {{ $booking->payment->amount ?? ($booking->total_price * 0.1) ?? 850000000 }},
+        total: {{ ($booking->payment->amount ?? ($booking->total_price * 0.1)) ?? 850000000 }}
+    };
 </script>
 @endsection

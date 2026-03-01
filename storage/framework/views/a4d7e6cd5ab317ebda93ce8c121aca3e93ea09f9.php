@@ -3,7 +3,8 @@
 <?php $__env->startSection('title', $property->title ?? 'Detail Properti'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<link rel="stylesheet" href="<?php echo e(asset('css/property-show.css')); ?>">
+
+<link rel="stylesheet" href="<?php echo e(asset('assets/css/property-show.css')); ?>">
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -28,15 +29,18 @@
 
         <!-- Main Image -->
         <div class="gallery-main">
+            
             <img src="<?php echo e($property->image_url ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994'); ?>" 
                  alt="<?php echo e($property->title); ?>">
         </div>
 
         <!-- Thumbnails -->
         <div class="gallery-thumb">
+            
             <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750" alt="Thumbnail 1">
         </div>
         <div class="gallery-thumb">
+            
             <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00" alt="Thumbnail 2">
         </div>
     </div>
@@ -200,7 +204,8 @@
                     </div>
                 </div>
 
-                <a href="<?php echo e(route('bookings.create', $property->id)); ?>" class="btn-booking">
+                
+                <a href="<?php echo e(route('booking.create', $property->id)); ?>" class="btn-booking">
                     <i class="fas fa-calendar-check"></i>
                     Booking Sekarang
                 </a>
@@ -226,7 +231,8 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
-<script src="<?php echo e(asset('js/property-show.js')); ?>"></script>
+
+<script src="<?php echo e(asset('assets/js/property-show.js')); ?>"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Additional initialization if needed

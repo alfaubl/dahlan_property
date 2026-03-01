@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes; 
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 class Property extends Model
@@ -26,13 +28,19 @@ class Property extends Model
         'featured' => 'boolean',
     ];
 
-    // Relationships
-    public function user()
+    // ✅ Relationships (TAMBAH wishlists)
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Scopes
+    // ✅ TAMBAH INI untuk Wishlist
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    // ✅ Scopes (TETAP SAMA - TIDAK DIUBAH)
     public function scopeAvailable($query)
     {
         return $query->where('status', 'available');
@@ -53,7 +61,7 @@ class Property extends Model
         return $query->where('featured', true);
     }
 
-    // Mutators
+    // ✅ Mutators (TETAP SAMA - TIDAK DIUBAH)
     public function getFormattedPriceAttribute()
     {
         return 'Rp ' . number_format($this->price, 0, ',', '.');
@@ -63,5 +71,16 @@ class Property extends Model
     {
         $images = $this->images ?? [];
         return !empty($images) ? $images[0] : asset('images/default-property.jpg');
+    }
+
+    // ✅ TAMBAH INI untuk Wishlist (Helper Method)
+    public function isFavorite($userId)
+    {
+        return $this->wishlists()->where('user_id', $userId)->exists();
+    }
+
+    public function favoriteCount()
+    {
+        return $this->wishlists()->count();
     }
 }

@@ -1,118 +1,225 @@
 @extends('layouts.app')
 
-@section('title', 'Booking Properti - Dahlan Property')
+@section('title', 'Upload Properti - Dahlan Property')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('assets/css/booking-create.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/property-create.css') }}">
 @endsection
 
 @section('content')
-<div class="booking-wrapper">
-    <div class="booking-container">
+<div class="property-create-wrapper">
+    <div class="property-create-container">
         
-        <!-- Header -->
-        <div class="booking-header">
-            <h1 class="booking-title">
-                <i class="fas fa-calendar-check"></i>
-                Booking Properti
+        <!-- ===== HEADER ===== -->
+        <div class="create-header">
+            <h1>
+                <i class="fas fa-plus-circle"></i>
+                Upload Properti
             </h1>
-            <p class="booking-subtitle">Isi form di bawah untuk melakukan booking properti</p>
+            <p>Tampilkan properti Anda kepada ribuan pencari properti</p>
         </div>
 
-        <!-- Main Card -->
-        <div class="booking-card">
-            
-            <!-- Property Info -->
-            <div class="property-info-card">
-                <div class="property-info-header">
-                    <i class="fas fa-building"></i>
-                    <h3>Informasi Properti</h3>
-                </div>
-                <div class="property-info-body">
-                    <div class="property-info-row">
-                        <span class="info-label">Nama Properti</span>
-                        <span class="info-value">{{ $property->title }}</span>
-                    </div>
-                    <div class="property-info-row">
-                        <span class="info-label">Lokasi</span>
-                        <span class="info-value">
-                            <i class="fas fa-map-marker-alt"></i>
-                            {{ $property->location }}
-                        </span>
-                    </div>
-                    <div class="property-info-row">
-                        <span class="info-label">Harga</span>
-                        <span class="info-value price">Rp {{ number_format($property->price, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="property-info-row fee">
-                        <span class="info-label">Booking Fee (10%)</span>
-                        <span class="info-value">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form Booking -->
-            <form action="{{ route('booking.store') }}" method="POST" class="booking-form" id="bookingForm">
+        <!-- ===== FORM ===== -->
+        <div class="create-form-card">
+            <form action="{{ route('properties.store') }}" method="POST" enctype="multipart/form-data" id="propertyForm">
                 @csrf
-                <input type="hidden" name="property_id" value="{{ $property->id }}">
-                
-                <div class="form-row">
+
+                <!-- Basic Info -->
+                <div class="form-section">
+                    <h3>📋 Informasi Dasar</h3>
+                    
                     <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-calendar"></i>
-                            Tanggal Booking <span class="text-danger">*</span>
-                        </label>
-                        <input type="date" name="booking_date" class="form-control" 
-                               min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
+                        <label for="title">Judul Properti <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               value="{{ old('title') }}" required 
+                               placeholder="Contoh: Villa Mewah dengan Kolam Renang">
+                        @error('title')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">
-                            <i class="fas fa-clock"></i>
-                            Waktu <span class="text-danger">*</span>
-                        </label>
-                        <input type="time" name="booking_time" class="form-control" value="10:00" required>
+                        <label for="description">Deskripsi <span class="required">*</span></label>
+                        <textarea id="description" name="description" class="form-control" 
+                                  rows="6" required 
+                                  placeholder="Jelaskan detail properti Anda...">{{ old('description') }}</textarea>
+                        @error('description')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="address">Alamat <span class="required">*</span></label>
+                            <input type="text" id="address" name="address" class="form-control" 
+                                   value="{{ old('address') }}" required 
+                                   placeholder="Contoh: Jl. Raya Uluwatu No. 123">
+                            @error('address')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">Kota <span class="required">*</span></label>
+                            <input type="text" id="city" name="city" class="form-control" 
+                                   value="{{ old('city') }}" required 
+                                   placeholder="Contoh: Badung">
+                            @error('city')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="province">Provinsi <span class="required">*</span></label>
+                            <input type="text" id="province" name="province" class="form-control" 
+                                   value="{{ old('province') }}" required 
+                                   placeholder="Contoh: Bali">
+                            @error('province')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Harga (Rp) <span class="required">*</span></label>
+                            <input type="number" id="price" name="price" class="form-control" 
+                                   value="{{ old('price') }}" required 
+                                   placeholder="Contoh: 2500000000">
+                            @error('price')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="type">Tipe Properti <span class="required">*</span></label>
+                            <select id="type" name="type" class="form-control" required>
+                                <option value="">Pilih Tipe</option>
+                                <option value="rumah" {{ old('type') == 'rumah' ? 'selected' : '' }}>Rumah</option>
+                                <option value="apartemen" {{ old('type') == 'apartemen' ? 'selected' : '' }}>Apartemen</option>
+                                <option value="ruko" {{ old('type') == 'ruko' ? 'selected' : '' }}>Ruko</option>
+                                <option value="kantor" {{ old('type') == 'kantor' ? 'selected' : '' }}>Kantor</option>
+                                <option value="villa" {{ old('type') == 'villa' ? 'selected' : '' }}>Villa</option>
+                            </select>
+                            @error('type')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="purpose">Tujuan <span class="required">*</span></label>
+                            <select id="purpose" name="purpose" class="form-control" required>
+                                <option value="">Pilih Tujuan</option>
+                                <option value="sale" {{ old('purpose') == 'sale' ? 'selected' : '' }}>Dijual</option>
+                                <option value="rent" {{ old('purpose') == 'rent' ? 'selected' : '' }}>Disewakan</option>
+                                <option value="both" {{ old('purpose') == 'both' ? 'selected' : '' }}>Dijual/Disewakan</option>
+                            </select>
+                            @error('purpose')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">
-                        <i class="fas fa-sticky-note"></i>
-                        Catatan (opsional)
-                    </label>
-                    <textarea name="notes" class="form-control" rows="4" placeholder="Tambahkan catatan untuk pemilik properti..."></textarea>
+                <!-- Property Details -->
+                <div class="form-section">
+                    <h3>🏠 Detail Properti</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bedrooms">Kamar Tidur <span class="required">*</span></label>
+                            <input type="number" id="bedrooms" name="bedrooms" class="form-control" 
+                                   value="{{ old('bedrooms', 0) }}" required min="0">
+                            @error('bedrooms')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bathrooms">Kamar Mandi <span class="required">*</span></label>
+                            <input type="number" id="bathrooms" name="bathrooms" class="form-control" 
+                                   value="{{ old('bathrooms', 0) }}" required min="0">
+                            @error('bathrooms')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="area">Luas (m²) <span class="required">*</span></label>
+                            <input type="number" id="area" name="area" class="form-control" 
+                                   value="{{ old('area', 0) }}" required min="0">
+                            @error('area')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="garages">Garasi</label>
+                            <input type="number" id="garages" name="garages" class="form-control" 
+                                   value="{{ old('garages', 0) }}" min="0">
+                            @error('garages')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="year_built">Tahun Dibangun</label>
+                            <input type="number" id="year_built" name="year_built" class="form-control" 
+                                   value="{{ old('year_built') }}" min="1900" max="{{ date('Y') }}">
+                            @error('year_built')
+                                <span class="error-text">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Ringkasan -->
-                <div class="summary-card">
-                    <h4 class="summary-title">Ringkasan Booking</h4>
-                    <div class="summary-row">
-                        <span>Harga Properti</span>
-                        <span>Rp {{ number_format($property->price, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Booking Fee (10%)</span>
-                        <span class="fee-amount">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="summary-total">
-                        <span>Total Dibayar</span>
-                        <span class="total-amount">Rp {{ number_format($property->price * 0.1, 0, ',', '.') }}</span>
+                <!-- Images -->
+                <div class="form-section">
+                    <h3>📸 Foto Properti</h3>
+                    
+                    <div class="form-group">
+                        <label for="images">Upload Foto <span class="required">*</span></label>
+                        <input type="file" id="images" name="images[]" class="form-control" 
+                               accept="image/*" multiple required onchange="previewImages(this)">
+                        <small class="text-muted">Upload minimal 1 foto (max 2MB per foto)</small>
+                        <div id="imagePreview" style="margin-top: 12px;"></div>
+                        @error('images')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
+                        @error('images.*')
+                            <span class="error-text">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
 
-                <!-- Tombol Aksi -->
+                <!-- Info Box -->
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Proses Approval:</strong>
+                        <p>Properti Anda akan direview oleh admin dalam 1-2 hari kerja. Anda akan menerima notifikasi setelah properti disetujui.</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
                 <div class="form-actions">
-                    <a href="{{ route('properties.show', $property->id) }}" class="btn-cancel">
-                        <i class="fas fa-arrow-left"></i>
-                        Kembali
+                    <a href="{{ route('properties.my') }}" class="btn-cancel">
+                        <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                     <button type="submit" class="btn-submit" id="submitBtn">
-                        <i class="fas fa-credit-card"></i>
-                        Lanjutkan ke Pembayaran
+                        <i class="fas fa-upload"></i> Upload Properti
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script src="{{ asset('assets/js/property-create.js') }}"></script>
 @endsection

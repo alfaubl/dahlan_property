@@ -3,7 +3,8 @@
 @section('title', $property->title ?? 'Detail Properti')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/property-show.css') }}">
+{{-- ✅ FIX: Path CSS sesuai folder assets --}}
+<link rel="stylesheet" href="{{ asset('assets/css/property-show.css') }}">
 @endsection
 
 @section('content')
@@ -28,15 +29,18 @@
 
         <!-- Main Image -->
         <div class="gallery-main">
+            {{-- ✅ FIX: Hapus spasi di URL --}}
             <img src="{{ $property->image_url ?? 'https://images.unsplash.com/photo-1568605114967-8130f3a36994' }}" 
                  alt="{{ $property->title }}">
         </div>
 
         <!-- Thumbnails -->
         <div class="gallery-thumb">
+            {{-- ✅ FIX: Hapus spasi di URL --}}
             <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750" alt="Thumbnail 1">
         </div>
         <div class="gallery-thumb">
+            {{-- ✅ FIX: Hapus spasi di URL --}}
             <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00" alt="Thumbnail 2">
         </div>
     </div>
@@ -198,7 +202,8 @@
                     </div>
                 </div>
 
-                <a href="{{ route('bookings.create', $property->id) }}" class="btn-booking">
+                {{-- ✅ FIX: bookings.create → booking.create (ini yang penting!) --}}
+                <a href="{{ route('booking.create', $property->id) }}" class="btn-booking">
                     <i class="fas fa-calendar-check"></i>
                     Booking Sekarang
                 </a>
@@ -224,7 +229,8 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/property-show.js') }}"></script>
+{{-- ✅ FIX: Path JS sesuai folder assets --}}
+<script src="{{ asset('assets/js/property-show.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Additional initialization if needed
