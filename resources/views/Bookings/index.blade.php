@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/bookings.css') }}">
 @endsection
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 @section('content')
 <div class="bookings-wrapper">
     

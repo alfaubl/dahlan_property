@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="<?php echo e(asset('assets/css/bookings.css')); ?>">
 <?php $__env->stopSection(); ?>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <?php $__env->startSection('content'); ?>
 <div class="bookings-wrapper">
     

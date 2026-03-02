@@ -23,10 +23,11 @@
 .properties-wrapper {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    width: 100%;
+    padding: clamp(20px, 5vw, 40px) clamp(15px, 4vw, 20px);
     animation: fadeIn 0.5s ease-out;
 }
-
+    
 /* ===== HERO SECTION ===== */
 .hero-section {
     background: linear-gradient(135deg, var(--primary), var(--purple));

@@ -1,4 +1,4 @@
-/* ===== PROPERTY CREATE CSS ===== */
+/* ===== PROPERTY CREATE CSS - RESPONSIVE ===== */
 
 :root {
     --primary: #3b82f6;
@@ -21,37 +21,39 @@
     font-family: 'Inter', sans-serif;
 }
 
+/* ✅ FIX: Gunakan min-width untuk zoom out */
 .property-create-wrapper {
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 40px 20px;
+    padding: clamp(20px, 5vw, 40px); /* ✅ Responsive padding */
     animation: fadeIn 0.5s ease-out;
 }
 
 .property-create-container {
     max-width: 900px;
+    width: 100%; /* ✅ Fluid width */
     margin: 0 auto;
 }
 
 /* ===== HEADER ===== */
 .create-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: clamp(30px, 6vw, 50px); /* ✅ Responsive margin */
     color: white;
 }
 
 .create-header h1 {
-    font-size: 32px;
+    font-size: clamp(24px, 5vw, 32px); /* ✅ Responsive font */
     font-weight: 700;
     margin: 0 0 8px 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: clamp(8px, 2vw, 12px);
 }
 
 .create-header p {
-    font-size: 16px;
+    font-size: clamp(14px, 3vw, 16px);
     opacity: 0.9;
     margin: 0;
 }
@@ -59,14 +61,15 @@
 /* ===== FORM CARD ===== */
 .create-form-card {
     background: white;
-    border-radius: 16px;
-    padding: 32px;
+    border-radius: clamp(12px, 3vw, 16px);
+    padding: clamp(20px, 5vw, 32px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
 }
 
 .form-section {
-    margin-bottom: 32px;
-    padding-bottom: 32px;
+    margin-bottom: clamp(24px, 5vw, 32px);
+    padding-bottom: clamp(24px, 5vw, 32px);
     border-bottom: 1px solid var(--border);
 }
 
@@ -77,23 +80,24 @@
 }
 
 .form-section h3 {
-    font-size: 18px;
+    font-size: clamp(16px, 4vw, 18px);
     font-weight: 700;
     color: var(--dark);
-    margin: 0 0 20px 0;
+    margin: 0 0 clamp(16px, 4vw, 20px) 0;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(6px, 2vw, 8px);
 }
 
 .form-section h3 i {
     color: var(--primary);
+    font-size: clamp(16px, 4vw, 18px);
 }
 
 .form-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    gap: clamp(12px, 3vw, 16px);
 }
 
 @media (max-width: 768px) {
@@ -103,15 +107,15 @@
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: clamp(16px, 4vw, 20px);
 }
 
 .form-group label {
     display: block;
-    font-size: 14px;
+    font-size: clamp(13px, 3vw, 14px);
     font-weight: 600;
     color: var(--dark);
-    margin-bottom: 8px;
+    margin-bottom: clamp(6px, 2vw, 8px);
 }
 
 .form-group .required {
@@ -120,20 +124,22 @@
 
 .form-group .text-muted {
     display: block;
-    font-size: 12px;
+    font-size: clamp(11px, 2.5vw, 12px);
     color: var(--gray);
-    margin-top: 6px;
+    margin-top: clamp(4px, 1vw, 6px);
 }
 
+/* ✅ FIX: Input responsive */
 .form-control {
     width: 100%;
-    padding: 12px 16px;
+    padding: clamp(10px, 2.5vw, 12px) clamp(12px, 3vw, 16px);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
+    border-radius: clamp(6px, 2vw, 8px);
+    font-size: clamp(13px, 3vw, 14px);
     color: var(--dark);
     background: white;
     transition: all 0.3s;
+    min-height: clamp(40px, 10vw, 48px); /* ✅ Minimum height untuk zoom */
 }
 
 .form-control:focus {
@@ -144,42 +150,39 @@
 
 textarea.form-control {
     resize: vertical;
-    min-height: 120px;
+    min-height: clamp(100px, 25vw, 120px);
 }
 
 select.form-control {
     cursor: pointer;
 }
 
-select.form-control:focus {
-    cursor: pointer;
-}
-
 input[type="file"].form-control {
-    padding: 10px 14px;
+    padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 14px);
     cursor: pointer;
+    min-height: auto;
 }
 
 .error-text {
     display: block;
     color: var(--danger);
-    font-size: 12px;
-    margin-top: 6px;
+    font-size: clamp(11px, 2.5vw, 12px);
+    margin-top: clamp(4px, 1vw, 6px);
 }
 
 /* ===== INFO BOX ===== */
 .info-box {
     display: flex;
-    gap: 16px;
-    padding: 20px;
+    gap: clamp(12px, 3vw, 16px);
+    padding: clamp(16px, 4vw, 20px);
     background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
-    border-radius: 12px;
-    margin-bottom: 24px;
-    border-left: 4px solid var(--primary);
+    border-radius: clamp(10px, 2.5vw, 12px);
+    margin-bottom: clamp(20px, 5vw, 24px);
+    border-left: clamp(3px, 1vw, 4px) solid var(--primary);
 }
 
 .info-box i {
-    font-size: 24px;
+    font-size: clamp(20px, 5vw, 24px);
     color: var(--primary);
     flex-shrink: 0;
 }
@@ -187,36 +190,39 @@ input[type="file"].form-control {
 .info-box strong {
     display: block;
     color: var(--primary-dark);
-    margin-bottom: 4px;
+    margin-bottom: clamp(3px, 1vw, 4px);
+    font-size: clamp(13px, 3vw, 14px);
 }
 
 .info-box p {
     color: var(--primary-dark);
-    font-size: 14px;
+    font-size: clamp(12px, 3vw, 14px);
     margin: 0;
+    line-height: 1.6;
 }
 
 /* ===== FORM ACTIONS ===== */
 .form-actions {
     display: flex;
-    gap: 12px;
+    gap: clamp(10px, 2.5vw, 12px);
     justify-content: flex-end;
-    padding-top: 24px;
+    padding-top: clamp(20px, 5vw, 24px);
     border-top: 1px solid var(--border);
 }
 
 .btn-cancel, .btn-submit {
-    padding: 14px 28px;
-    border-radius: 10px;
+    padding: clamp(12px, 3vw, 14px) clamp(20px, 5vw, 28px);
+    border-radius: clamp(8px, 2vw, 10px);
     font-weight: 600;
-    font-size: 14px;
+    font-size: clamp(13px, 3vw, 14px);
     text-decoration: none;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(6px, 2vw, 8px);
     transition: all 0.3s;
+    white-space: nowrap;
 }
 
 .btn-cancel {
@@ -258,18 +264,29 @@ input[type="file"].form-control {
     }
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .property-create-container {
+        max-width: 100%;
+        padding: 0 clamp(15px, 4vw, 20px);
+    }
+}
+
+/* Mobile */
 @media (max-width: 768px) {
     .property-create-wrapper {
-        padding: 20px 12px;
+        padding: clamp(15px, 4vw, 25px);
     }
     
     .create-form-card {
-        padding: 20px;
+        padding: clamp(16px, 4vw, 24px);
     }
     
     .create-header h1 {
-        font-size: 24px;
+        font-size: clamp(20px, 5vw, 26px);
+        flex-direction: column;
     }
     
     .form-actions {
@@ -279,5 +296,54 @@ input[type="file"].form-control {
     .btn-cancel, .btn-submit {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .property-create-wrapper {
+        padding: clamp(12px, 3vw, 20px);
+    }
+    
+    .create-header {
+        margin-bottom: clamp(20px, 5vw, 30px);
+    }
+    
+    .create-header h1 {
+        font-size: clamp(18px, 5vw, 22px);
+    }
+    
+    .create-header p {
+        font-size: clamp(12px, 3vw, 14px);
+    }
+    
+    .form-section h3 {
+        font-size: clamp(15px, 4vw, 17px);
+    }
+    
+    .form-control {
+        font-size: clamp(13px, 3.5vw, 14px);
+        min-height: clamp(42px, 11vw, 48px);
+    }
+}
+
+/* ✅ EXTRA: Zoom Out Support (Very Small Viewports) */
+@media (max-width: 360px) {
+    .property-create-wrapper {
+        padding: 10px;
+    }
+    
+    .create-form-card {
+        padding: 15px;
+    }
+    
+    .form-control {
+        min-height: 44px;
+        font-size: 13px;
+    }
+    
+    .btn-cancel, .btn-submit {
+        padding: 12px 18px;
+        font-size: 13px;
     }
 }

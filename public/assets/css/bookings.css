@@ -1,4 +1,10 @@
 /* ===== BOOKINGS CSS ===== */
+*, html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 :root {
     --primary: #3b82f6;
     --primary-dark: #2563eb;
@@ -13,6 +19,39 @@
     --border: #e2e8f0;
     --white: #ffffff;
     --black: #000000;
+}
+
+/* CONTOH YANG BERMASALAH: */
+.bookings-wrapper {
+    width: 1200px;
+    /* INI PENYEBAB UTAMA! */
+}
+
+.stat-card {
+    width: 280px;
+    /* INI JUGA MASALAH */
+}
+
+.filter-section {
+    width: 1100px;
+}
+
+
+/* CARI INI DI CSS: */
+.bookings-wrapper {
+    width: 1200px;
+    /* atau berapapun angka px-nya */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* GANTI JADI: */
+.bookings-wrapper {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 * {
@@ -136,10 +175,21 @@ body {
     color: white;
 }
 
-.stat-icon.total { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
-.stat-icon.pending { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-.stat-icon.success { background: linear-gradient(135deg, #10b981, #34d399); }
-.stat-icon.cancelled { background: linear-gradient(135deg, #ef4444, #f87171); }
+.stat-icon.total {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.stat-icon.pending {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.stat-icon.success {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.stat-icon.cancelled {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+}
 
 .stat-info {
     flex: 1;
@@ -231,9 +281,17 @@ body {
     border-radius: 4px;
 }
 
-.legend-color.success { background: #10b981; }
-.legend-color.pending { background: #f59e0b; }
-.legend-color.cancelled { background: #ef4444; }
+.legend-color.success {
+    background: #10b981;
+}
+
+.legend-color.pending {
+    background: #f59e0b;
+}
+
+.legend-color.cancelled {
+    background: #ef4444;
+}
 
 .chart-container {
     width: 100%;
@@ -404,10 +462,12 @@ body {
     background: #fff7ed;
     color: #9a3412;
 }
+
 .badge-success {
     background: #f0fdf4;
     color: #166534;
 }
+
 .badge-cancelled {
     background: #fef2f2;
     color: #991b1b;
@@ -436,9 +496,17 @@ body {
     transform: scale(1.1);
 }
 
-.btn-view { background: #3b82f6; }
-.btn-pay { background: #10b981; }
-.btn-cancel { background: #ef4444; }
+.btn-view {
+    background: #3b82f6;
+}
+
+.btn-pay {
+    background: #10b981;
+}
+
+.btn-cancel {
+    background: #ef4444;
+}
 
 /* Empty State */
 .empty-state {
@@ -527,6 +595,7 @@ body {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -539,21 +608,21 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .filter-section {
         flex-direction: column;
         align-items: stretch;
         border-radius: 20px;
     }
-    
+
     .search-box input {
         width: 100%;
     }
-    
+
     .search-box input:focus {
         width: 100%;
     }
-    
+
     .chart-header {
         flex-direction: column;
         align-items: flex-start;

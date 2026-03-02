@@ -41,6 +41,9 @@ Route::get('/properties/{property}', [PropertyController::class, 'show'])
 Route::post('/payment/notification', [PaymentController::class, 'notification'])
     ->name('payment.notification');
 
+Route::post('/payment/callback', [PaymentController::class, 'callback'])
+    ->name('payment.callback');
+
 Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/finish', [PaymentController::class, 'finish'])->name('finish');
     Route::get('/unfinish', [PaymentController::class, 'unfinish'])->name('unfinish');
@@ -98,6 +101,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('wishlist')->name('wishlist.')->group(function () {
         Route::get('/', [WishlistController::class, 'index'])->name('index');
         Route::post('/{property}', [WishlistController::class, 'store'])->name('store');
+        Route::post('/toggle/{property}', [WishlistController::class, 'toggle'])->name('toggle');
         Route::delete('/{wishlist}', [WishlistController::class, 'destroy'])->name('destroy');
     });
 
@@ -118,10 +122,11 @@ Route::middleware('auth')->group(function () {
 
     /* PAYMENT */
     Route::prefix('payment')->name('payment.')->group(function () {
-        Route::get('/process/{payment}/{token?}', [PaymentController::class, 'process'])->name('process');
-        Route::get('/success/{payment}', [PaymentController::class, 'success'])->name('success');
-        Route::get('/failed/{payment}', [PaymentController::class, 'failed'])->name('failed');
-        Route::post('/retry/{payment}', [PaymentController::class, 'retry'])->name('retry');
+        Route::get('/process/{booking}', [PaymentController::class, 'process'])->name('process');
+        Route::get('/success/{booking}', [PaymentController::class, 'success'])->name('success');
+        Route::get('/failed/{booking}', [PaymentController::class, 'failed'])->name('failed');
+        Route::get('/pending/{booking}', [PaymentController::class, 'pending'])->name('pending');
+        Route::post('/retry/{booking}', [PaymentController::class, 'retry'])->name('retry');
         Route::get('/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('checkStatus');
         Route::post('/snap-token/{booking}', [PaymentController::class, 'generateSnapToken'])->name('snap-token');
     });
