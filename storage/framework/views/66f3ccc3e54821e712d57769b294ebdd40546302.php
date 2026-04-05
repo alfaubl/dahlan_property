@@ -175,13 +175,22 @@
                     </div>
                     <?php endif; ?>
 
-                    <!-- Action Buttons -->
+                    <!-- ✅ FIX: ACTION BUTTONS - Gunakan payment ID bukan booking ID -->
                     <div class="action-buttons">
                         <?php if($status == 'pending'): ?>
-                            <a href="<?php echo e(route('payment.process', $booking->id)); ?>" class="btn-pay">
-                                <i class="fas fa-credit-card"></i>
-                                Bayar Sekarang
-                            </a>
+                            
+                            <?php if($booking->payment): ?>
+                                <a href="<?php echo e(route('payment.process', $booking->payment->id)); ?>" class="btn-pay">
+                                    <i class="fas fa-credit-card"></i>
+                                    Bayar Sekarang
+                                </a>
+                            <?php else: ?>
+                                <button class="btn-pay" disabled title="Payment record tidak ditemukan">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Bayar Sekarang
+                                </button>
+                            <?php endif; ?>
+                            
                             <button class="btn-cancel" onclick="cancelBooking(<?php echo e($booking->id); ?>)">
                                 <i class="fas fa-times-circle"></i>
                                 Batalkan
@@ -193,6 +202,15 @@
                                 <i class="fas fa-download"></i>
                                 Download Invoice
                             </a>
+                        <?php endif; ?>
+
+                        <?php if($status == 'failed' || $status == 'cancelled'): ?>
+                            <?php if($booking->payment): ?>
+                                <a href="<?php echo e(route('payment.process', $booking->payment->id)); ?>" class="btn-pay">
+                                    <i class="fas fa-redo"></i>
+                                    Coba Bayar Lagi
+                                </a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -280,6 +298,31 @@
         total: <?php echo e(($booking->payment->amount ?? ($booking->total_price * 0.1)) ?? 850000000); ?>
 
     };
+
+    function cancelBooking(bookingId) {
+        if (confirm('Yakin ingin membatalkan booking ini?')) {
+            fetch(`/bookings/${bookingId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Booking berhasil dibatalkan');
+                    location.reload();
+                } else {
+                    alert('⚠️ ' + (data.message || 'Gagal membatalkan booking'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('⚠️ Terjadi kesalahan');
+            });
+        }
+    }
 </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/bookings/show.blade.php ENDPATH**/ ?>

@@ -120,13 +120,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/{booking}/cancel', [BookingController::class, 'cancel'])->name('cancel');
     });
 
-    /* PAYMENT */
+    /* ✅ PAYMENT - FIX: Parameter {payment} bukan {booking} */
     Route::prefix('payment')->name('payment.')->group(function () {
-        Route::get('/process/{booking}', [PaymentController::class, 'process'])->name('process');
-        Route::get('/success/{booking}', [PaymentController::class, 'success'])->name('success');
-        Route::get('/failed/{booking}', [PaymentController::class, 'failed'])->name('failed');
-        Route::get('/pending/{booking}', [PaymentController::class, 'pending'])->name('pending');
-        Route::post('/retry/{booking}', [PaymentController::class, 'retry'])->name('retry');
+        Route::get('/process/{payment}', [PaymentController::class, 'process'])->name('process');
+        Route::get('/success/{payment}', [PaymentController::class, 'success'])->name('success');
+        Route::get('/failed/{payment}', [PaymentController::class, 'failed'])->name('failed');
+        Route::get('/pending/{payment}', [PaymentController::class, 'pending'])->name('pending');
+        Route::post('/retry/{payment}', [PaymentController::class, 'retry'])->name('retry');
         Route::get('/check-status/{id}', [PaymentController::class, 'checkStatus'])->name('checkStatus');
         Route::post('/snap-token/{booking}', [PaymentController::class, 'generateSnapToken'])->name('snap-token');
     });

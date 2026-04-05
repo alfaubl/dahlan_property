@@ -328,5 +328,5 @@
 <?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="<?php echo e(asset('assets/js/about.js')); ?>"></script>
-<?php $__env->stopSection(); ?>
+<?php $__env->stopSection(); ?>     
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\dahlan_project\resources\views/about.blade.php ENDPATH**/ ?>

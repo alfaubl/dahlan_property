@@ -2,10 +2,46 @@
 
 @section('title', 'Pembayaran Booking')
 
+@section('styles')
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .payment-amount {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .btn-pay {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-pay:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-pay:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+</style>
+@endsection
+
 @section('content')
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
+            
+            <!-- Back Button -->
+            <a href="{{ route('booking.show', $payment->booking_id) }}" class="btn btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left me-2"></i>
+                Kembali ke Detail Booking
+            </a>
+            
             <!-- Payment Card -->
             <div class="card shadow border-0">
                 <div class="card-header bg-primary text-white py-3">
@@ -15,9 +51,21 @@
                     </h4>
                 </div>
                 <div class="card-body p-4">
+                    
+                    <!-- Alert jika ada error -->
+                    @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    @endif
+                    
                     <!-- Booking Info -->
                     <div class="booking-info mb-4 p-3 bg-light rounded">
-                        <h5 class="mb-3"><i class="fas fa-info-circle me-2"></i>Detail Booking</h5>
+                        <h5 class="mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Detail Booking
+                        </h5>
                         <div class="row">
                             <div class="col-md-6">
                                 <p class="mb-2">
@@ -47,8 +95,7 @@
                     </div>
 
                     <!-- Payment Amount -->
-                    <div class="payment-amount text-center mb-4 p-4 bg-gradient-primary rounded text-white" 
-                         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="payment-amount text-center mb-4 p-4 rounded text-white">
                         <h5 class="mb-2 opacity-75">Total Pembayaran</h5>
                         <h1 class="mb-0 fw-bold">Rp {{ number_format($payment->amount, 0, ',', '.') }}</h1>
                         <small class="opacity-75">Booking Fee (10% dari harga properti)</small>
@@ -56,23 +103,42 @@
 
                     <!-- Payment Instructions -->
                     <div class="payment-instructions mb-4">
-                        <h6 class="mb-3"><i class="fas fa-lightbulb text-warning me-2"></i>Cara Pembayaran:</h6>
+                        <h6 class="mb-3">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>Cara Pembayaran:
+                        </h6>
                         <ol class="mb-0">
                             <li>Klik tombol <strong>"Bayar Sekarang"</strong> di bawah</li>
-                            <li>Pilih metode pembayaran yang tersedia</li>
+                            <li>Pilih metode pembayaran yang tersedia (BCA, Mandiri, GoPay, dll)</li>
                             <li>Ikuti instruksi pembayaran</li>
                             <li>Setelah berhasil, status booking akan otomatis <strong>diupdate</strong></li>
                         </ol>
                     </div>
 
-                    <!-- Midtrans Snap Button -->
-                    <div class="text-center mb-4">
-                        {{-- ✅ PERBAIKAN: Pastikan variable $snapToken tersedia dari controller --}}
-                        <button id="pay-button" class="btn btn-primary btn-lg px-5 py-3">
-                            <i class="fas fa-lock me-2"></i>
-                            Bayar Sekarang
-                        </button>
-                    </div>
+                    {{-- ✅ FIX: CEK SNAP TOKEN --}}
+                    @if(isset($snapToken) && $snapToken)
+                        <!-- Midtrans Snap Button -->
+                        <div class="text-center mb-4">
+                            <button id="pay-button" class="btn btn-pay btn-primary btn-lg px-5 py-3">
+                                <i class="fas fa-lock me-2"></i>
+                                Bayar Sekarang
+                            </button>
+                        </div>
+                    @else
+                        <!-- Error: No Snap Token -->
+                        <div class="alert alert-warning text-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Payment Token Tidak Ditemukan!</strong>
+                            <br>
+                            <small>Silakan hubungi admin atau coba lagi nanti.</small>
+                        </div>
+                        
+                        <div class="text-center">
+                            <a href="{{ route('booking.show', $payment->booking_id) }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Kembali
+                            </a>
+                        </div>
+                    @endif
 
                     <!-- Payment Methods -->
                     <div class="payment-methods mt-4 pt-4 border-top">
@@ -137,41 +203,42 @@
     </div>
 </div>
 
-<!-- Midtrans Snap JS -->
+{{-- ✅ FIX: Midtrans Snap JS dengan URL yang benar --}}
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script type="text/javascript">
+    // ✅ FIX: Check if snap is loaded
+    @if(isset($snapToken) && $snapToken)
     document.getElementById('pay-button').addEventListener('click', function() {
         // Disable button saat proses
-        this.disabled = true;
-        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
         
-        // ✅ PERBAIKAN: Pastikan variable $snapToken tersedia
-        snap.pay('{{ $snapToken ?? $token ?? "" }}', {
+        // ✅ FIX: Pass snap_token dengan benar
+        snap.pay('{{ $snapToken }}', {
             onSuccess: function(result) {
                 // Pembayaran berhasil
+                console.log('Success:', result);
                 window.location.href = "{{ route('payment.success', $payment->id) }}";
             },
             onPending: function(result) {
                 // Pembayaran pending (menunggu)
-                window.location.href = "{{ route('payment.success', $payment->id) }}";
+                console.log('Pending:', result);
+                window.location.href = "{{ route('payment.pending', $payment->id) }}";
             },
             onError: function(result) {
                 // Pembayaran error
+                console.log('Error:', result);
                 window.location.href = "{{ route('payment.failed', $payment->id) }}";
             },
             onClose: function() {
                 // User menutup popup tanpa bayar
                 alert('Anda menutup popup pembayaran. Silakan klik tombol bayar untuk melanjutkan.');
-                document.getElementById('pay-button').disabled = false;
-                document.getElementById('pay-button').innerHTML = '<i class="fas fa-lock me-2"></i>Bayar Sekarang';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lock me-2"></i>Bayar Sekarang';
             }
         });
     });
+    @endif
 </script>
-
-<style>
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-</style>
 @endsection

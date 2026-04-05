@@ -173,13 +173,22 @@
                     </div>
                     @endif
 
-                    <!-- Action Buttons -->
+                    <!-- ✅ FIX: ACTION BUTTONS - Gunakan payment ID bukan booking ID -->
                     <div class="action-buttons">
                         @if($status == 'pending')
-                            <a href="{{ route('payment.process', $booking->id) }}" class="btn-pay">
-                                <i class="fas fa-credit-card"></i>
-                                Bayar Sekarang
-                            </a>
+                            {{-- ✅ FIX: route('payment.process', $booking->payment->id) --}}
+                            @if($booking->payment)
+                                <a href="{{ route('payment.process', $booking->payment->id) }}" class="btn-pay">
+                                    <i class="fas fa-credit-card"></i>
+                                    Bayar Sekarang
+                                </a>
+                            @else
+                                <button class="btn-pay" disabled title="Payment record tidak ditemukan">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    Bayar Sekarang
+                                </button>
+                            @endif
+                            
                             <button class="btn-cancel" onclick="cancelBooking({{ $booking->id }})">
                                 <i class="fas fa-times-circle"></i>
                                 Batalkan
@@ -191,6 +200,15 @@
                                 <i class="fas fa-download"></i>
                                 Download Invoice
                             </a>
+                        @endif
+
+                        @if($status == 'failed' || $status == 'cancelled')
+                            @if($booking->payment)
+                                <a href="{{ route('payment.process', $booking->payment->id) }}" class="btn-pay">
+                                    <i class="fas fa-redo"></i>
+                                    Coba Bayar Lagi
+                                </a>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -277,5 +295,30 @@
         bookingFee: {{ $booking->payment->amount ?? ($booking->total_price * 0.1) ?? 850000000 }},
         total: {{ ($booking->payment->amount ?? ($booking->total_price * 0.1)) ?? 850000000 }}
     };
+
+    function cancelBooking(bookingId) {
+        if (confirm('Yakin ingin membatalkan booking ini?')) {
+            fetch(`/bookings/${bookingId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('✅ Booking berhasil dibatalkan');
+                    location.reload();
+                } else {
+                    alert('⚠️ ' + (data.message || 'Gagal membatalkan booking'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('⚠️ Terjadi kesalahan');
+            });
+        }
+    }
 </script>
 @endsection

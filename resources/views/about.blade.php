@@ -328,4 +328,4 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="{{ asset('assets/js/about.js') }}"></script>
-@endsection
+@endsection     

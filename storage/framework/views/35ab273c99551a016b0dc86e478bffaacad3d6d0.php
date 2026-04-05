@@ -77,7 +77,7 @@
         <div class="text-center mb-12">
             <span class="gradient-primary text-white px-6 py-2 rounded-full text-sm font-semibold inline-block mb-4">MENGAPA MEMILIH KAMI</span>
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kenapa Harus DahlanProperty?</h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Kami memberikan pengalaman terbaik dalam mencari properti impian Anda</p>
+            <p class="text-xl text-grey-900 max-w-2xl mx-auto">Kami memberikan pengalaman terbaik dalam mencari properti impian Anda</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -190,7 +190,7 @@
         <div class="text-center mb-12">
             <span class="gradient-primary text-white px-6 py-2 rounded-full text-sm font-semibold inline-block mb-4">PROPERTI PILIHAN</span>
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Properti Unggulan</h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">Temukan properti terbaik dengan fasilitas premium</p>
+            <p class="text-xl text-gray-900 max-w-2xl mx-auto">Temukan properti terbaik dengan fasilitas premium</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
